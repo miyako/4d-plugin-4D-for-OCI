@@ -1,0 +1,52 @@
+name: Build Plugin
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-macos:
+    runs-on: macos-14  # Apple Silicon (M1)
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Download Oracle Instant Client
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release download oracle-libs \
+            --pattern 'oracle-instantclient-macos-aarm64.tar.gz' \
+            --dir /tmp
+          mkdir -p oracle/macos-aarm64
+          tar xzf /tmp/oracle-instantclient-macos-aarm64.tar.gz \
+            -C oracle/macos-aarm64
+
+      - name: Configure
+        run: |
+          cmake -B 4D-for-OCI/cmake-build \
+            -S 4D-for-OCI \
+            -G "Unix Makefiles" \
+            -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build
+        run: cmake --build 4D-for-OCI/cmake-build --config Release
+
+      - name: Verify bundle
+        run: |
+          BUNDLE="4D-for-OCI/4D-for-OCI-test/Plugins/4D-for-OCI.bundle"
+          echo "--- Bundle contents ---"
+          ls -lh "$BUNDLE/Contents/MacOS/"
+          echo "--- Exported symbols ---"
+          nm -gU "$BUNDLE/Contents/MacOS/4D-for-OCI" | grep -c FourDPackex
+          echo "--- Oracle dylib linkage ---"
+          otool -L "$BUNDLE/Contents/MacOS/4D-for-OCI" | grep loader_path
+
+      - name: Upload plugin artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: 4D-for-OCI-macos-aarm64
+          path: 4D-for-OCI/4D-for-OCI-test/Plugins/4D-for-OCI.bundle
