@@ -15,7 +15,7 @@ if(APPLE)
     set(ORACLE_LIB_DIR "${CMAKE_SOURCE_DIR}/../oracle/macos-aarm64")
 elseif(WIN32)
     set(ORACLE_LIB_DIR "${CMAKE_SOURCE_DIR}/../oracle/windows-x64")
-    set(ORACLE_MSVC_LIB_DIR "${CMAKE_SOURCE_DIR}/../oracle/windows-x64/sdk/lib/msvc")
+    set(ORACLE_MSVC_LIB_DIR "${CMAKE_SOURCE_DIR}/../oracle/lib/msvc")
 endif()
 
 # ============================================================
@@ -178,6 +178,9 @@ elseif(WIN32)
             "${CMAKE_BINARY_DIR}/Plugins/${PROJECT_NAME}/Contents/Windows64/"
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
             "${ORACLE_LIB_DIR}/oraociei.dll"
+            "${CMAKE_BINARY_DIR}/Plugins/${PROJECT_NAME}/Contents/Windows64/"
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            "${ORACLE_LIB_DIR}/orasql.dll"
             "${CMAKE_BINARY_DIR}/Plugins/${PROJECT_NAME}/Contents/Windows64/"
         COMMENT "Copying resources and Oracle DLLs"
     )
