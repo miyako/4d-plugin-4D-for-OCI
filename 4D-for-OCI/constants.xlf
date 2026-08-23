@@ -1603,6 +1603,21 @@
           <target>OCI_HTYPE_LAST</target>
         </trans-unit>
       </group>
+
+      <group d4:groupID="11909"  restype="x-4DK#">
+        <trans-unit >
+          <source>OCI_SYNTAX</source>
+          <target>OCI_SYNTAX</target>
+        </trans-unit>
+        <trans-unit d4:value="1">
+          <source>OCI_NTV_SYNTAX</source>
+          <target>OCI_NTV_SYNTAX</target>
+        </trans-unit>
+        <trans-unit d4:value="2">
+          <source>OCI_V7_SYNTAX</source>
+          <target>OCI_V7_SYNTAX</target>
+        </trans-unit>
+      </group>
     </body>
   </file>
 </xliff>
