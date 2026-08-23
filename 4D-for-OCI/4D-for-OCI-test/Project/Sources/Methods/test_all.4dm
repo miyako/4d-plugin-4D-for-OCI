@@ -1,7 +1,15 @@
 //%attributes = {"invisible":true}
 If (Application info.headless)
 
+    test_extras
+    test_handles
+    test_error
     test_connection
+    test_attr
+    test_stmt
+    test_transaction
+    test_describe
+    test_server
 
     LOG EVENT(Into system standard outputs; "PASS"; Information message)
 
