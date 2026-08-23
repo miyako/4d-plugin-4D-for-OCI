@@ -20,7 +20,8 @@ $status:=OCIHandleAlloc($envhp; $stmtp; OCI_HTYPE_STMT)
 ASSERT($status=OCI_SUCCESS; "OCIHandleAlloc stmt failed")
 
 // ---- OCIStmtPrepare — prepare a SELECT statement ----
-$status:=OCIStmtPrepare($stmtp; $errhp; "SELECT 1 FROM DUAL"; OCI_NTV_SYNTAX)
+// OCI_NTV_SYNTAX = 1 (native syntax)
+$status:=OCIStmtPrepare($stmtp; $errhp; "SELECT 1 FROM DUAL"; 1)
 ASSERT($status=OCI_SUCCESS; "OCIStmtPrepare SELECT failed: "+String($status))
 
 // ---- OCIStmtPrepare — prepare an INSERT statement ----
@@ -28,11 +29,11 @@ var $stmtp2 : Integer
 $status:=OCIHandleAlloc($envhp; $stmtp2; OCI_HTYPE_STMT)
 ASSERT($status=OCI_SUCCESS; "OCIHandleAlloc stmt2 failed")
 
-$status:=OCIStmtPrepare($stmtp2; $errhp; "INSERT INTO t (id, name) VALUES (:1, :2)"; OCI_NTV_SYNTAX)
+$status:=OCIStmtPrepare($stmtp2; $errhp; "INSERT INTO t (id, name) VALUES (:1, :2)"; 1)
 ASSERT($status=OCI_SUCCESS; "OCIStmtPrepare INSERT failed: "+String($status))
 
 // ---- OCIStmtPrepare — null handle guard ----
-$status:=OCIStmtPrepare(0; $errhp; "SELECT 1 FROM DUAL"; OCI_NTV_SYNTAX)
+$status:=OCIStmtPrepare(0; $errhp; "SELECT 1 FROM DUAL"; 1)
 ASSERT($status=OCI_ERROR; "OCIStmtPrepare with null stmt should fail")
 
 // ---- OCIStmtExecute — null handle guards ----
