@@ -2195,3 +2195,35 @@ When bundling Oracle Instant Client dylibs alongside a plugin:
 ### 25. OCI handle pointers exceed PA_long32
 
 OCI handles are `void*` (8 bytes on 64-bit) but `PA_long32` is only 4 bytes. Passing raw pointers as longint parameters silently truncates the upper 32 bits. Use an internal handle table that maps small `PA_long32` IDs (1, 2, 3, ...) to actual `void*` OCI pointers. The table should be thread-safe (`std::mutex`).
+
+### 26. CI/CD: macOS codesigning and notarization
+
+All plugin projects use the same GitHub Actions repository secrets for macOS codesigning and notarization:
+
+| Secret | Description |
+|--------|-------------|
+| `APPLE_DEVELOPER_ID_CERTIFICATE` | Base64-encoded Developer ID Application `.p12` certificate |
+| `APPLE_DEVELOPER_ID_CERTIFICATE_PASSWORD` | Password for the `.p12` file |
+| `KEYCHAIN_PASSWORD` | Password for the temporary CI keychain |
+| `NOTARYTOOL_APPLE_ID` | Apple ID email for `xcrun notarytool` |
+| `NOTARYTOOL_PASSWORD` | App-specific password (generate at appleid.apple.com → Sign-In and Security → App-Specific Passwords) |
+| `NOTARYTOOL_TEAM_ID` | 10-character Apple Developer Team ID |
+
+**Signing order (inside-out):** embedded dylibs → plugin binary → bundle. All with `--options runtime --timestamp`.
+
+**Notarization flow:** `ditto -c -k` → `xcrun notarytool submit --wait` → `xcrun stapler staple`.
+
+**Oracle dylibs:** must be re-signed with Developer ID (not ad-hoc) before notarization. Ad-hoc signatures (`codesign -fs -`) are only for local development builds.
+
+### 27. CI/CD: Oracle Instant Client libraries
+
+Oracle Instant Client binaries cannot be committed to the repo (OTN license, ~250MB per platform). Store them as GitHub Release assets under a dedicated tag (e.g., `oracle-libs`):
+
+- `oracle-instantclient-macos-aarm64.tar.gz` — libclntsh, libclntshcore, libnnz, libociei
+- `oracle-instantclient-windows-x64.tar.gz` — oci.dll, orannz.dll, oraociei.dll, orasql.dll
+
+CI downloads them with `gh release download oracle-libs`. No extra secrets needed — `GITHUB_TOKEN` has read access to the repo's own releases.
+
+**Committable artifacts** (not binaries, no license issue):
+- `oracle/include/` — OCI SDK header files (~3.6MB)
+- `oracle/lib/msvc/oci.lib` — Windows import library (~840KB, just symbol stubs)
