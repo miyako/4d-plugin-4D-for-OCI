@@ -19,6 +19,7 @@ static void plugin_init() {
 }
 
 static void plugin_deinit() {
+    stmtBuffers().clear();
     handles().clear();
     OCIErrorCallback::instance().setMethod("");
 }
@@ -102,7 +103,7 @@ static void cmd_OCIEnvCreate(PA_PluginParameters params) {
                                  nullptr, nullptr, nullptr, nullptr, 0, nullptr);
 
     if (status == OCI_SUCCESS || status == OCI_SUCCESS_WITH_INFO) {
-        PA_long32 id = handles().add(envhp);
+        PA_long32 id = handles().add(envhp, OCI_HTYPE_ENV);
         PA_SetLongParameter(params, 1, id);
     } else {
         PA_SetLongParameter(params, 1, 0);
@@ -128,7 +129,7 @@ static void cmd_OCIHandleAlloc(PA_PluginParameters params) {
     sword status = OCIHandleAlloc(parent, &hndlp, (ub4)type, 0, nullptr);
 
     if (status == OCI_SUCCESS) {
-        PA_long32 id = handles().add(hndlp);
+        PA_long32 id = handles().add(hndlp, (ub4)type);
         PA_SetLongParameter(params, 2, id);
     } else {
         PA_SetLongParameter(params, 2, 0);
@@ -141,21 +142,23 @@ static void cmd_OCIHandleAlloc(PA_PluginParameters params) {
 static void cmd_OCIHandleFree(PA_PluginParameters params) {
     PA_long32 hndlId = PA_GetLongParameter(params, 1);
 
-    // We need to know the handle type for OCIHandleFree.
-    // The original plugin stored this internally. We don't have
-    // that info, so we remove from our table and let OCI handle it.
-    // For now, the caller must not use the handle after freeing.
-    void* hndlp = handles().remove(hndlId);
+    ub4 type = 0;
+    void* hndlp = handles().remove(hndlId, &type);
     if (!hndlp) {
         PA_ReturnLong(params, (PA_long32)OCI_ERROR);
         return;
     }
 
-    // NOTE: OCIHandleFree requires the type. Since we don't track it,
-    // we'll need the caller to also pass it. But the manifest has only 1 param.
-    // The original plugin likely tracked handle types internally.
-    // For now, we'll skip the actual free call and just remove from our table.
-    // TODO: Track handle types in the handle table for proper freeing.
+    // Clean up statement buffers if this is a statement handle
+    if (type == OCI_HTYPE_STMT) {
+        stmtBuffers().removeStmt(hndlId);
+    }
+
+    // Actually free the OCI handle if we know its type
+    if (type != 0) {
+        OCIHandleFree(hndlp, type);
+    }
+
     PA_ReturnLong(params, (PA_long32)OCI_SUCCESS);
 }
 
@@ -269,7 +272,7 @@ static void cmd_OCILogon(PA_PluginParameters params) {
                              (const OraText*)db.c_str(), (ub4)db.size());
 
     if (status == OCI_SUCCESS || status == OCI_SUCCESS_WITH_INFO) {
-        PA_long32 id = handles().add(svchp);
+        PA_long32 id = handles().add(svchp, OCI_HTYPE_SVCCTX);
         PA_SetLongParameter(params, 3, id);
     } else {
         PA_SetLongParameter(params, 3, 0);
@@ -384,11 +387,9 @@ static void cmd_OCIAttrGetText(PA_PluginParameters params) {
     OraText* attrVal = nullptr;
     ub4 attrLen = 0;
 
-    // Determine handle type from context — we need this for OCIAttrGet
-    // The original plugin passed it explicitly. Our manifest doesn't include hndltyp
-    // for AttrGetText. For now, assume OCI_HTYPE_SESSION (common case).
-    // TODO: The caller should indicate the handle type via param 1's registration.
-    ub4 hndltyp = OCI_HTYPE_SESSION; // placeholder
+    // Use tracked handle type instead of hardcoded value
+    ub4 hndltyp = handles().getType(hndlpId);
+    if (hndltyp == 0) hndltyp = OCI_HTYPE_SESSION; // fallback
 
     sword status = OCIAttrGet(hndlp, hndltyp,
                                &attrVal, &attrLen,
@@ -423,7 +424,8 @@ static void cmd_OCIAttrSetVal(PA_PluginParameters params) {
     // When setting OCI_ATTR_SERVER or OCI_ATTR_SESSION, the value is a handle
     void* valPtr = nullptr;
     ub4 valSize = 0;
-    ub4 hndltyp = OCI_HTYPE_SVCCTX; // typical target for server/session attrs
+    ub4 hndltyp = handles().getType(hndlpId);
+    if (hndltyp == 0) hndltyp = OCI_HTYPE_SVCCTX; // fallback
 
     // Check if the value is a handle reference
     void* possibleHandle = handles().get(attrVal);
@@ -460,7 +462,8 @@ static void cmd_OCIAttrSetText(PA_PluginParameters params) {
         return;
     }
 
-    ub4 hndltyp = OCI_HTYPE_SESSION; // common target
+    ub4 hndltyp = handles().getType(hndlpId);
+    if (hndltyp == 0) hndltyp = OCI_HTYPE_SESSION; // fallback
 
     sword status = OCIAttrSet(hndlp, hndltyp,
                                (void*)text.c_str(), (ub4)text.size(),
@@ -485,7 +488,7 @@ static void cmd_OCIDescriptorAlloc(PA_PluginParameters params) {
     sword status = OCIDescriptorAlloc(parent, &descp, (ub4)type, 0, nullptr);
 
     if (status == OCI_SUCCESS) {
-        PA_long32 id = handles().add(descp);
+        PA_long32 id = handles().add(descp, (ub4)type);
         PA_SetLongParameter(params, 2, id);
     } else {
         PA_SetLongParameter(params, 2, 0);
@@ -497,15 +500,18 @@ static void cmd_OCIDescriptorAlloc(PA_PluginParameters params) {
 // OCIDescriptorFree(descp) : status
 static void cmd_OCIDescriptorFree(PA_PluginParameters params) {
     PA_long32 descId = PA_GetLongParameter(params, 1);
-    void* descp = handles().remove(descId);
+    ub4 type = 0;
+    void* descp = handles().remove(descId, &type);
 
     if (!descp) {
         PA_ReturnLong(params, (PA_long32)OCI_ERROR);
         return;
     }
 
-    // Similar to HandleFree, we need the type.
-    // TODO: Track descriptor types for proper freeing.
+    if (type != 0) {
+        OCIDescriptorFree(descp, type);
+    }
+
     PA_ReturnLong(params, (PA_long32)OCI_SUCCESS);
 }
 
@@ -627,6 +633,16 @@ static void cmd_OCIStmtFetch(PA_PluginParameters params) {
     sword status = OCIStmtFetch(stmtp, errhp, (ub4)nrows,
                                  OCI_FETCH_NEXT, OCI_DEFAULT);
 
+    // After fetch, copy buffer data back to 4D variables via stored PA_Pointers
+    if (status == OCI_SUCCESS || status == OCI_SUCCESS_WITH_INFO) {
+        auto* defs = stmtBuffers().getDefines(stmtpId);
+        if (defs) {
+            for (auto& col : *defs) {
+                writeBackDefine(col);
+            }
+        }
+    }
+
     PA_ReturnLong(params, (PA_long32)status);
 }
 
@@ -636,22 +652,213 @@ static void cmd_OCIStmtGetBindInfo(PA_PluginParameters params) {
     PA_ReturnLong(params, (PA_long32)OCI_ERROR);
 }
 
-// OCIBindByPos — stub (complex, requires buffer management)
+// OCIBindByPos — bind input variable by position
+// OCIBindByPos(stmtp; errhp; bindp_out; position; valuep_ptr; value_sz; dty; indp_ptr; rlenp_ptr; maxarr_len; curelep) : status
 static void cmd_OCIBindByPos(PA_PluginParameters params) {
-    // TODO: Implement with buffer/pointer management
-    PA_ReturnLong(params, (PA_long32)OCI_ERROR);
+    PA_long32 stmtpId  = PA_GetLongParameter(params, 1);
+    PA_long32 errhpId  = PA_GetLongParameter(params, 2);
+    PA_long32 position = PA_GetLongParameter(params, 4);
+    PA_long32 valueSz  = PA_GetLongParameter(params, 6);
+    PA_long32 dty      = PA_GetLongParameter(params, 7);
+
+    OCIStmt*  stmtp = handles().getAs<OCIStmt>(stmtpId);
+    OCIError* errhp = handles().getAs<OCIError>(errhpId);
+
+    if (!stmtp || !errhp || position < 1) {
+        PA_SetLongParameter(params, 3, 0);
+        PA_ReturnLong(params, (PA_long32)OCI_ERROR);
+        return;
+    }
+
+    // Allocate internal buffer
+    OCIBindBuffer& buf = stmtBuffers().addBind(stmtpId, (ub4)position);
+    buf.dty = (ub4)dty;
+    buf.data.resize(valueSz > 0 ? valueSz : 256, 0);
+    buf.indicator = 0;
+    buf.returnLen = 0;
+    buf.valuePtr = PA_GetPointerParameter(params, 5);
+    buf.indPtr   = PA_GetPointerParameter(params, 8);
+    buf.rlenPtr  = PA_GetPointerParameter(params, 9);
+
+    // Read input value from 4D pointer into buffer
+    if (buf.valuePtr) {
+        PA_Variable val = PA_GetPointerValue(buf.valuePtr);
+        switch (val.fType) {
+            case eVK_Longint: {
+                PA_long32 v = val.uValue.fLongint;
+                if (buf.data.size() >= sizeof(PA_long32))
+                    std::memcpy(buf.data.data(), &v, sizeof(PA_long32));
+                buf.returnLen = sizeof(PA_long32);
+                break;
+            }
+            case eVK_Real: {
+                double v = val.uValue.fReal;
+                if (buf.data.size() >= sizeof(double))
+                    std::memcpy(buf.data.data(), &v, sizeof(double));
+                buf.returnLen = sizeof(double);
+                break;
+            }
+            case eVK_Unistring: {
+                std::string utf8 = unistr_to_utf8(&val.uValue.fString);
+                ub4 len = (ub4)utf8.size();
+                if (len > buf.data.size()) len = (ub4)buf.data.size();
+                std::memcpy(buf.data.data(), utf8.c_str(), len);
+                buf.returnLen = (ub2)len;
+                break;
+            }
+            default:
+                break;
+        }
+    }
+
+    buf.bindp = nullptr;
+    sword status = OCIBindByPos(stmtp, &buf.bindp, errhp,
+                                 (ub4)position,
+                                 buf.data.data(), (sb4)buf.data.size(),
+                                 (ub2)dty,
+                                 &buf.indicator, &buf.returnLen,
+                                 nullptr, 0, nullptr, OCI_DEFAULT);
+
+    if (status == OCI_SUCCESS && buf.bindp) {
+        PA_long32 id = handles().add(buf.bindp, 0);
+        PA_SetLongParameter(params, 3, id);
+    } else {
+        PA_SetLongParameter(params, 3, 0);
+    }
+
+    PA_ReturnLong(params, oci_check(status));
 }
 
-// OCIBindByName — stub (complex, requires buffer management)
+// OCIBindByName — bind input variable by name
+// OCIBindByName(stmtp; errhp; bindp_out; placeholder; valuep_ptr; value_sz; dty; indp_ptr; rlenp_ptr; maxarr_len; curelep) : status
 static void cmd_OCIBindByName(PA_PluginParameters params) {
-    // TODO: Implement with buffer/pointer management
-    PA_ReturnLong(params, (PA_long32)OCI_ERROR);
+    PA_long32 stmtpId = PA_GetLongParameter(params, 1);
+    PA_long32 errhpId = PA_GetLongParameter(params, 2);
+    PA_long32 valueSz = PA_GetLongParameter(params, 6);
+    PA_long32 dty     = PA_GetLongParameter(params, 7);
+
+    OCIStmt*  stmtp = handles().getAs<OCIStmt>(stmtpId);
+    OCIError* errhp = handles().getAs<OCIError>(errhpId);
+
+    PA_Unistring* uPlaceholder = PA_GetStringParameter(params, 4);
+    std::string placeholder = unistr_to_utf8(uPlaceholder);
+
+    if (!stmtp || !errhp || placeholder.empty()) {
+        PA_SetLongParameter(params, 3, 0);
+        PA_ReturnLong(params, (PA_long32)OCI_ERROR);
+        return;
+    }
+
+    // Use a synthetic position based on placeholder hash for buffer storage
+    // (bind-by-name buffers are tracked separately but reuse same structure)
+    ub4 syntheticPos = 1;
+    for (char c : placeholder) syntheticPos = syntheticPos * 31 + (unsigned char)c;
+    syntheticPos = (syntheticPos % 10000) + 10001; // avoid collision with position-based
+
+    OCIBindBuffer& buf = stmtBuffers().addBind(stmtpId, syntheticPos);
+    buf.dty = (ub4)dty;
+    buf.data.resize(valueSz > 0 ? valueSz : 256, 0);
+    buf.indicator = 0;
+    buf.returnLen = 0;
+    buf.valuePtr = PA_GetPointerParameter(params, 5);
+    buf.indPtr   = PA_GetPointerParameter(params, 8);
+    buf.rlenPtr  = PA_GetPointerParameter(params, 9);
+
+    // Read input value
+    if (buf.valuePtr) {
+        PA_Variable val = PA_GetPointerValue(buf.valuePtr);
+        switch (val.fType) {
+            case eVK_Longint: {
+                PA_long32 v = val.uValue.fLongint;
+                if (buf.data.size() >= sizeof(PA_long32))
+                    std::memcpy(buf.data.data(), &v, sizeof(PA_long32));
+                buf.returnLen = sizeof(PA_long32);
+                break;
+            }
+            case eVK_Real: {
+                double v = val.uValue.fReal;
+                if (buf.data.size() >= sizeof(double))
+                    std::memcpy(buf.data.data(), &v, sizeof(double));
+                buf.returnLen = sizeof(double);
+                break;
+            }
+            case eVK_Unistring: {
+                std::string utf8 = unistr_to_utf8(&val.uValue.fString);
+                ub4 len = (ub4)utf8.size();
+                if (len > buf.data.size()) len = (ub4)buf.data.size();
+                std::memcpy(buf.data.data(), utf8.c_str(), len);
+                buf.returnLen = (ub2)len;
+                break;
+            }
+            default:
+                break;
+        }
+    }
+
+    buf.bindp = nullptr;
+    sword status = OCIBindByName(stmtp, &buf.bindp, errhp,
+                                  (const OraText*)placeholder.c_str(),
+                                  (sb4)placeholder.size(),
+                                  buf.data.data(), (sb4)buf.data.size(),
+                                  (ub2)dty,
+                                  &buf.indicator, &buf.returnLen,
+                                  nullptr, 0, nullptr, OCI_DEFAULT);
+
+    if (status == OCI_SUCCESS && buf.bindp) {
+        PA_long32 id = handles().add(buf.bindp, 0);
+        PA_SetLongParameter(params, 3, id);
+    } else {
+        PA_SetLongParameter(params, 3, 0);
+    }
+
+    PA_ReturnLong(params, oci_check(status));
 }
 
-// OCIDefineByPos — stub (complex, requires buffer management)
+// OCIDefineByPos — define output column buffer for fetch
+// OCIDefineByPos(stmtp; errhp; defnp_out; position; valuep_ptr; value_sz; dty; indp_ptr; rlenp_ptr; mode) : status
 static void cmd_OCIDefineByPos(PA_PluginParameters params) {
-    // TODO: Implement with buffer/pointer management
-    PA_ReturnLong(params, (PA_long32)OCI_ERROR);
+    PA_long32 stmtpId  = PA_GetLongParameter(params, 1);
+    PA_long32 errhpId  = PA_GetLongParameter(params, 2);
+    PA_long32 position = PA_GetLongParameter(params, 4);
+    PA_long32 valueSz  = PA_GetLongParameter(params, 6);
+    PA_long32 dty      = PA_GetLongParameter(params, 7);
+    PA_long32 mode     = PA_GetLongParameter(params, 10);
+
+    OCIStmt*  stmtp = handles().getAs<OCIStmt>(stmtpId);
+    OCIError* errhp = handles().getAs<OCIError>(errhpId);
+
+    if (!stmtp || !errhp || position < 1) {
+        PA_SetLongParameter(params, 3, 0);
+        PA_ReturnLong(params, (PA_long32)OCI_ERROR);
+        return;
+    }
+
+    // Allocate internal buffer for OCI to write into during fetch
+    OCIColumnBuffer& col = stmtBuffers().addDefine(stmtpId, (ub4)position);
+    col.dty = (ub4)dty;
+    col.data.resize(valueSz > 0 ? valueSz : 256, 0);
+    col.indicator = 0;
+    col.returnLen = 0;
+    col.valuePtr = PA_GetPointerParameter(params, 5);
+    col.indPtr   = PA_GetPointerParameter(params, 8);
+    col.rlenPtr  = PA_GetPointerParameter(params, 9);
+
+    col.defnp = nullptr;
+    sword status = OCIDefineByPos(stmtp, &col.defnp, errhp,
+                                   (ub4)position,
+                                   col.data.data(), (sb4)col.data.size(),
+                                   (ub2)dty,
+                                   &col.indicator, &col.returnLen,
+                                   nullptr, (ub4)mode);
+
+    if (status == OCI_SUCCESS && col.defnp) {
+        PA_long32 id = handles().add(col.defnp, 0);
+        PA_SetLongParameter(params, 3, id);
+    } else {
+        PA_SetLongParameter(params, 3, 0);
+    }
+
+    PA_ReturnLong(params, oci_check(status));
 }
 
 // OCIDescribeAnyText(svchp; errhp; objnm; objnm_len; objptr_typ; info_level; dschp) : status
