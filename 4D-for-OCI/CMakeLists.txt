@@ -78,6 +78,9 @@ if(APPLE)
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
             "${ORACLE_LIB_DIR}/libnnz.dylib"
             "$<TARGET_FILE_DIR:${PROJECT_NAME}>/libnnz.dylib"
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            "${ORACLE_LIB_DIR}/libociei.dylib"
+            "$<TARGET_FILE_DIR:${PROJECT_NAME}>/libociei.dylib"
 
         # Fix plugin binary: @rpath → @loader_path
         COMMAND install_name_tool -change
@@ -112,10 +115,24 @@ if(APPLE)
             "@loader_path/libclntshcore.dylib.23.1"
             "$<TARGET_FILE_DIR:${PROJECT_NAME}>/libnnz.dylib"
 
+        # Fix libociei.dylib: id + dependencies
+        COMMAND install_name_tool -id
+            "@loader_path/libociei.dylib"
+            "$<TARGET_FILE_DIR:${PROJECT_NAME}>/libociei.dylib"
+        COMMAND install_name_tool -change
+            "@rpath/libclntsh.dylib.23.1"
+            "@loader_path/libclntsh.dylib.23.1"
+            "$<TARGET_FILE_DIR:${PROJECT_NAME}>/libociei.dylib"
+        COMMAND install_name_tool -change
+            "@rpath/libclntshcore.dylib.23.1"
+            "@loader_path/libclntshcore.dylib.23.1"
+            "$<TARGET_FILE_DIR:${PROJECT_NAME}>/libociei.dylib"
+
         # Re-sign all modified dylibs (install_name_tool invalidates code signatures)
         COMMAND codesign -fs - "$<TARGET_FILE_DIR:${PROJECT_NAME}>/libclntsh.dylib.23.1"
         COMMAND codesign -fs - "$<TARGET_FILE_DIR:${PROJECT_NAME}>/libclntshcore.dylib.23.1"
         COMMAND codesign -fs - "$<TARGET_FILE_DIR:${PROJECT_NAME}>/libnnz.dylib"
+        COMMAND codesign -fs - "$<TARGET_FILE_DIR:${PROJECT_NAME}>/libociei.dylib"
 
         COMMENT "Copying Oracle libraries with versioned names and fixing install names"
     )
