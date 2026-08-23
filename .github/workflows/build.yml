@@ -45,6 +45,89 @@ jobs:
           echo "--- Oracle dylib linkage ---"
           otool -L "$BUNDLE/Contents/MacOS/4D-for-OCI" | grep loader_path
 
+      - name: Import signing certificate
+        env:
+          APPLE_CERTIFICATE_P12_BASE64: ${{ secrets.APPLE_CERTIFICATE_P12_BASE64 }}
+          APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
+        run: |
+          # Decode certificate
+          echo "$APPLE_CERTIFICATE_P12_BASE64" | base64 --decode > /tmp/certificate.p12
+
+          # Create temporary keychain
+          KEYCHAIN_PATH=$RUNNER_TEMP/app-signing.keychain-db
+          KEYCHAIN_PASSWORD=$(uuidgen)
+          security create-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+          security set-keychain-settings -lut 21600 "$KEYCHAIN_PATH"
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+
+          # Import certificate
+          security import /tmp/certificate.p12 \
+            -P "$APPLE_CERTIFICATE_PASSWORD" \
+            -A -t cert -f pkcs12 \
+            -k "$KEYCHAIN_PATH"
+
+          # Allow codesign to access keychain
+          security set-key-partition-list -S apple-tool:,apple:,codesign: \
+            -s -k "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+
+          # Add to search list
+          security list-keychains -d user -s "$KEYCHAIN_PATH" $(security list-keychains -d user | tr -d '"')
+
+          rm /tmp/certificate.p12
+
+      - name: Codesign bundle
+        env:
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+        run: |
+          BUNDLE="4D-for-OCI/4D-for-OCI-test/Plugins/4D-for-OCI.bundle"
+          IDENTITY="Developer ID Application: ($APPLE_TEAM_ID)"
+
+          # Sign Oracle dylibs first (inside-out signing)
+          for dylib in "$BUNDLE"/Contents/MacOS/lib*.dylib*; do
+            codesign --force --options runtime --timestamp \
+              --sign "$IDENTITY" "$dylib"
+          done
+
+          # Sign the plugin binary
+          codesign --force --options runtime --timestamp \
+            --sign "$IDENTITY" "$BUNDLE/Contents/MacOS/4D-for-OCI"
+
+          # Sign the bundle itself
+          codesign --force --options runtime --timestamp \
+            --sign "$IDENTITY" "$BUNDLE"
+
+          # Verify
+          codesign -dvv "$BUNDLE"
+
+      - name: Notarize bundle
+        env:
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_ID_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+        run: |
+          BUNDLE="4D-for-OCI/4D-for-OCI-test/Plugins/4D-for-OCI.bundle"
+
+          # Create zip for notarization
+          ditto -c -k --keepParent "$BUNDLE" /tmp/4D-for-OCI.zip
+
+          # Submit for notarization and wait
+          xcrun notarytool submit /tmp/4D-for-OCI.zip \
+            --apple-id "$APPLE_ID" \
+            --password "$APPLE_ID_PASSWORD" \
+            --team-id "$APPLE_TEAM_ID" \
+            --wait --timeout 600
+
+          # Staple the ticket to the bundle
+          xcrun stapler staple "$BUNDLE"
+
+      - name: Clean up keychain
+        if: always()
+        run: |
+          KEYCHAIN_PATH=$RUNNER_TEMP/app-signing.keychain-db
+          if [ -f "$KEYCHAIN_PATH" ]; then
+            security delete-keychain "$KEYCHAIN_PATH"
+          fi
+
       - name: Upload plugin artifact
         uses: actions/upload-artifact@v4
         with:
