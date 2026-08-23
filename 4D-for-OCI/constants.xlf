@@ -1,0 +1,1608 @@
+﻿<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<xliff version="1.0" xmlns:d4="http://www.4d.com/d4-ns">
+   <file datatype="x-STR#" original="undefined" source-language="en-US" target-language="en-US" product-version="v15">
+    <header>
+      <note>This file is not localized.</note>
+    </header>
+    <body>
+      <group d4:groupID="11908"  restype="x-4DK#">
+        <trans-unit >
+          <source>OCI_PTYPE</source>
+          <target>OCI_PTYPE</target>
+        </trans-unit>
+        <trans-unit d4:value="0">
+          <source>OCI_PTYPE_UNK</source>
+          <target>OCI_PTYPE_UNK</target>
+        </trans-unit>
+        <trans-unit d4:value="1">
+          <source>OCI_PTYPE_TABLE</source>
+          <target>OCI_PTYPE_TABLE</target>
+        </trans-unit>
+        <trans-unit d4:value="2">
+          <source>OCI_PTYPE_VIEW</source>
+          <target>OCI_PTYPE_VIEW</target>
+        </trans-unit>
+        <trans-unit d4:value="3">
+          <source>OCI_PTYPE_PROC</source>
+          <target>OCI_PTYPE_PROC</target>
+        </trans-unit>
+        <trans-unit d4:value="4">
+          <source>OCI_PTYPE_FUNC</source>
+          <target>OCI_PTYPE_FUNC</target>
+        </trans-unit>
+        <trans-unit d4:value="5">
+          <source>OCI_PTYPE_PKG</source>
+          <target>OCI_PTYPE_PKG</target>
+        </trans-unit>
+        <trans-unit d4:value="6">
+          <source>OCI_PTYPE_TYPE</source>
+          <target>OCI_PTYPE_TYPE</target>
+        </trans-unit>
+        <trans-unit d4:value="7">
+          <source>OCI_PTYPE_SYN</source>
+          <target>OCI_PTYPE_SYN</target>
+        </trans-unit>
+        <trans-unit d4:value="8">
+          <source>OCI_PTYPE_SEQ</source>
+          <target>OCI_PTYPE_SEQ</target>
+        </trans-unit>
+        <trans-unit d4:value="17">
+          <source>OCI_PTYPE_SCHEMA</source>
+          <target>OCI_PTYPE_SCHEMA</target>
+        </trans-unit>
+        <trans-unit d4:value="18">
+          <source>OCI_PTYPE_DATABASE</source>
+          <target>OCI_PTYPE_DATABASE</target>
+        </trans-unit>
+        <trans-unit d4:value="9">
+          <source>OCI_PTYPE_COL</source>
+          <target>OCI_PTYPE_COL</target>
+        </trans-unit>
+        <trans-unit d4:value="10">
+          <source>OCI_PTYPE_ARG</source>
+          <target>OCI_PTYPE_ARG</target>
+        </trans-unit>
+        <trans-unit d4:value="11">
+          <source>OCI_PTYPE_LIST</source>
+          <target>OCI_PTYPE_LIST</target>
+        </trans-unit>
+        <trans-unit d4:value="12">
+          <source>OCI_PTYPE_TYPE_ATTR</source>
+          <target>OCI_PTYPE_TYPE_ATTR</target>
+        </trans-unit>
+        <trans-unit d4:value="13">
+          <source>OCI_PTYPE_TYPE_COLL</source>
+          <target>OCI_PTYPE_TYPE_COLL</target>
+        </trans-unit>
+        <trans-unit d4:value="14">
+          <source>OCI_PTYPE_TYPE_METHOD</source>
+          <target>OCI_PTYPE_TYPE_METHOD</target>
+        </trans-unit>
+        <trans-unit d4:value="15">
+          <source>OCI_PTYPE_TYPE_ARG</source>
+          <target>OCI_PTYPE_TYPE_ARG</target>
+        </trans-unit>
+        <trans-unit d4:value="16">
+          <source>OCI_PTYPE_TYPE_RESULT</source>
+          <target>OCI_PTYPE_TYPE_RESULT</target>
+        </trans-unit>
+      </group>
+
+      <group d4:groupID="11907"  restype="x-4DK#">
+        <trans-unit >
+          <source>OCI_MISC.</source>
+          <target>OCI_MISC.</target>
+        </trans-unit>
+        <trans-unit d4:value="2">
+          <source>OCI_CRED_EXT</source>
+          <target>OCI_CRED_EXT</target>
+        </trans-unit>
+        <trans-unit d4:value="1">
+          <source>OCI_CRED_RDBMS</source>
+          <target>OCI_CRED_RDBMS</target>
+        </trans-unit>
+        <trans-unit d4:value="0">
+          <source>BIND_IN</source>
+          <target>BIND_IN</target>
+        </trans-unit>
+        <trans-unit d4:value="1">
+          <source>BIND_OUT</source>
+          <target>BIND_OUT</target>
+        </trans-unit>
+        <trans-unit d4:value="2">
+          <source>BIND_IO</source>
+          <target>BIND_IO</target>
+        </trans-unit>
+        <trans-unit d4:value="1">
+          <source>OCI_STMT_SELECT</source>
+          <target>OCI_STMT_SELECT</target>
+        </trans-unit>
+        <trans-unit d4:value="2">
+          <source>OCI_STMT_UPDATE</source>
+          <target>OCI_STMT_UPDATE</target>
+        </trans-unit>
+        <trans-unit d4:value="3">
+          <source>OCI_STMT_DELETE</source>
+          <target>OCI_STMT_DELETE</target>
+        </trans-unit>
+        <trans-unit d4:value="4">
+          <source>OCI_STMT_INSERT</source>
+          <target>OCI_STMT_INSERT</target>
+        </trans-unit>
+        <trans-unit d4:value="5">
+          <source>OCI_STMT_CREATE</source>
+          <target>OCI_STMT_CREATE</target>
+        </trans-unit>
+        <trans-unit d4:value="6">
+          <source>OCI_STMT_DROP</source>
+          <target>OCI_STMT_DROP</target>
+        </trans-unit>
+        <trans-unit d4:value="7">
+          <source>OCI_STMT_ALTER</source>
+          <target>OCI_STMT_ALTER</target>
+        </trans-unit>
+        <trans-unit d4:value="8">
+          <source>OCI_STMT_BEGIN</source>
+          <target>OCI_STMT_BEGIN</target>
+        </trans-unit>
+        <trans-unit d4:value="9">
+          <source>OCI_STMT_DECLARE</source>
+          <target>OCI_STMT_DECLARE</target>
+        </trans-unit>
+      </group>
+
+      <group d4:groupID="11905"  restype="x-4DK#">
+        <trans-unit >
+          <source>OCI_DATA_TYPE</source>
+          <target>OCI_DATA_TYPE</target>
+        </trans-unit>
+        <trans-unit d4:value="3">
+          <source>SQLT_INT</source>
+          <target>SQLT_INT</target>
+        </trans-unit>
+        <trans-unit d4:value="4">
+          <source>SQLT_FLT</source>
+          <target>SQLT_FLT</target>
+        </trans-unit>
+        <trans-unit d4:value="5">
+          <source>SQLT_STR</source>
+          <target>SQLT_STR</target>
+        </trans-unit>
+        <trans-unit d4:value="110">
+          <source>SQLT_REF</source>
+          <target>SQLT_REF</target>
+        </trans-unit>
+        <trans-unit d4:value="112">
+          <source>SQLT_CLOB</source>
+          <target>SQLT_CLOB</target>
+        </trans-unit>
+        <trans-unit d4:value="113">
+          <source>SQLT_BLOB</source>
+          <target>SQLT_BLOB</target>
+        </trans-unit>
+        <trans-unit d4:value="114">
+          <source>SQLT_BFILEE</source>
+          <target>SQLT_BFILEE</target>
+        </trans-unit>
+        <trans-unit d4:value="115">
+          <source>SQLT_CFILEE</source>
+          <target>SQLT_CFILEE</target>
+        </trans-unit>
+        <trans-unit d4:value="156">
+          <source>SQLT_ODT</source>
+          <target>SQLT_ODT</target>
+        </trans-unit>
+        <trans-unit d4:value="184">
+          <source>SQLT_DATE</source>
+          <target>SQLT_DATE</target>
+        </trans-unit>
+        <trans-unit d4:value="185">
+          <source>SQLT_TIME</source>
+          <target>SQLT_TIME</target>
+        </trans-unit>
+        <trans-unit d4:value="1">
+          <source>SQLT_CHR</source>
+          <target>SQLT_CHR</target>
+        </trans-unit>
+        <trans-unit d4:value="2">
+          <source>SQLT_NUM</source>
+          <target>SQLT_NUM</target>
+        </trans-unit>
+        <trans-unit d4:value="6">
+          <source>SQLT_VNU</source>
+          <target>SQLT_VNU</target>
+        </trans-unit>
+        <trans-unit d4:value="8">
+          <source>SQLT_LNG</source>
+          <target>SQLT_LNG</target>
+        </trans-unit>
+        <trans-unit d4:value="9">
+          <source>SQLT_VCS</source>
+          <target>SQLT_VCS</target>
+        </trans-unit>
+        <trans-unit d4:value="12">
+          <source>SQLT_DAT</source>
+          <target>SQLT_DAT</target>
+        </trans-unit>
+        <trans-unit d4:value="15">
+          <source>SQLT_VBI</source>
+          <target>SQLT_VBI</target>
+        </trans-unit>
+        <trans-unit d4:value="21">
+          <source>SQLT_BFLOAT</source>
+          <target>SQLT_BFLOAT</target>
+        </trans-unit>
+        <trans-unit d4:value="22">
+          <source>SQLT_BDOUBLE</source>
+          <target>SQLT_BDOUBLE</target>
+        </trans-unit>
+        <trans-unit d4:value="23">
+          <source>SQLT_BIN</source>
+          <target>SQLT_BIN</target>
+        </trans-unit>
+        <trans-unit d4:value="24">
+          <source>SQLT_LBI</source>
+          <target>SQLT_LBI</target>
+        </trans-unit>
+        <trans-unit d4:value="68">
+          <source>SQLT_UIN</source>
+          <target>SQLT_UIN</target>
+        </trans-unit>
+        <trans-unit d4:value="94">
+          <source>SQLT_LVC</source>
+          <target>SQLT_LVC</target>
+        </trans-unit>
+        <trans-unit d4:value="95">
+          <source>SQLT_LVB</source>
+          <target>SQLT_LVB</target>
+        </trans-unit>
+        <trans-unit d4:value="96">
+          <source>SQLT_AFC</source>
+          <target>SQLT_AFC</target>
+        </trans-unit>
+        <trans-unit d4:value="97">
+          <source>SQLT_AVC</source>
+          <target>SQLT_AVC</target>
+        </trans-unit>
+        <trans-unit d4:value="104">
+          <source>SQLT_RDD</source>
+          <target>SQLT_RDD</target>
+        </trans-unit>
+        <trans-unit d4:value="108">
+          <source>SQLT_NTY</source>
+          <target>SQLT_NTY</target>
+        </trans-unit>
+        <trans-unit d4:value="155">
+          <source>SQLT_VST</source>
+          <target>SQLT_VST</target>
+        </trans-unit>
+        <trans-unit d4:value="187">
+          <source>SQLT_TIMESTAMP</source>
+          <target>SQLT_TIMESTAMP</target>
+        </trans-unit>
+        <trans-unit d4:value="188">
+          <source>SQLT_TIMESTAMP_TZ</source>
+          <target>SQLT_TIMESTAMP_TZ</target>
+        </trans-unit>
+        <trans-unit d4:value="189">
+          <source>SQLT_INTERVAL_YM</source>
+          <target>SQLT_INTERVAL_YM</target>
+        </trans-unit>
+        <trans-unit d4:value="190">
+          <source>SQLT_INTERVAL_DS</source>
+          <target>SQLT_INTERVAL_DS</target>
+        </trans-unit>
+        <trans-unit d4:value="232">
+          <source>SQLT_TIMESTAMP_LTZ</source>
+          <target>SQLT_TIMESTAMP_LTZ</target>
+        </trans-unit>
+        <trans-unit d4:value="7">
+          <source>SQLT_PDN</source>
+          <target>SQLT_PDN</target>
+        </trans-unit>
+        <trans-unit d4:value="10">
+          <source>SQLT_NON</source>
+          <target>SQLT_NON</target>
+        </trans-unit>
+        <trans-unit d4:value="11">
+          <source>SQLT_RID</source>
+          <target>SQLT_RID</target>
+        </trans-unit>
+        <trans-unit d4:value="91">
+          <source>SQLT_SLS</source>
+          <target>SQLT_SLS</target>
+        </trans-unit>
+        <trans-unit d4:value="102">
+          <source>SQLT_CUR</source>
+          <target>SQLT_CUR</target>
+        </trans-unit>
+        <trans-unit d4:value="105">
+          <source>SQLT_LAB</source>
+          <target>SQLT_LAB</target>
+        </trans-unit>
+        <trans-unit d4:value="106">
+          <source>SQLT_OSL</source>
+          <target>SQLT_OSL</target>
+        </trans-unit>
+        <trans-unit d4:value="116">
+          <source>SQLT_RSET</source>
+          <target>SQLT_RSET</target>
+        </trans-unit>
+        <trans-unit d4:value="122">
+          <source>SQLT_NCO</source>
+          <target>SQLT_NCO</target>
+        </trans-unit>
+        <trans-unit d4:value="186">
+          <source>SQLT_TIME_TZ</source>
+          <target>SQLT_TIME_TZ</target>
+        </trans-unit>
+        <trans-unit d4:value="114">
+          <source>SQLT_FILE</source>
+          <target>SQLT_FILE</target>
+        </trans-unit>
+        <trans-unit d4:value="115">
+          <source>SQLT_CFILE</source>
+          <target>SQLT_CFILE</target>
+        </trans-unit>
+        <trans-unit d4:value="114">
+          <source>SQLT_BFILE</source>
+          <target>SQLT_BFILE</target>
+        </trans-unit>
+      </group>
+
+      <group d4:groupID="11906"  restype="x-4DK#">
+        <trans-unit >
+          <source>OCI_ATTR</source>
+          <target>OCI_ATTR</target>
+        </trans-unit>
+        <trans-unit d4:value="1">
+          <source>OCI_ATTR_FNCODE</source>
+          <target>OCI_ATTR_FNCODE</target>
+        </trans-unit>
+        <trans-unit d4:value="2">
+          <source>OCI_ATTR_OBJECT</source>
+          <target>OCI_ATTR_OBJECT</target>
+        </trans-unit>
+        <trans-unit d4:value="3">
+          <source>OCI_ATTR_NONBLOCKING_MODE</source>
+          <target>OCI_ATTR_NONBLOCKING_MODE</target>
+        </trans-unit>
+        <trans-unit d4:value="4">
+          <source>OCI_ATTR_SQLCODE</source>
+          <target>OCI_ATTR_SQLCODE</target>
+        </trans-unit>
+        <trans-unit d4:value="5">
+          <source>OCI_ATTR_ENV</source>
+          <target>OCI_ATTR_ENV</target>
+        </trans-unit>
+        <trans-unit d4:value="6">
+          <source>OCI_ATTR_SERVER</source>
+          <target>OCI_ATTR_SERVER</target>
+        </trans-unit>
+        <trans-unit d4:value="7">
+          <source>OCI_ATTR_SESSION</source>
+          <target>OCI_ATTR_SESSION</target>
+        </trans-unit>
+        <trans-unit d4:value="8">
+          <source>OCI_ATTR_TRANS</source>
+          <target>OCI_ATTR_TRANS</target>
+        </trans-unit>
+        <trans-unit d4:value="9">
+          <source>OCI_ATTR_ROW_COUNT</source>
+          <target>OCI_ATTR_ROW_COUNT</target>
+        </trans-unit>
+        <trans-unit d4:value="10">
+          <source>OCI_ATTR_SQLFNCODE</source>
+          <target>OCI_ATTR_SQLFNCODE</target>
+        </trans-unit>
+        <trans-unit d4:value="11">
+          <source>OCI_ATTR_PREFETCH_ROWS</source>
+          <target>OCI_ATTR_PREFETCH_ROWS</target>
+        </trans-unit>
+        <trans-unit d4:value="12">
+          <source>OCI_ATTR_NESTED_PREFETCH_ROWS</source>
+          <target>OCI_ATTR_NESTED_PREFETCH_ROWS</target>
+        </trans-unit>
+        <trans-unit d4:value="13">
+          <source>OCI_ATTR_PREFETCH_MEMORY</source>
+          <target>OCI_ATTR_PREFETCH_MEMORY</target>
+        </trans-unit>
+        <trans-unit d4:value="14">
+          <source>OCI_ATTR_NESTED_PREFETCH_MEMOR</source>
+          <target>OCI_ATTR_NESTED_PREFETCH_MEMOR</target>
+        </trans-unit>
+        <trans-unit d4:value="15">
+          <source>OCI_ATTR_CHAR_COUNT</source>
+          <target>OCI_ATTR_CHAR_COUNT</target>
+        </trans-unit>
+        <trans-unit d4:value="16">
+          <source>OCI_ATTR_PDSCL</source>
+          <target>OCI_ATTR_PDSCL</target>
+        </trans-unit>
+        <trans-unit d4:value="0">
+          <source>OCI_ATTR_FSPRECISION</source>
+          <target>OCI_ATTR_FSPRECISION</target>
+        </trans-unit>
+        <trans-unit d4:value="17">
+          <source>OCI_ATTR_PDPRC</source>
+          <target>OCI_ATTR_PDPRC</target>
+        </trans-unit>
+        <trans-unit d4:value="0">
+          <source>OCI_ATTR_LFPRECISION</source>
+          <target>OCI_ATTR_LFPRECISION</target>
+        </trans-unit>
+        <trans-unit d4:value="18">
+          <source>OCI_ATTR_PARAM_COUNT</source>
+          <target>OCI_ATTR_PARAM_COUNT</target>
+        </trans-unit>
+        <trans-unit d4:value="19">
+          <source>OCI_ATTR_ROWID</source>
+          <target>OCI_ATTR_ROWID</target>
+        </trans-unit>
+        <trans-unit d4:value="20">
+          <source>OCI_ATTR_CHARSET</source>
+          <target>OCI_ATTR_CHARSET</target>
+        </trans-unit>
+        <trans-unit d4:value="21">
+          <source>OCI_ATTR_NCHAR</source>
+          <target>OCI_ATTR_NCHAR</target>
+        </trans-unit>
+        <trans-unit d4:value="22">
+          <source>OCI_ATTR_USERNAME</source>
+          <target>OCI_ATTR_USERNAME</target>
+        </trans-unit>
+        <trans-unit d4:value="23">
+          <source>OCI_ATTR_PASSWORD</source>
+          <target>OCI_ATTR_PASSWORD</target>
+        </trans-unit>
+        <trans-unit d4:value="24">
+          <source>OCI_ATTR_STMT_TYPE</source>
+          <target>OCI_ATTR_STMT_TYPE</target>
+        </trans-unit>
+        <trans-unit d4:value="25">
+          <source>OCI_ATTR_INTERNAL_NAME</source>
+          <target>OCI_ATTR_INTERNAL_NAME</target>
+        </trans-unit>
+        <trans-unit d4:value="26">
+          <source>OCI_ATTR_EXTERNAL_NAME</source>
+          <target>OCI_ATTR_EXTERNAL_NAME</target>
+        </trans-unit>
+        <trans-unit d4:value="27">
+          <source>OCI_ATTR_XID</source>
+          <target>OCI_ATTR_XID</target>
+        </trans-unit>
+        <trans-unit d4:value="28">
+          <source>OCI_ATTR_TRANS_LOCK</source>
+          <target>OCI_ATTR_TRANS_LOCK</target>
+        </trans-unit>
+        <trans-unit d4:value="29">
+          <source>OCI_ATTR_TRANS_NAME</source>
+          <target>OCI_ATTR_TRANS_NAME</target>
+        </trans-unit>
+        <trans-unit d4:value="30">
+          <source>OCI_ATTR_HEAPALLOC</source>
+          <target>OCI_ATTR_HEAPALLOC</target>
+        </trans-unit>
+        <trans-unit d4:value="31">
+          <source>OCI_ATTR_CHARSET_ID</source>
+          <target>OCI_ATTR_CHARSET_ID</target>
+        </trans-unit>
+        <trans-unit d4:value="32">
+          <source>OCI_ATTR_CHARSET_FORM</source>
+          <target>OCI_ATTR_CHARSET_FORM</target>
+        </trans-unit>
+        <trans-unit d4:value="33">
+          <source>OCI_ATTR_MAXDATA_SIZE</source>
+          <target>OCI_ATTR_MAXDATA_SIZE</target>
+        </trans-unit>
+        <trans-unit d4:value="34">
+          <source>OCI_ATTR_CACHE_OPT_SIZE</source>
+          <target>OCI_ATTR_CACHE_OPT_SIZE</target>
+        </trans-unit>
+        <trans-unit d4:value="35">
+          <source>OCI_ATTR_CACHE_MAX_SIZE</source>
+          <target>OCI_ATTR_CACHE_MAX_SIZE</target>
+        </trans-unit>
+        <trans-unit d4:value="36">
+          <source>OCI_ATTR_PINOPTION</source>
+          <target>OCI_ATTR_PINOPTION</target>
+        </trans-unit>
+        <trans-unit d4:value="37">
+          <source>OCI_ATTR_ALLOC_DURATION</source>
+          <target>OCI_ATTR_ALLOC_DURATION</target>
+        </trans-unit>
+        <trans-unit d4:value="38">
+          <source>OCI_ATTR_PIN_DURATION</source>
+          <target>OCI_ATTR_PIN_DURATION</target>
+        </trans-unit>
+        <trans-unit d4:value="39">
+          <source>OCI_ATTR_FDO</source>
+          <target>OCI_ATTR_FDO</target>
+        </trans-unit>
+        <trans-unit d4:value="40">
+          <source>OCI_ATTR_POSTPROCESSING_CALLBA</source>
+          <target>OCI_ATTR_POSTPROCESSING_CALLBA</target>
+        </trans-unit>
+        <trans-unit d4:value="41">
+          <source>OCI_ATTR_POSTPROCESSING_CONTEX</source>
+          <target>OCI_ATTR_POSTPROCESSING_CONTEX</target>
+        </trans-unit>
+        <trans-unit d4:value="42">
+          <source>OCI_ATTR_ROWS_RETURNED</source>
+          <target>OCI_ATTR_ROWS_RETURNED</target>
+        </trans-unit>
+        <trans-unit d4:value="43">
+          <source>OCI_ATTR_FOCBK</source>
+          <target>OCI_ATTR_FOCBK</target>
+        </trans-unit>
+        <trans-unit d4:value="44">
+          <source>OCI_ATTR_IN_V8_MODE</source>
+          <target>OCI_ATTR_IN_V8_MODE</target>
+        </trans-unit>
+        <trans-unit d4:value="45">
+          <source>OCI_ATTR_LOBEMPTY</source>
+          <target>OCI_ATTR_LOBEMPTY</target>
+        </trans-unit>
+        <trans-unit d4:value="46">
+          <source>OCI_ATTR_SESSLANG</source>
+          <target>OCI_ATTR_SESSLANG</target>
+        </trans-unit>
+        <trans-unit d4:value="47">
+          <source>OCI_ATTR_VISIBILITY</source>
+          <target>OCI_ATTR_VISIBILITY</target>
+        </trans-unit>
+        <trans-unit d4:value="48">
+          <source>OCI_ATTR_RELATIVE_MSGID</source>
+          <target>OCI_ATTR_RELATIVE_MSGID</target>
+        </trans-unit>
+        <trans-unit d4:value="49">
+          <source>OCI_ATTR_SEQUENCE_DEVIATION</source>
+          <target>OCI_ATTR_SEQUENCE_DEVIATION</target>
+        </trans-unit>
+        <trans-unit d4:value="50">
+          <source>OCI_ATTR_CONSUMER_NAME</source>
+          <target>OCI_ATTR_CONSUMER_NAME</target>
+        </trans-unit>
+        <trans-unit d4:value="51">
+          <source>OCI_ATTR_DEQ_MODE</source>
+          <target>OCI_ATTR_DEQ_MODE</target>
+        </trans-unit>
+        <trans-unit d4:value="52">
+          <source>OCI_ATTR_NAVIGATION</source>
+          <target>OCI_ATTR_NAVIGATION</target>
+        </trans-unit>
+        <trans-unit d4:value="53">
+          <source>OCI_ATTR_WAIT</source>
+          <target>OCI_ATTR_WAIT</target>
+        </trans-unit>
+        <trans-unit d4:value="54">
+          <source>OCI_ATTR_DEQ_MSGID</source>
+          <target>OCI_ATTR_DEQ_MSGID</target>
+        </trans-unit>
+        <trans-unit d4:value="55">
+          <source>OCI_ATTR_PRIORITY</source>
+          <target>OCI_ATTR_PRIORITY</target>
+        </trans-unit>
+        <trans-unit d4:value="56">
+          <source>OCI_ATTR_DELAY</source>
+          <target>OCI_ATTR_DELAY</target>
+        </trans-unit>
+        <trans-unit d4:value="57">
+          <source>OCI_ATTR_EXPIRATION</source>
+          <target>OCI_ATTR_EXPIRATION</target>
+        </trans-unit>
+        <trans-unit d4:value="58">
+          <source>OCI_ATTR_CORRELATION</source>
+          <target>OCI_ATTR_CORRELATION</target>
+        </trans-unit>
+        <trans-unit d4:value="59">
+          <source>OCI_ATTR_ATTEMPTS</source>
+          <target>OCI_ATTR_ATTEMPTS</target>
+        </trans-unit>
+        <trans-unit d4:value="60">
+          <source>OCI_ATTR_RECIPIENT_LIST</source>
+          <target>OCI_ATTR_RECIPIENT_LIST</target>
+        </trans-unit>
+        <trans-unit d4:value="61">
+          <source>OCI_ATTR_EXCEPTION_QUEUE</source>
+          <target>OCI_ATTR_EXCEPTION_QUEUE</target>
+        </trans-unit>
+        <trans-unit d4:value="62">
+          <source>OCI_ATTR_ENQ_TIME</source>
+          <target>OCI_ATTR_ENQ_TIME</target>
+        </trans-unit>
+        <trans-unit d4:value="63">
+          <source>OCI_ATTR_MSG_STATE</source>
+          <target>OCI_ATTR_MSG_STATE</target>
+        </trans-unit>
+        <trans-unit d4:value="64">
+          <source>OCI_ATTR_AGENT_NAME</source>
+          <target>OCI_ATTR_AGENT_NAME</target>
+        </trans-unit>
+        <trans-unit d4:value="65">
+          <source>OCI_ATTR_AGENT_ADDRESS</source>
+          <target>OCI_ATTR_AGENT_ADDRESS</target>
+        </trans-unit>
+        <trans-unit d4:value="66">
+          <source>OCI_ATTR_AGENT_PROTOCOL</source>
+          <target>OCI_ATTR_AGENT_PROTOCOL</target>
+        </trans-unit>
+        <trans-unit d4:value="68">
+          <source>OCI_ATTR_SENDER_ID</source>
+          <target>OCI_ATTR_SENDER_ID</target>
+        </trans-unit>
+        <trans-unit d4:value="69">
+          <source>OCI_ATTR_ORIGINAL_MSGID</source>
+          <target>OCI_ATTR_ORIGINAL_MSGID</target>
+        </trans-unit>
+        <trans-unit d4:value="70">
+          <source>OCI_ATTR_QUEUE_NAME</source>
+          <target>OCI_ATTR_QUEUE_NAME</target>
+        </trans-unit>
+        <trans-unit d4:value="71">
+          <source>OCI_ATTR_NFY_MSGID</source>
+          <target>OCI_ATTR_NFY_MSGID</target>
+        </trans-unit>
+        <trans-unit d4:value="72">
+          <source>OCI_ATTR_MSG_PROP</source>
+          <target>OCI_ATTR_MSG_PROP</target>
+        </trans-unit>
+        <trans-unit d4:value="73">
+          <source>OCI_ATTR_NUM_DML_ERRORS</source>
+          <target>OCI_ATTR_NUM_DML_ERRORS</target>
+        </trans-unit>
+        <trans-unit d4:value="74">
+          <source>OCI_ATTR_DML_ROW_OFFSET</source>
+          <target>OCI_ATTR_DML_ROW_OFFSET</target>
+        </trans-unit>
+        <trans-unit d4:value="75">
+          <source>OCI_ATTR_DATEFORMAT</source>
+          <target>OCI_ATTR_DATEFORMAT</target>
+        </trans-unit>
+        <trans-unit d4:value="76">
+          <source>OCI_ATTR_BUF_ADDR</source>
+          <target>OCI_ATTR_BUF_ADDR</target>
+        </trans-unit>
+        <trans-unit d4:value="77">
+          <source>OCI_ATTR_BUF_SIZE</source>
+          <target>OCI_ATTR_BUF_SIZE</target>
+        </trans-unit>
+        <trans-unit d4:value="78">
+          <source>OCI_ATTR_DIRPATH_MODE</source>
+          <target>OCI_ATTR_DIRPATH_MODE</target>
+        </trans-unit>
+        <trans-unit d4:value="79">
+          <source>OCI_ATTR_DIRPATH_NOLOG</source>
+          <target>OCI_ATTR_DIRPATH_NOLOG</target>
+        </trans-unit>
+        <trans-unit d4:value="80">
+          <source>OCI_ATTR_DIRPATH_PARALLEL</source>
+          <target>OCI_ATTR_DIRPATH_PARALLEL</target>
+        </trans-unit>
+        <trans-unit d4:value="81">
+          <source>OCI_ATTR_NUM_ROWS</source>
+          <target>OCI_ATTR_NUM_ROWS</target>
+        </trans-unit>
+        <trans-unit d4:value="82">
+          <source>OCI_ATTR_COL_COUNT</source>
+          <target>OCI_ATTR_COL_COUNT</target>
+        </trans-unit>
+        <trans-unit d4:value="83">
+          <source>OCI_ATTR_STREAM_OFFSET</source>
+          <target>OCI_ATTR_STREAM_OFFSET</target>
+        </trans-unit>
+        <trans-unit d4:value="84">
+          <source>OCI_ATTR_SHARED_HEAPALLOC</source>
+          <target>OCI_ATTR_SHARED_HEAPALLOC</target>
+        </trans-unit>
+        <trans-unit d4:value="85">
+          <source>OCI_ATTR_SERVER_GROUP</source>
+          <target>OCI_ATTR_SERVER_GROUP</target>
+        </trans-unit>
+        <trans-unit d4:value="86">
+          <source>OCI_ATTR_MIGSESSION</source>
+          <target>OCI_ATTR_MIGSESSION</target>
+        </trans-unit>
+        <trans-unit d4:value="87">
+          <source>OCI_ATTR_NOCACHE</source>
+          <target>OCI_ATTR_NOCACHE</target>
+        </trans-unit>
+        <trans-unit d4:value="88">
+          <source>OCI_ATTR_MEMPOOL_SIZE</source>
+          <target>OCI_ATTR_MEMPOOL_SIZE</target>
+        </trans-unit>
+        <trans-unit d4:value="89">
+          <source>OCI_ATTR_MEMPOOL_INSTNAME</source>
+          <target>OCI_ATTR_MEMPOOL_INSTNAME</target>
+        </trans-unit>
+        <trans-unit d4:value="90">
+          <source>OCI_ATTR_MEMPOOL_APPNAME</source>
+          <target>OCI_ATTR_MEMPOOL_APPNAME</target>
+        </trans-unit>
+        <trans-unit d4:value="91">
+          <source>OCI_ATTR_MEMPOOL_HOMENAME</source>
+          <target>OCI_ATTR_MEMPOOL_HOMENAME</target>
+        </trans-unit>
+        <trans-unit d4:value="92">
+          <source>OCI_ATTR_MEMPOOL_MODEL</source>
+          <target>OCI_ATTR_MEMPOOL_MODEL</target>
+        </trans-unit>
+        <trans-unit d4:value="93">
+          <source>OCI_ATTR_MODES</source>
+          <target>OCI_ATTR_MODES</target>
+        </trans-unit>
+        <trans-unit d4:value="94">
+          <source>OCI_ATTR_SUBSCR_NAME</source>
+          <target>OCI_ATTR_SUBSCR_NAME</target>
+        </trans-unit>
+        <trans-unit d4:value="95">
+          <source>OCI_ATTR_SUBSCR_CALLBACK</source>
+          <target>OCI_ATTR_SUBSCR_CALLBACK</target>
+        </trans-unit>
+        <trans-unit d4:value="96">
+          <source>OCI_ATTR_SUBSCR_CTX</source>
+          <target>OCI_ATTR_SUBSCR_CTX</target>
+        </trans-unit>
+        <trans-unit d4:value="97">
+          <source>OCI_ATTR_SUBSCR_PAYLOAD</source>
+          <target>OCI_ATTR_SUBSCR_PAYLOAD</target>
+        </trans-unit>
+        <trans-unit d4:value="98">
+          <source>OCI_ATTR_SUBSCR_NAMESPACE</source>
+          <target>OCI_ATTR_SUBSCR_NAMESPACE</target>
+        </trans-unit>
+        <trans-unit d4:value="99">
+          <source>OCI_ATTR_PROXY_CREDENTIALS</source>
+          <target>OCI_ATTR_PROXY_CREDENTIALS</target>
+        </trans-unit>
+        <trans-unit d4:value="100">
+          <source>OCI_ATTR_INITIAL_CLIENT_ROLES</source>
+          <target>OCI_ATTR_INITIAL_CLIENT_ROLES</target>
+        </trans-unit>
+        <trans-unit d4:value="101">
+          <source>OCI_ATTR_UNK</source>
+          <target>OCI_ATTR_UNK</target>
+        </trans-unit>
+        <trans-unit d4:value="102">
+          <source>OCI_ATTR_NUM_COLS</source>
+          <target>OCI_ATTR_NUM_COLS</target>
+        </trans-unit>
+        <trans-unit d4:value="103">
+          <source>OCI_ATTR_LIST_COLUMNS</source>
+          <target>OCI_ATTR_LIST_COLUMNS</target>
+        </trans-unit>
+        <trans-unit d4:value="104">
+          <source>OCI_ATTR_RDBA</source>
+          <target>OCI_ATTR_RDBA</target>
+        </trans-unit>
+        <trans-unit d4:value="105">
+          <source>OCI_ATTR_CLUSTERED</source>
+          <target>OCI_ATTR_CLUSTERED</target>
+        </trans-unit>
+        <trans-unit d4:value="106">
+          <source>OCI_ATTR_PARTITIONED</source>
+          <target>OCI_ATTR_PARTITIONED</target>
+        </trans-unit>
+        <trans-unit d4:value="107">
+          <source>OCI_ATTR_INDEX_ONLY</source>
+          <target>OCI_ATTR_INDEX_ONLY</target>
+        </trans-unit>
+        <trans-unit d4:value="108">
+          <source>OCI_ATTR_LIST_ARGUMENTS</source>
+          <target>OCI_ATTR_LIST_ARGUMENTS</target>
+        </trans-unit>
+        <trans-unit d4:value="109">
+          <source>OCI_ATTR_LIST_SUBPROGRAMS</source>
+          <target>OCI_ATTR_LIST_SUBPROGRAMS</target>
+        </trans-unit>
+        <trans-unit d4:value="110">
+          <source>OCI_ATTR_REF_TDO</source>
+          <target>OCI_ATTR_REF_TDO</target>
+        </trans-unit>
+        <trans-unit d4:value="111">
+          <source>OCI_ATTR_LINK</source>
+          <target>OCI_ATTR_LINK</target>
+        </trans-unit>
+        <trans-unit d4:value="112">
+          <source>OCI_ATTR_MIN</source>
+          <target>OCI_ATTR_MIN</target>
+        </trans-unit>
+        <trans-unit d4:value="113">
+          <source>OCI_ATTR_MAX</source>
+          <target>OCI_ATTR_MAX</target>
+        </trans-unit>
+        <trans-unit d4:value="114">
+          <source>OCI_ATTR_INCR</source>
+          <target>OCI_ATTR_INCR</target>
+        </trans-unit>
+        <trans-unit d4:value="115">
+          <source>OCI_ATTR_CACHE</source>
+          <target>OCI_ATTR_CACHE</target>
+        </trans-unit>
+        <trans-unit d4:value="116">
+          <source>OCI_ATTR_ORDER</source>
+          <target>OCI_ATTR_ORDER</target>
+        </trans-unit>
+        <trans-unit d4:value="117">
+          <source>OCI_ATTR_HW_MARK</source>
+          <target>OCI_ATTR_HW_MARK</target>
+        </trans-unit>
+        <trans-unit d4:value="118">
+          <source>OCI_ATTR_TYPE_SCHEMA</source>
+          <target>OCI_ATTR_TYPE_SCHEMA</target>
+        </trans-unit>
+        <trans-unit d4:value="119">
+          <source>OCI_ATTR_TIMESTAMP</source>
+          <target>OCI_ATTR_TIMESTAMP</target>
+        </trans-unit>
+        <trans-unit d4:value="120">
+          <source>OCI_ATTR_NUM_ATTRS</source>
+          <target>OCI_ATTR_NUM_ATTRS</target>
+        </trans-unit>
+        <trans-unit d4:value="121">
+          <source>OCI_ATTR_NUM_PARAMS</source>
+          <target>OCI_ATTR_NUM_PARAMS</target>
+        </trans-unit>
+        <trans-unit d4:value="122">
+          <source>OCI_ATTR_OBJID</source>
+          <target>OCI_ATTR_OBJID</target>
+        </trans-unit>
+        <trans-unit d4:value="123">
+          <source>OCI_ATTR_PTYPE</source>
+          <target>OCI_ATTR_PTYPE</target>
+        </trans-unit>
+        <trans-unit d4:value="124">
+          <source>OCI_ATTR_PARAM</source>
+          <target>OCI_ATTR_PARAM</target>
+        </trans-unit>
+        <trans-unit d4:value="125">
+          <source>OCI_ATTR_OVERLOAD_ID</source>
+          <target>OCI_ATTR_OVERLOAD_ID</target>
+        </trans-unit>
+        <trans-unit d4:value="126">
+          <source>OCI_ATTR_TABLESPACE</source>
+          <target>OCI_ATTR_TABLESPACE</target>
+        </trans-unit>
+        <trans-unit d4:value="127">
+          <source>OCI_ATTR_TDO</source>
+          <target>OCI_ATTR_TDO</target>
+        </trans-unit>
+        <trans-unit d4:value="128">
+          <source>OCI_ATTR_LTYPE</source>
+          <target>OCI_ATTR_LTYPE</target>
+        </trans-unit>
+        <trans-unit d4:value="129">
+          <source>OCI_ATTR_PARSE_ERROR_OFFSET</source>
+          <target>OCI_ATTR_PARSE_ERROR_OFFSET</target>
+        </trans-unit>
+        <trans-unit d4:value="130">
+          <source>OCI_ATTR_IS_TEMPORARY</source>
+          <target>OCI_ATTR_IS_TEMPORARY</target>
+        </trans-unit>
+        <trans-unit d4:value="131">
+          <source>OCI_ATTR_IS_TYPED</source>
+          <target>OCI_ATTR_IS_TYPED</target>
+        </trans-unit>
+        <trans-unit d4:value="132">
+          <source>OCI_ATTR_DURATION</source>
+          <target>OCI_ATTR_DURATION</target>
+        </trans-unit>
+        <trans-unit d4:value="133">
+          <source>OCI_ATTR_IS_INVOKER_RIGHTS</source>
+          <target>OCI_ATTR_IS_INVOKER_RIGHTS</target>
+        </trans-unit>
+        <trans-unit d4:value="134">
+          <source>OCI_ATTR_OBJ_NAME</source>
+          <target>OCI_ATTR_OBJ_NAME</target>
+        </trans-unit>
+        <trans-unit d4:value="135">
+          <source>OCI_ATTR_OBJ_SCHEMA</source>
+          <target>OCI_ATTR_OBJ_SCHEMA</target>
+        </trans-unit>
+        <trans-unit d4:value="136">
+          <source>OCI_ATTR_OBJ_ID</source>
+          <target>OCI_ATTR_OBJ_ID</target>
+        </trans-unit>
+        <trans-unit d4:value="137">
+          <source>OCI_ATTR_DIRPATH_SORTED_INDEX</source>
+          <target>OCI_ATTR_DIRPATH_SORTED_INDEX</target>
+        </trans-unit>
+        <trans-unit d4:value="138">
+          <source>OCI_ATTR_DIRPATH_INDEX_MAINT_M</source>
+          <target>OCI_ATTR_DIRPATH_INDEX_MAINT_M</target>
+        </trans-unit>
+        <trans-unit d4:value="139">
+          <source>OCI_ATTR_DIRPATH_FILE</source>
+          <target>OCI_ATTR_DIRPATH_FILE</target>
+        </trans-unit>
+        <trans-unit d4:value="140">
+          <source>OCI_ATTR_DIRPATH_STORAGE_INITI</source>
+          <target>OCI_ATTR_DIRPATH_STORAGE_INITI</target>
+        </trans-unit>
+        <trans-unit d4:value="141">
+          <source>OCI_ATTR_DIRPATH_STORAGE_NEXT</source>
+          <target>OCI_ATTR_DIRPATH_STORAGE_NEXT</target>
+        </trans-unit>
+        <trans-unit d4:value="142">
+          <source>OCI_ATTR_TRANS_TIMEOUT</source>
+          <target>OCI_ATTR_TRANS_TIMEOUT</target>
+        </trans-unit>
+        <trans-unit d4:value="143">
+          <source>OCI_ATTR_SERVER_STATUS</source>
+          <target>OCI_ATTR_SERVER_STATUS</target>
+        </trans-unit>
+        <trans-unit d4:value="144">
+          <source>OCI_ATTR_STATEMENT</source>
+          <target>OCI_ATTR_STATEMENT</target>
+        </trans-unit>
+        <trans-unit d4:value="1">
+          <source>OCI_ATTR_DATA_SIZE</source>
+          <target>OCI_ATTR_DATA_SIZE</target>
+        </trans-unit>
+        <trans-unit d4:value="2">
+          <source>OCI_ATTR_DATA_TYPE</source>
+          <target>OCI_ATTR_DATA_TYPE</target>
+        </trans-unit>
+        <trans-unit d4:value="3">
+          <source>OCI_ATTR_DISP_SIZE</source>
+          <target>OCI_ATTR_DISP_SIZE</target>
+        </trans-unit>
+        <trans-unit d4:value="4">
+          <source>OCI_ATTR_NAME</source>
+          <target>OCI_ATTR_NAME</target>
+        </trans-unit>
+        <trans-unit d4:value="5">
+          <source>OCI_ATTR_PRECISION</source>
+          <target>OCI_ATTR_PRECISION</target>
+        </trans-unit>
+        <trans-unit d4:value="6">
+          <source>OCI_ATTR_SCALE</source>
+          <target>OCI_ATTR_SCALE</target>
+        </trans-unit>
+        <trans-unit d4:value="7">
+          <source>OCI_ATTR_IS_NULL</source>
+          <target>OCI_ATTR_IS_NULL</target>
+        </trans-unit>
+        <trans-unit d4:value="8">
+          <source>OCI_ATTR_TYPE_NAME</source>
+          <target>OCI_ATTR_TYPE_NAME</target>
+        </trans-unit>
+        <trans-unit d4:value="9">
+          <source>OCI_ATTR_SCHEMA_NAME</source>
+          <target>OCI_ATTR_SCHEMA_NAME</target>
+        </trans-unit>
+        <trans-unit d4:value="10">
+          <source>OCI_ATTR_SUB_NAME</source>
+          <target>OCI_ATTR_SUB_NAME</target>
+        </trans-unit>
+        <trans-unit d4:value="11">
+          <source>OCI_ATTR_POSITION</source>
+          <target>OCI_ATTR_POSITION</target>
+        </trans-unit>
+        <trans-unit d4:value="50">
+          <source>OCI_ATTR_COMPOBJCOMP_TYP</source>
+          <target>OCI_ATTR_COMPOBJCOMP_TYP</target>
+        </trans-unit>
+        <trans-unit d4:value="51">
+          <source>OCI_ATTR_COMPOBJCOMP_TYP_LEVEL</source>
+          <target>OCI_ATTR_COMPOBJCOMP_TYP_LEVEL</target>
+        </trans-unit>
+        <trans-unit d4:value="52">
+          <source>OCI_ATTR_COMPOBJ_LEVEL</source>
+          <target>OCI_ATTR_COMPOBJ_LEVEL</target>
+        </trans-unit>
+        <trans-unit d4:value="53">
+          <source>OCI_ATTR_COMPOBJ_COLL_OUTOFLIN</source>
+          <target>OCI_ATTR_COMPOBJ_COLL_OUTOFLIN</target>
+        </trans-unit>
+        <trans-unit d4:value="100">
+          <source>OCI_ATTR_DISP_NAME</source>
+          <target>OCI_ATTR_DISP_NAME</target>
+        </trans-unit>
+        <trans-unit d4:value="210">
+          <source>OCI_ATTR_OVERLOAD</source>
+          <target>OCI_ATTR_OVERLOAD</target>
+        </trans-unit>
+        <trans-unit d4:value="211">
+          <source>OCI_ATTR_LEVEL</source>
+          <target>OCI_ATTR_LEVEL</target>
+        </trans-unit>
+        <trans-unit d4:value="212">
+          <source>OCI_ATTR_HAS_DEFAULT</source>
+          <target>OCI_ATTR_HAS_DEFAULT</target>
+        </trans-unit>
+        <trans-unit d4:value="213">
+          <source>OCI_ATTR_IOMODE</source>
+          <target>OCI_ATTR_IOMODE</target>
+        </trans-unit>
+        <trans-unit d4:value="214">
+          <source>OCI_ATTR_RADIX</source>
+          <target>OCI_ATTR_RADIX</target>
+        </trans-unit>
+        <trans-unit d4:value="215">
+          <source>OCI_ATTR_NUM_ARGS</source>
+          <target>OCI_ATTR_NUM_ARGS</target>
+        </trans-unit>
+        <trans-unit d4:value="216">
+          <source>OCI_ATTR_TYPECODE</source>
+          <target>OCI_ATTR_TYPECODE</target>
+        </trans-unit>
+        <trans-unit d4:value="217">
+          <source>OCI_ATTR_COLLECTION_TYPECODE</source>
+          <target>OCI_ATTR_COLLECTION_TYPECODE</target>
+        </trans-unit>
+        <trans-unit d4:value="218">
+          <source>OCI_ATTR_VERSION</source>
+          <target>OCI_ATTR_VERSION</target>
+        </trans-unit>
+        <trans-unit d4:value="219">
+          <source>OCI_ATTR_IS_INCOMPLETE_TYPE</source>
+          <target>OCI_ATTR_IS_INCOMPLETE_TYPE</target>
+        </trans-unit>
+        <trans-unit d4:value="220">
+          <source>OCI_ATTR_IS_SYSTEM_TYPE</source>
+          <target>OCI_ATTR_IS_SYSTEM_TYPE</target>
+        </trans-unit>
+        <trans-unit d4:value="221">
+          <source>OCI_ATTR_IS_PREDEFINED_TYPE</source>
+          <target>OCI_ATTR_IS_PREDEFINED_TYPE</target>
+        </trans-unit>
+        <trans-unit d4:value="222">
+          <source>OCI_ATTR_IS_TRANSIENT_TYPE</source>
+          <target>OCI_ATTR_IS_TRANSIENT_TYPE</target>
+        </trans-unit>
+        <trans-unit d4:value="223">
+          <source>OCI_ATTR_IS_SYSTEM_GENERATED_T</source>
+          <target>OCI_ATTR_IS_SYSTEM_GENERATED_T</target>
+        </trans-unit>
+        <trans-unit d4:value="224">
+          <source>OCI_ATTR_HAS_NESTED_TABLE</source>
+          <target>OCI_ATTR_HAS_NESTED_TABLE</target>
+        </trans-unit>
+        <trans-unit d4:value="225">
+          <source>OCI_ATTR_HAS_LOB</source>
+          <target>OCI_ATTR_HAS_LOB</target>
+        </trans-unit>
+        <trans-unit d4:value="226">
+          <source>OCI_ATTR_HAS_FILE</source>
+          <target>OCI_ATTR_HAS_FILE</target>
+        </trans-unit>
+        <trans-unit d4:value="227">
+          <source>OCI_ATTR_COLLECTION_ELEMENT</source>
+          <target>OCI_ATTR_COLLECTION_ELEMENT</target>
+        </trans-unit>
+        <trans-unit d4:value="228">
+          <source>OCI_ATTR_NUM_TYPE_ATTRS</source>
+          <target>OCI_ATTR_NUM_TYPE_ATTRS</target>
+        </trans-unit>
+        <trans-unit d4:value="229">
+          <source>OCI_ATTR_LIST_TYPE_ATTRS</source>
+          <target>OCI_ATTR_LIST_TYPE_ATTRS</target>
+        </trans-unit>
+        <trans-unit d4:value="230">
+          <source>OCI_ATTR_NUM_TYPE_METHODS</source>
+          <target>OCI_ATTR_NUM_TYPE_METHODS</target>
+        </trans-unit>
+        <trans-unit d4:value="231">
+          <source>OCI_ATTR_LIST_TYPE_METHODS</source>
+          <target>OCI_ATTR_LIST_TYPE_METHODS</target>
+        </trans-unit>
+        <trans-unit d4:value="232">
+          <source>OCI_ATTR_MAP_METHOD</source>
+          <target>OCI_ATTR_MAP_METHOD</target>
+        </trans-unit>
+        <trans-unit d4:value="233">
+          <source>OCI_ATTR_ORDER_METHOD</source>
+          <target>OCI_ATTR_ORDER_METHOD</target>
+        </trans-unit>
+        <trans-unit d4:value="234">
+          <source>OCI_ATTR_NUM_ELEMS</source>
+          <target>OCI_ATTR_NUM_ELEMS</target>
+        </trans-unit>
+        <trans-unit d4:value="235">
+          <source>OCI_ATTR_ENCAPSULATION</source>
+          <target>OCI_ATTR_ENCAPSULATION</target>
+        </trans-unit>
+        <trans-unit d4:value="236">
+          <source>OCI_ATTR_IS_SELFISH</source>
+          <target>OCI_ATTR_IS_SELFISH</target>
+        </trans-unit>
+        <trans-unit d4:value="237">
+          <source>OCI_ATTR_IS_VIRTUAL</source>
+          <target>OCI_ATTR_IS_VIRTUAL</target>
+        </trans-unit>
+        <trans-unit d4:value="238">
+          <source>OCI_ATTR_IS_INLINE</source>
+          <target>OCI_ATTR_IS_INLINE</target>
+        </trans-unit>
+        <trans-unit d4:value="239">
+          <source>OCI_ATTR_IS_CONSTANT</source>
+          <target>OCI_ATTR_IS_CONSTANT</target>
+        </trans-unit>
+        <trans-unit d4:value="240">
+          <source>OCI_ATTR_HAS_RESULT</source>
+          <target>OCI_ATTR_HAS_RESULT</target>
+        </trans-unit>
+        <trans-unit d4:value="241">
+          <source>OCI_ATTR_IS_CONSTRUCTOR</source>
+          <target>OCI_ATTR_IS_CONSTRUCTOR</target>
+        </trans-unit>
+        <trans-unit d4:value="242">
+          <source>OCI_ATTR_IS_DESTRUCTOR</source>
+          <target>OCI_ATTR_IS_DESTRUCTOR</target>
+        </trans-unit>
+        <trans-unit d4:value="243">
+          <source>OCI_ATTR_IS_OPERATOR</source>
+          <target>OCI_ATTR_IS_OPERATOR</target>
+        </trans-unit>
+        <trans-unit d4:value="244">
+          <source>OCI_ATTR_IS_MAP</source>
+          <target>OCI_ATTR_IS_MAP</target>
+        </trans-unit>
+        <trans-unit d4:value="245">
+          <source>OCI_ATTR_IS_ORDER</source>
+          <target>OCI_ATTR_IS_ORDER</target>
+        </trans-unit>
+        <trans-unit d4:value="246">
+          <source>OCI_ATTR_IS_RNDS</source>
+          <target>OCI_ATTR_IS_RNDS</target>
+        </trans-unit>
+        <trans-unit d4:value="247">
+          <source>OCI_ATTR_IS_RNPS</source>
+          <target>OCI_ATTR_IS_RNPS</target>
+        </trans-unit>
+        <trans-unit d4:value="248">
+          <source>OCI_ATTR_IS_WNDS</source>
+          <target>OCI_ATTR_IS_WNDS</target>
+        </trans-unit>
+        <trans-unit d4:value="249">
+          <source>OCI_ATTR_IS_WNPS</source>
+          <target>OCI_ATTR_IS_WNPS</target>
+        </trans-unit>
+        <trans-unit d4:value="250">
+          <source>OCI_ATTR_DESC_PUBLIC</source>
+          <target>OCI_ATTR_DESC_PUBLIC</target>
+        </trans-unit>
+        <trans-unit d4:value="251">
+          <source>OCI_ATTR_CACHE_CLIENT_CONTEXT</source>
+          <target>OCI_ATTR_CACHE_CLIENT_CONTEXT</target>
+        </trans-unit>
+        <trans-unit d4:value="252">
+          <source>OCI_ATTR_UCI_CONSTRUCT</source>
+          <target>OCI_ATTR_UCI_CONSTRUCT</target>
+        </trans-unit>
+        <trans-unit d4:value="253">
+          <source>OCI_ATTR_UCI_DESTRUCT</source>
+          <target>OCI_ATTR_UCI_DESTRUCT</target>
+        </trans-unit>
+        <trans-unit d4:value="254">
+          <source>OCI_ATTR_UCI_COPY</source>
+          <target>OCI_ATTR_UCI_COPY</target>
+        </trans-unit>
+        <trans-unit d4:value="255">
+          <source>OCI_ATTR_UCI_PICKLE</source>
+          <target>OCI_ATTR_UCI_PICKLE</target>
+        </trans-unit>
+        <trans-unit d4:value="256">
+          <source>OCI_ATTR_UCI_UNPICKLE</source>
+          <target>OCI_ATTR_UCI_UNPICKLE</target>
+        </trans-unit>
+        <trans-unit d4:value="257">
+          <source>OCI_ATTR_UCI_REFRESH</source>
+          <target>OCI_ATTR_UCI_REFRESH</target>
+        </trans-unit>
+        <trans-unit d4:value="258">
+          <source>OCI_ATTR_IS_SUBTYPE</source>
+          <target>OCI_ATTR_IS_SUBTYPE</target>
+        </trans-unit>
+        <trans-unit d4:value="259">
+          <source>OCI_ATTR_SUPERTYPE_SCHEMA_NAME</source>
+          <target>OCI_ATTR_SUPERTYPE_SCHEMA_NAME</target>
+        </trans-unit>
+        <trans-unit d4:value="260">
+          <source>OCI_ATTR_SUPERTYPE_NAME</source>
+          <target>OCI_ATTR_SUPERTYPE_NAME</target>
+        </trans-unit>
+        <trans-unit d4:value="261">
+          <source>OCI_ATTR_LIST_OBJECTS</source>
+          <target>OCI_ATTR_LIST_OBJECTS</target>
+        </trans-unit>
+        <trans-unit d4:value="262">
+          <source>OCI_ATTR_NCHARSET_ID</source>
+          <target>OCI_ATTR_NCHARSET_ID</target>
+        </trans-unit>
+        <trans-unit d4:value="263">
+          <source>OCI_ATTR_LIST_SCHEMAS</source>
+          <target>OCI_ATTR_LIST_SCHEMAS</target>
+        </trans-unit>
+        <trans-unit d4:value="264">
+          <source>OCI_ATTR_MAX_PROC_LEN</source>
+          <target>OCI_ATTR_MAX_PROC_LEN</target>
+        </trans-unit>
+        <trans-unit d4:value="265">
+          <source>OCI_ATTR_MAX_COLUMN_LEN</source>
+          <target>OCI_ATTR_MAX_COLUMN_LEN</target>
+        </trans-unit>
+        <trans-unit d4:value="266">
+          <source>OCI_ATTR_CURSOR_COMMIT_BEHAVIO</source>
+          <target>OCI_ATTR_CURSOR_COMMIT_BEHAVIO</target>
+        </trans-unit>
+        <trans-unit d4:value="267">
+          <source>OCI_ATTR_MAX_CATALOG_NAMELEN</source>
+          <target>OCI_ATTR_MAX_CATALOG_NAMELEN</target>
+        </trans-unit>
+        <trans-unit d4:value="268">
+          <source>OCI_ATTR_CATALOG_LOCATION</source>
+          <target>OCI_ATTR_CATALOG_LOCATION</target>
+        </trans-unit>
+        <trans-unit d4:value="269">
+          <source>OCI_ATTR_SAVEPOINT_SUPPORT</source>
+          <target>OCI_ATTR_SAVEPOINT_SUPPORT</target>
+        </trans-unit>
+        <trans-unit d4:value="270">
+          <source>OCI_ATTR_NOWAIT_SUPPORT</source>
+          <target>OCI_ATTR_NOWAIT_SUPPORT</target>
+        </trans-unit>
+        <trans-unit d4:value="271">
+          <source>OCI_ATTR_AUTOCOMMIT_DDL</source>
+          <target>OCI_ATTR_AUTOCOMMIT_DDL</target>
+        </trans-unit>
+        <trans-unit d4:value="272">
+          <source>OCI_ATTR_LOCKING_MODE</source>
+          <target>OCI_ATTR_LOCKING_MODE</target>
+        </trans-unit>
+        <trans-unit d4:value="273">
+          <source>OCI_ATTR_APPCTX_SIZE</source>
+          <target>OCI_ATTR_APPCTX_SIZE</target>
+        </trans-unit>
+        <trans-unit d4:value="274">
+          <source>OCI_ATTR_APPCTX_LIST</source>
+          <target>OCI_ATTR_APPCTX_LIST</target>
+        </trans-unit>
+        <trans-unit d4:value="275">
+          <source>OCI_ATTR_APPCTX_NAME</source>
+          <target>OCI_ATTR_APPCTX_NAME</target>
+        </trans-unit>
+        <trans-unit d4:value="276">
+          <source>OCI_ATTR_APPCTX_ATTR</source>
+          <target>OCI_ATTR_APPCTX_ATTR</target>
+        </trans-unit>
+        <trans-unit d4:value="277">
+          <source>OCI_ATTR_APPCTX_VALUE</source>
+          <target>OCI_ATTR_APPCTX_VALUE</target>
+        </trans-unit>
+      </group>
+
+      <group d4:groupID="11904"  restype="x-4DK#">
+        <trans-unit >
+          <source>OCI_EXEC_MODE</source>
+          <target>OCI_EXEC_MODE</target>
+        </trans-unit>
+        <trans-unit d4:value="1">
+          <source>OCI_BATCH_MODE</source>
+          <target>OCI_BATCH_MODE</target>
+        </trans-unit>
+        <trans-unit d4:value="2">
+          <source>OCI_EXACT_FETCH</source>
+          <target>OCI_EXACT_FETCH</target>
+        </trans-unit>
+        <trans-unit d4:value="4">
+          <source>OCI_KEEP_FETCH_STATE</source>
+          <target>OCI_KEEP_FETCH_STATE</target>
+        </trans-unit>
+        <trans-unit d4:value="8">
+          <source>OCI_SCROLLABLE_CURSOR</source>
+          <target>OCI_SCROLLABLE_CURSOR</target>
+        </trans-unit>
+        <trans-unit d4:value="16">
+          <source>OCI_DESCRIBE_ONLY</source>
+          <target>OCI_DESCRIBE_ONLY</target>
+        </trans-unit>
+        <trans-unit d4:value="32">
+          <source>OCI_COMMIT_ON_SUCCESS</source>
+          <target>OCI_COMMIT_ON_SUCCESS</target>
+        </trans-unit>
+        <trans-unit d4:value="64">
+          <source>OCI_NON_BLOCKING</source>
+          <target>OCI_NON_BLOCKING</target>
+        </trans-unit>
+        <trans-unit d4:value="128">
+          <source>OCI_BATCH_ERRORS</source>
+          <target>OCI_BATCH_ERRORS</target>
+        </trans-unit>
+        <trans-unit d4:value="256">
+          <source>OCI_PARSE_ONLY</source>
+          <target>OCI_PARSE_ONLY</target>
+        </trans-unit>
+        <trans-unit d4:value="1024">
+          <source>OCI_SHOW_DML_WARNINGS</source>
+          <target>OCI_SHOW_DML_WARNINGS</target>
+        </trans-unit>
+      </group>
+
+      <group d4:groupID="11903"  restype="x-4DK#">
+        <trans-unit >
+          <source>OCI_RETURN_VALUE</source>
+          <target>OCI_RETURN_VALUE</target>
+        </trans-unit>
+        <trans-unit d4:value="0">
+          <source>OCI_SUCCESS</source>
+          <target>OCI_SUCCESS</target>
+        </trans-unit>
+        <trans-unit d4:value="1">
+          <source>OCI_SUCCESS_WITH_INFO</source>
+          <target>OCI_SUCCESS_WITH_INFO</target>
+        </trans-unit>
+        <trans-unit d4:value="100">
+          <source>OCI_NO_DATA</source>
+          <target>OCI_NO_DATA</target>
+        </trans-unit>
+        <trans-unit d4:value="-1">
+          <source>OCI_ERROR</source>
+          <target>OCI_ERROR</target>
+        </trans-unit>
+        <trans-unit d4:value="-2">
+          <source>OCI_INVALID_HANDLE</source>
+          <target>OCI_INVALID_HANDLE</target>
+        </trans-unit>
+        <trans-unit d4:value="99">
+          <source>OCI_NEED_DATA</source>
+          <target>OCI_NEED_DATA</target>
+        </trans-unit>
+        <trans-unit d4:value="-3123">
+          <source>OCI_STILL_EXECUTING</source>
+          <target>OCI_STILL_EXECUTING</target>
+        </trans-unit>
+        <trans-unit d4:value="-24200">
+          <source>OCI_CONTINUE</source>
+          <target>OCI_CONTINUE</target>
+        </trans-unit>
+      </group>
+
+      <group d4:groupID="11902"  restype="x-4DK#">
+        <trans-unit >
+          <source>OCI_DTYPE</source>
+          <target>OCI_DTYPE</target>
+        </trans-unit>
+        <trans-unit d4:value="50">
+          <source>OCI_DTYPE_FIRST</source>
+          <target>OCI_DTYPE_FIRST</target>
+        </trans-unit>
+        <trans-unit d4:value="50">
+          <source>OCI_DTYPE_LOB</source>
+          <target>OCI_DTYPE_LOB</target>
+        </trans-unit>
+        <trans-unit d4:value="51">
+          <source>OCI_DTYPE_SNAP</source>
+          <target>OCI_DTYPE_SNAP</target>
+        </trans-unit>
+        <trans-unit d4:value="52">
+          <source>OCI_DTYPE_RSET</source>
+          <target>OCI_DTYPE_RSET</target>
+        </trans-unit>
+        <trans-unit d4:value="53">
+          <source>OCI_DTYPE_PARAM</source>
+          <target>OCI_DTYPE_PARAM</target>
+        </trans-unit>
+        <trans-unit d4:value="54">
+          <source>OCI_DTYPE_ROWID</source>
+          <target>OCI_DTYPE_ROWID</target>
+        </trans-unit>
+        <trans-unit d4:value="55">
+          <source>OCI_DTYPE_COMPLEXOBJECTCOMP</source>
+          <target>OCI_DTYPE_COMPLEXOBJECTCOMP</target>
+        </trans-unit>
+        <trans-unit d4:value="56">
+          <source>OCI_DTYPE_FILE</source>
+          <target>OCI_DTYPE_FILE</target>
+        </trans-unit>
+        <trans-unit d4:value="57">
+          <source>OCI_DTYPE_AQENQ_OPTIONS</source>
+          <target>OCI_DTYPE_AQENQ_OPTIONS</target>
+        </trans-unit>
+        <trans-unit d4:value="58">
+          <source>OCI_DTYPE_AQDEQ_OPTIONS</source>
+          <target>OCI_DTYPE_AQDEQ_OPTIONS</target>
+        </trans-unit>
+        <trans-unit d4:value="59">
+          <source>OCI_DTYPE_AQMSG_PROPERTIES</source>
+          <target>OCI_DTYPE_AQMSG_PROPERTIES</target>
+        </trans-unit>
+        <trans-unit d4:value="60">
+          <source>OCI_DTYPE_AQAGENT</source>
+          <target>OCI_DTYPE_AQAGENT</target>
+        </trans-unit>
+        <trans-unit d4:value="61">
+          <source>OCI_DTYPE_LOCATOR</source>
+          <target>OCI_DTYPE_LOCATOR</target>
+        </trans-unit>
+        <trans-unit d4:value="62">
+          <source>OCI_DTYPE_INTERVAL_YM</source>
+          <target>OCI_DTYPE_INTERVAL_YM</target>
+        </trans-unit>
+        <trans-unit d4:value="63">
+          <source>OCI_DTYPE_INTERVAL_DS</source>
+          <target>OCI_DTYPE_INTERVAL_DS</target>
+        </trans-unit>
+        <trans-unit d4:value="64">
+          <source>OCI_DTYPE_AQNFY_DESCRIPTOR</source>
+          <target>OCI_DTYPE_AQNFY_DESCRIPTOR</target>
+        </trans-unit>
+        <trans-unit d4:value="65">
+          <source>OCI_DTYPE_DATE</source>
+          <target>OCI_DTYPE_DATE</target>
+        </trans-unit>
+        <trans-unit d4:value="66">
+          <source>OCI_DTYPE_TIME</source>
+          <target>OCI_DTYPE_TIME</target>
+        </trans-unit>
+        <trans-unit d4:value="67">
+          <source>OCI_DTYPE_TIME_TZ</source>
+          <target>OCI_DTYPE_TIME_TZ</target>
+        </trans-unit>
+        <trans-unit d4:value="68">
+          <source>OCI_DTYPE_TIMESTAMP</source>
+          <target>OCI_DTYPE_TIMESTAMP</target>
+        </trans-unit>
+        <trans-unit d4:value="69">
+          <source>OCI_DTYPE_TIMESTAMP_TZ</source>
+          <target>OCI_DTYPE_TIMESTAMP_TZ</target>
+        </trans-unit>
+        <trans-unit d4:value="70">
+          <source>OCI_DTYPE_TIMESTAMP_LTZ</source>
+          <target>OCI_DTYPE_TIMESTAMP_LTZ</target>
+        </trans-unit>
+        <trans-unit d4:value="71">
+          <source>OCI_DTYPE_UCB</source>
+          <target>OCI_DTYPE_UCB</target>
+        </trans-unit>
+        <trans-unit d4:value="71">
+          <source>OCI_DTYPE_LAST</source>
+          <target>OCI_DTYPE_LAST</target>
+        </trans-unit>
+      </group>
+
+      <group d4:groupID="11901"  restype="x-4DK#">
+        <trans-unit >
+          <source>OCI_MODE</source>
+          <target>OCI_MODE</target>
+        </trans-unit>
+        <trans-unit d4:value="0">
+          <source>OCI_DEFAULT</source>
+          <target>OCI_DEFAULT</target>
+        </trans-unit>
+        <trans-unit d4:value="1">
+          <source>OCI_THREADED</source>
+          <target>OCI_THREADED</target>
+        </trans-unit>
+        <trans-unit d4:value="2">
+          <source>OCI_OBJECT</source>
+          <target>OCI_OBJECT</target>
+        </trans-unit>
+        <trans-unit d4:value="4">
+          <source>OCI_EVENTS</source>
+          <target>OCI_EVENTS</target>
+        </trans-unit>
+        <trans-unit d4:value="16">
+          <source>OCI_SHARED</source>
+          <target>OCI_SHARED</target>
+        </trans-unit>
+        <trans-unit d4:value="64">
+          <source>OCI_NO_UCB</source>
+          <target>OCI_NO_UCB</target>
+        </trans-unit>
+        <trans-unit d4:value="128">
+          <source>OCI_NO_MUTEX</source>
+          <target>OCI_NO_MUTEX</target>
+        </trans-unit>
+        <trans-unit d4:value="256">
+          <source>OCI_SHARED_EXT</source>
+          <target>OCI_SHARED_EXT</target>
+        </trans-unit>
+        <trans-unit d4:value="512">
+          <source>OCI_CACHE</source>
+          <target>OCI_CACHE</target>
+        </trans-unit>
+        <trans-unit d4:value="1">
+          <source>OCI_NO_SHARING</source>
+          <target>OCI_NO_SHARING</target>
+        </trans-unit>
+        <trans-unit d4:value="2">
+          <source>OCI_DATA_AT_EXEC</source>
+          <target>OCI_DATA_AT_EXEC</target>
+        </trans-unit>
+        <trans-unit d4:value="2">
+          <source>OCI_DYNAMIC_FETCH</source>
+          <target>OCI_DYNAMIC_FETCH</target>
+        </trans-unit>
+        <trans-unit d4:value="4">
+          <source>OCI_PIECEWISE</source>
+          <target>OCI_PIECEWISE</target>
+        </trans-unit>
+      </group>
+
+      <group d4:groupID="11900"  restype="x-4DK#">
+        <trans-unit >
+          <source>OCI_HTYPE</source>
+          <target>OCI_HTYPE</target>
+        </trans-unit>
+        <trans-unit d4:value="1">
+          <source>OCI_HTYPE_FIRST</source>
+          <target>OCI_HTYPE_FIRST</target>
+        </trans-unit>
+        <trans-unit d4:value="1">
+          <source>OCI_HTYPE_ENV</source>
+          <target>OCI_HTYPE_ENV</target>
+        </trans-unit>
+        <trans-unit d4:value="2">
+          <source>OCI_HTYPE_ERROR</source>
+          <target>OCI_HTYPE_ERROR</target>
+        </trans-unit>
+        <trans-unit d4:value="3">
+          <source>OCI_HTYPE_SVCCTX</source>
+          <target>OCI_HTYPE_SVCCTX</target>
+        </trans-unit>
+        <trans-unit d4:value="4">
+          <source>OCI_HTYPE_STMT</source>
+          <target>OCI_HTYPE_STMT</target>
+        </trans-unit>
+        <trans-unit d4:value="5">
+          <source>OCI_HTYPE_BIND</source>
+          <target>OCI_HTYPE_BIND</target>
+        </trans-unit>
+        <trans-unit d4:value="6">
+          <source>OCI_HTYPE_DEFINE</source>
+          <target>OCI_HTYPE_DEFINE</target>
+        </trans-unit>
+        <trans-unit d4:value="7">
+          <source>OCI_HTYPE_DESCRIBE</source>
+          <target>OCI_HTYPE_DESCRIBE</target>
+        </trans-unit>
+        <trans-unit d4:value="8">
+          <source>OCI_HTYPE_SERVER</source>
+          <target>OCI_HTYPE_SERVER</target>
+        </trans-unit>
+        <trans-unit d4:value="9">
+          <source>OCI_HTYPE_SESSION</source>
+          <target>OCI_HTYPE_SESSION</target>
+        </trans-unit>
+        <trans-unit d4:value="10">
+          <source>OCI_HTYPE_TRANS</source>
+          <target>OCI_HTYPE_TRANS</target>
+        </trans-unit>
+        <trans-unit d4:value="11">
+          <source>OCI_HTYPE_COMPLEXOBJECT</source>
+          <target>OCI_HTYPE_COMPLEXOBJECT</target>
+        </trans-unit>
+        <trans-unit d4:value="12">
+          <source>OCI_HTYPE_SECURITY</source>
+          <target>OCI_HTYPE_SECURITY</target>
+        </trans-unit>
+        <trans-unit d4:value="13">
+          <source>OCI_HTYPE_SUBSCRIPTION</source>
+          <target>OCI_HTYPE_SUBSCRIPTION</target>
+        </trans-unit>
+        <trans-unit d4:value="14">
+          <source>OCI_HTYPE_DIRPATH_CTX</source>
+          <target>OCI_HTYPE_DIRPATH_CTX</target>
+        </trans-unit>
+        <trans-unit d4:value="15">
+          <source>OCI_HTYPE_DIRPATH_COLUMN_ARRAY</source>
+          <target>OCI_HTYPE_DIRPATH_COLUMN_ARRAY</target>
+        </trans-unit>
+        <trans-unit d4:value="16">
+          <source>OCI_HTYPE_DIRPATH_STREAM</source>
+          <target>OCI_HTYPE_DIRPATH_STREAM</target>
+        </trans-unit>
+        <trans-unit d4:value="17">
+          <source>OCI_HTYPE_PROC</source>
+          <target>OCI_HTYPE_PROC</target>
+        </trans-unit>
+        <trans-unit d4:value="17">
+          <source>OCI_HTYPE_LAST</source>
+          <target>OCI_HTYPE_LAST</target>
+        </trans-unit>
+      </group>
+    </body>
+  </file>
+</xliff>

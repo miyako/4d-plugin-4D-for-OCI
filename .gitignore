@@ -1,0 +1,20 @@
+# Oracle Instant Client (must be downloaded separately — see README)
+oracle/include/*
+oracle/macos-aarm64/*
+oracle/windows-x64/*
+!oracle/README.md
+
+# Build artifacts
+4D-for-OCI/cmake-build/
+4D-for-OCI/build/
+**/xcuserdata/
+*.vcxproj.user
+
+# 4D test project runtime
+4D-for-OCI/4D-for-OCI-test/Data/*
+4D-for-OCI/4D-for-OCI-test/Project/DerivedData/*
+4D-for-OCI/4D-for-OCI-test/userPreferences.*
+4D-for-OCI/4D-for-OCI-test/Plugins/
+
+# macOS
+.DS_Store
