@@ -86,6 +86,71 @@ void PluginMain(PA_long32 selector, PA_PluginParameters params) {
         case kSel_OCIParamGet:        cmd_OCIParamGet(params);        break;
         case kSel_OCIParamSet:        cmd_OCIParamSet(params);        break;
         case kSel_OCIPasswordChange:  cmd_OCIPasswordChange(params);  break;
+
+        // Types/Cache
+        case kSel_OCICacheFlush:      cmd_OCICacheFlush(params);      break;
+        case kSel_OCICacheFree:       cmd_OCICacheFree(params);       break;
+        case kSel_OCICacheRefresh:    cmd_OCICacheRefresh(params);    break;
+        case kSel_OCICacheUnmark:     cmd_OCICacheUnmark(params);     break;
+        case kSel_OCICacheUnpin:      cmd_OCICacheUnpin(params);      break;
+
+        // Math/OCINumber
+        case kSel_OCINumberAdd:       cmd_OCINumberAdd(params);       break;
+        case kSel_OCINumberSub:       cmd_OCINumberSub(params);       break;
+        case kSel_OCINumberMul:       cmd_OCINumberMul(params);       break;
+        case kSel_OCINumberDiv:       cmd_OCINumberDiv(params);       break;
+        case kSel_OCINumberPower:     cmd_OCINumberPower(params);     break;
+        case kSel_OCINumberLog:       cmd_OCINumberLog(params);       break;
+        case kSel_OCINumberArcTan2:   cmd_OCINumberArcTan2(params);   break;
+        case kSel_OCINumberSqrt:      cmd_OCINumberSqrt(params);      break;
+        case kSel_OCINumberLn:        cmd_OCINumberLn(params);        break;
+        case kSel_OCINumberExp:       cmd_OCINumberExp(params);       break;
+        case kSel_OCINumberSin:       cmd_OCINumberSin(params);       break;
+        case kSel_OCINumberCos:       cmd_OCINumberCos(params);       break;
+        case kSel_OCINumberTan:       cmd_OCINumberTan(params);       break;
+        case kSel_OCINumberArcSin:    cmd_OCINumberArcSin(params);    break;
+        case kSel_OCINumberArcCos:    cmd_OCINumberArcCos(params);    break;
+        case kSel_OCINumberArcTan:    cmd_OCINumberArcTan(params);    break;
+        case kSel_OCINumberHypSin:    cmd_OCINumberHypSin(params);    break;
+        case kSel_OCINumberHypCos:    cmd_OCINumberHypCos(params);    break;
+        case kSel_OCINumberHypTan:    cmd_OCINumberHypTan(params);    break;
+        case kSel_OCINumberTrunc:     cmd_OCINumberTrunc(params);     break;
+        case kSel_OCINumberRound:     cmd_OCINumberRound(params);     break;
+        case kSel_OCINumberIntPower:  cmd_OCINumberIntPower(params);  break;
+        case kSel_OCINumberFromText:  cmd_OCINumberFromText(params);  break;
+        case kSel_OCINumberToText:    cmd_OCINumberToText(params);    break;
+
+        // LOB commands
+        case kSel_OCILobAppend:           cmd_OCILobAppend(params);           break;
+        case kSel_OCILobAssign:           cmd_OCILobAssign(params);           break;
+        case kSel_OCILobCharSetForm:      cmd_OCILobCharSetForm(params);      break;
+        case kSel_OCILobCharSetId:        cmd_OCILobCharSetId(params);        break;
+        case kSel_OCILobCopy:             cmd_OCILobCopy(params);             break;
+        case kSel_OCILobCreateTemporary:  cmd_OCILobCreateTemporary(params);  break;
+        case kSel_OCILobDisableBuffering: cmd_OCILobDisableBuffering(params); break;
+        case kSel_OCILobEnableBuffering:  cmd_OCILobEnableBuffering(params);  break;
+        case kSel_OCILobErase:            cmd_OCILobErase(params);            break;
+        case kSel_OCILobFileClose:        cmd_OCILobFileClose(params);        break;
+        case kSel_OCILobFileCloseAll:     cmd_OCILobFileCloseAll(params);     break;
+        case kSel_OCILobFileExists:       cmd_OCILobFileExists(params);       break;
+        case kSel_OCILobFileGetName:      cmd_OCILobFileGetName(params);      break;
+        case kSel_OCILobFileIsOpen:       cmd_OCILobFileIsOpen(params);       break;
+        case kSel_OCILobFileOpen:         cmd_OCILobFileOpen(params);         break;
+        case kSel_OCILobFileSetName:      cmd_OCILobFileSetName(params);      break;
+        case kSel_OCILobFlushBuffer:      cmd_OCILobFlushBuffer(params);      break;
+        case kSel_OCILobFreeTemporary:    cmd_OCILobFreeTemporary(params);    break;
+        case kSel_OCILobGetChunkSize:     cmd_OCILobGetChunkSize(params);     break;
+        case kSel_OCILobGetLength:        cmd_OCILobGetLength(params);        break;
+        case kSel_OCILobIsEqual:          cmd_OCILobIsEqual(params);          break;
+        case kSel_OCILobIsTemporary:      cmd_OCILobIsTemporary(params);      break;
+        case kSel_OCILobLoadFromFile:     cmd_OCILobLoadFromFile(params);     break;
+        case kSel_OCILobLocatorIsInit:    cmd_OCILobLocatorIsInit(params);    break;
+        case kSel_OCILobRead:             cmd_OCILobRead(params);             break;
+        case kSel_OCILobTrim:             cmd_OCILobTrim(params);             break;
+        case kSel_OCILobWrite:            cmd_OCILobWrite(params);            break;
+        case kSel_OCILobWriteAppend:      cmd_OCILobWriteAppend(params);      break;
+        case kSel_OCIDurationBegin:       cmd_OCIDurationBegin(params);       break;
+        case kSel_OCIDurationEnd:         cmd_OCIDurationEnd(params);         break;
     }
 }
 
@@ -1264,5 +1329,925 @@ static void cmd_OCIPasswordChange(PA_PluginParameters params) {
                                       (const OraText*)newPw.c_str(), (ub4)newPw.size(),
                                       (ub4)mode);
 
+    PA_ReturnLong(params, oci_check(status));
+}
+
+// ---------------------------------------------------------------------------
+// Helpers: double <-> OCINumber conversion
+// ---------------------------------------------------------------------------
+
+static sword double_to_OCINumber(OCIError* errhp, double val, OCINumber* num) {
+    return OCINumberFromReal(errhp, &val, sizeof(double), num);
+}
+
+static sword OCINumber_to_double(OCIError* errhp, const OCINumber* num, double* val) {
+    return OCINumberToReal(errhp, num, sizeof(double), val);
+}
+
+// ---------------------------------------------------------------------------
+// Types/Cache commands
+// ---------------------------------------------------------------------------
+
+static void cmd_OCICacheFlush(PA_PluginParameters params) {
+    PA_long32 envhpId = PA_GetLongParameter(params, 1);
+    PA_long32 errhpId = PA_GetLongParameter(params, 2);
+    PA_long32 svchpId = PA_GetLongParameter(params, 3);
+    PA_long32 context = PA_GetLongParameter(params, 4);
+
+    OCIEnv*    envhp = handles().getAs<OCIEnv>(envhpId);
+    OCIError*  errhp = handles().getAs<OCIError>(errhpId);
+    OCISvcCtx* svchp = handles().getAs<OCISvcCtx>(svchpId);
+
+    if (!envhp || !errhp || !svchp) {
+        PA_ReturnLong(params, (PA_long32)OCI_ERROR);
+        return;
+    }
+
+    sword status = OCICacheFlush(envhp, errhp, svchp, (void*)(uintptr_t)context, nullptr, nullptr);
+    PA_ReturnLong(params, oci_check(status));
+}
+
+static void cmd_OCICacheFree(PA_PluginParameters params) {
+    PA_long32 envhpId = PA_GetLongParameter(params, 1);
+    PA_long32 errhpId = PA_GetLongParameter(params, 2);
+    PA_long32 svchpId = PA_GetLongParameter(params, 3);
+
+    OCIEnv*    envhp = handles().getAs<OCIEnv>(envhpId);
+    OCIError*  errhp = handles().getAs<OCIError>(errhpId);
+    OCISvcCtx* svchp = handles().getAs<OCISvcCtx>(svchpId);
+
+    if (!envhp || !errhp || !svchp) {
+        PA_ReturnLong(params, (PA_long32)OCI_ERROR);
+        return;
+    }
+
+    sword status = OCICacheFree(envhp, errhp, svchp);
+    PA_ReturnLong(params, oci_check(status));
+}
+
+static void cmd_OCICacheRefresh(PA_PluginParameters params) {
+    PA_long32 envhpId = PA_GetLongParameter(params, 1);
+    PA_long32 errhpId = PA_GetLongParameter(params, 2);
+    PA_long32 svchpId = PA_GetLongParameter(params, 3);
+    PA_long32 option  = PA_GetLongParameter(params, 4);
+    PA_long32 context = PA_GetLongParameter(params, 5);
+
+    OCIEnv*    envhp = handles().getAs<OCIEnv>(envhpId);
+    OCIError*  errhp = handles().getAs<OCIError>(errhpId);
+    OCISvcCtx* svchp = handles().getAs<OCISvcCtx>(svchpId);
+
+    if (!envhp || !errhp || !svchp) {
+        PA_ReturnLong(params, (PA_long32)OCI_ERROR);
+        return;
+    }
+
+    sword status = OCICacheRefresh(envhp, errhp, svchp, (OCIRefreshOpt)option,
+                                   (void*)(uintptr_t)context, nullptr, nullptr);
+    PA_ReturnLong(params, oci_check(status));
+}
+
+static void cmd_OCICacheUnmark(PA_PluginParameters params) {
+    PA_long32 envhpId = PA_GetLongParameter(params, 1);
+    PA_long32 errhpId = PA_GetLongParameter(params, 2);
+    PA_long32 svchpId = PA_GetLongParameter(params, 3);
+
+    OCIEnv*    envhp = handles().getAs<OCIEnv>(envhpId);
+    OCIError*  errhp = handles().getAs<OCIError>(errhpId);
+    OCISvcCtx* svchp = handles().getAs<OCISvcCtx>(svchpId);
+
+    if (!envhp || !errhp || !svchp) {
+        PA_ReturnLong(params, (PA_long32)OCI_ERROR);
+        return;
+    }
+
+    sword status = OCICacheUnmark(envhp, errhp, svchp);
+    PA_ReturnLong(params, oci_check(status));
+}
+
+static void cmd_OCICacheUnpin(PA_PluginParameters params) {
+    PA_long32 envhpId = PA_GetLongParameter(params, 1);
+    PA_long32 errhpId = PA_GetLongParameter(params, 2);
+    PA_long32 svchpId = PA_GetLongParameter(params, 3);
+
+    OCIEnv*    envhp = handles().getAs<OCIEnv>(envhpId);
+    OCIError*  errhp = handles().getAs<OCIError>(errhpId);
+    OCISvcCtx* svchp = handles().getAs<OCISvcCtx>(svchpId);
+
+    if (!envhp || !errhp || !svchp) {
+        PA_ReturnLong(params, (PA_long32)OCI_ERROR);
+        return;
+    }
+
+    sword status = OCICacheUnpin(envhp, errhp, svchp);
+    PA_ReturnLong(params, oci_check(status));
+}
+
+// ---------------------------------------------------------------------------
+// Math/OCINumber: 3-operand (err, a, b, result)
+// ---------------------------------------------------------------------------
+
+#define IMPL_OCINUMBER_3OP(NAME, OCIFN)                                       \
+static void cmd_##NAME(PA_PluginParameters params) {                          \
+    PA_long32 errhpId = PA_GetLongParameter(params, 1);                       \
+    double num1 = PA_GetDoubleParameter(params, 2);                           \
+    double num2 = PA_GetDoubleParameter(params, 3);                           \
+                                                                              \
+    OCIError* errhp = handles().getAs<OCIError>(errhpId);                     \
+    if (!errhp) { PA_ReturnLong(params, (PA_long32)OCI_ERROR); return; }      \
+                                                                              \
+    OCINumber on1, on2, onResult;                                             \
+    sword status = double_to_OCINumber(errhp, num1, &on1);                    \
+    if (status != OCI_SUCCESS) { PA_ReturnLong(params, oci_check(status)); return; } \
+    status = double_to_OCINumber(errhp, num2, &on2);                          \
+    if (status != OCI_SUCCESS) { PA_ReturnLong(params, oci_check(status)); return; } \
+                                                                              \
+    status = OCIFN(errhp, &on1, &on2, &onResult);                            \
+    if (status == OCI_SUCCESS) {                                              \
+        double result;                                                        \
+        OCINumber_to_double(errhp, &onResult, &result);                       \
+        PA_SetDoubleParameter(params, 4, result);                             \
+    }                                                                         \
+    PA_ReturnLong(params, oci_check(status));                                 \
+}
+
+IMPL_OCINUMBER_3OP(OCINumberAdd,     OCINumberAdd)
+IMPL_OCINUMBER_3OP(OCINumberSub,     OCINumberSub)
+IMPL_OCINUMBER_3OP(OCINumberMul,     OCINumberMul)
+IMPL_OCINUMBER_3OP(OCINumberDiv,     OCINumberDiv)
+IMPL_OCINUMBER_3OP(OCINumberPower,   OCINumberPower)
+IMPL_OCINUMBER_3OP(OCINumberLog,     OCINumberLog)
+IMPL_OCINUMBER_3OP(OCINumberArcTan2, OCINumberArcTan2)
+
+// ---------------------------------------------------------------------------
+// Math/OCINumber: 2-operand (err, num, result)
+// ---------------------------------------------------------------------------
+
+#define IMPL_OCINUMBER_2OP(NAME, OCIFN)                                       \
+static void cmd_##NAME(PA_PluginParameters params) {                          \
+    PA_long32 errhpId = PA_GetLongParameter(params, 1);                       \
+    double num = PA_GetDoubleParameter(params, 2);                            \
+                                                                              \
+    OCIError* errhp = handles().getAs<OCIError>(errhpId);                     \
+    if (!errhp) { PA_ReturnLong(params, (PA_long32)OCI_ERROR); return; }      \
+                                                                              \
+    OCINumber on, onResult;                                                   \
+    sword status = double_to_OCINumber(errhp, num, &on);                      \
+    if (status != OCI_SUCCESS) { PA_ReturnLong(params, oci_check(status)); return; } \
+                                                                              \
+    status = OCIFN(errhp, &on, &onResult);                                    \
+    if (status == OCI_SUCCESS) {                                              \
+        double result;                                                        \
+        OCINumber_to_double(errhp, &onResult, &result);                       \
+        PA_SetDoubleParameter(params, 3, result);                             \
+    }                                                                         \
+    PA_ReturnLong(params, oci_check(status));                                 \
+}
+
+IMPL_OCINUMBER_2OP(OCINumberSqrt,    OCINumberSqrt)
+IMPL_OCINUMBER_2OP(OCINumberLn,      OCINumberLn)
+IMPL_OCINUMBER_2OP(OCINumberExp,     OCINumberExp)
+IMPL_OCINUMBER_2OP(OCINumberSin,     OCINumberSin)
+IMPL_OCINUMBER_2OP(OCINumberCos,     OCINumberCos)
+IMPL_OCINUMBER_2OP(OCINumberTan,     OCINumberTan)
+IMPL_OCINUMBER_2OP(OCINumberArcSin,  OCINumberArcSin)
+IMPL_OCINUMBER_2OP(OCINumberArcCos,  OCINumberArcCos)
+IMPL_OCINUMBER_2OP(OCINumberArcTan,  OCINumberArcTan)
+IMPL_OCINUMBER_2OP(OCINumberHypSin,  OCINumberHypSin)
+IMPL_OCINUMBER_2OP(OCINumberHypCos,  OCINumberHypCos)
+IMPL_OCINUMBER_2OP(OCINumberHypTan,  OCINumberHypTan)
+
+// ---------------------------------------------------------------------------
+// Math/OCINumber: special cases
+// ---------------------------------------------------------------------------
+
+static void cmd_OCINumberTrunc(PA_PluginParameters params) {
+    PA_long32 errhpId  = PA_GetLongParameter(params, 1);
+    double num         = PA_GetDoubleParameter(params, 2);
+    PA_long32 decplace = PA_GetLongParameter(params, 3);
+
+    OCIError* errhp = handles().getAs<OCIError>(errhpId);
+    if (!errhp) { PA_ReturnLong(params, (PA_long32)OCI_ERROR); return; }
+
+    OCINumber on, onResult;
+    sword status = double_to_OCINumber(errhp, num, &on);
+    if (status != OCI_SUCCESS) { PA_ReturnLong(params, oci_check(status)); return; }
+
+    status = OCINumberTrunc(errhp, &on, (sword)decplace, &onResult);
+    if (status == OCI_SUCCESS) {
+        double result;
+        OCINumber_to_double(errhp, &onResult, &result);
+        PA_SetDoubleParameter(params, 4, result);
+    }
+    PA_ReturnLong(params, oci_check(status));
+}
+
+static void cmd_OCINumberRound(PA_PluginParameters params) {
+    PA_long32 errhpId  = PA_GetLongParameter(params, 1);
+    double num         = PA_GetDoubleParameter(params, 2);
+    PA_long32 decplace = PA_GetLongParameter(params, 3);
+
+    OCIError* errhp = handles().getAs<OCIError>(errhpId);
+    if (!errhp) { PA_ReturnLong(params, (PA_long32)OCI_ERROR); return; }
+
+    OCINumber on, onResult;
+    sword status = double_to_OCINumber(errhp, num, &on);
+    if (status != OCI_SUCCESS) { PA_ReturnLong(params, oci_check(status)); return; }
+
+    status = OCINumberRound(errhp, &on, (sword)decplace, &onResult);
+    if (status == OCI_SUCCESS) {
+        double result;
+        OCINumber_to_double(errhp, &onResult, &result);
+        PA_SetDoubleParameter(params, 4, result);
+    }
+    PA_ReturnLong(params, oci_check(status));
+}
+
+static void cmd_OCINumberIntPower(PA_PluginParameters params) {
+    PA_long32 errhpId = PA_GetLongParameter(params, 1);
+    double base       = PA_GetDoubleParameter(params, 2);
+    PA_long32 exp_int = PA_GetLongParameter(params, 3);
+
+    OCIError* errhp = handles().getAs<OCIError>(errhpId);
+    if (!errhp) { PA_ReturnLong(params, (PA_long32)OCI_ERROR); return; }
+
+    OCINumber onBase, onResult;
+    sword status = double_to_OCINumber(errhp, base, &onBase);
+    if (status != OCI_SUCCESS) { PA_ReturnLong(params, oci_check(status)); return; }
+
+    status = OCINumberIntPower(errhp, &onBase, (sword)exp_int, &onResult);
+    if (status == OCI_SUCCESS) {
+        double result;
+        OCINumber_to_double(errhp, &onResult, &result);
+        PA_SetDoubleParameter(params, 4, result);
+    }
+    PA_ReturnLong(params, oci_check(status));
+}
+
+static void cmd_OCINumberFromText(PA_PluginParameters params) {
+    PA_long32 errhpId = PA_GetLongParameter(params, 1);
+    PA_Unistring* uStr = PA_GetStringParameter(params, 2);
+    PA_Unistring* uFmt = PA_GetStringParameter(params, 3);
+    PA_Unistring* uNls = PA_GetStringParameter(params, 4);
+
+    OCIError* errhp = handles().getAs<OCIError>(errhpId);
+    if (!errhp) { PA_ReturnLong(params, (PA_long32)OCI_ERROR); return; }
+
+    std::string str = unistr_to_utf8(uStr);
+    std::string fmt = unistr_to_utf8(uFmt);
+    std::string nls = unistr_to_utf8(uNls);
+
+    OCINumber onResult;
+    sword status = OCINumberFromText(errhp,
+                                     (const OraText*)str.c_str(), (ub4)str.size(),
+                                     (const OraText*)fmt.c_str(), (ub4)fmt.size(),
+                                     (const OraText*)(nls.empty() ? nullptr : nls.c_str()),
+                                     (ub4)nls.size(),
+                                     &onResult);
+    if (status == OCI_SUCCESS) {
+        double result;
+        OCINumber_to_double(errhp, &onResult, &result);
+        PA_SetDoubleParameter(params, 5, result);
+    }
+    PA_ReturnLong(params, oci_check(status));
+}
+
+static void cmd_OCINumberToText(PA_PluginParameters params) {
+    PA_long32 errhpId = PA_GetLongParameter(params, 1);
+    double num        = PA_GetDoubleParameter(params, 2);
+    PA_Unistring* uFmt = PA_GetStringParameter(params, 3);
+    PA_Unistring* uNls = PA_GetStringParameter(params, 4);
+
+    OCIError* errhp = handles().getAs<OCIError>(errhpId);
+    if (!errhp) { PA_ReturnLong(params, (PA_long32)OCI_ERROR); return; }
+
+    std::string fmt = unistr_to_utf8(uFmt);
+    std::string nls = unistr_to_utf8(uNls);
+
+    OCINumber on;
+    sword status = double_to_OCINumber(errhp, num, &on);
+    if (status != OCI_SUCCESS) { PA_ReturnLong(params, oci_check(status)); return; }
+
+    OraText buf[256];
+    ub4 bufLen = sizeof(buf);
+    status = OCINumberToText(errhp, &on,
+                             (const OraText*)fmt.c_str(), (ub4)fmt.size(),
+                             (const OraText*)(nls.empty() ? nullptr : nls.c_str()),
+                             (ub4)nls.size(),
+                             &bufLen, buf);
+    if (status == OCI_SUCCESS) {
+        PA_Pointer ptr = PA_GetPointerParameter(params, 5);
+        if (ptr) {
+            PA_Unistring ustr = utf8_to_unistring(std::string((const char*)buf, bufLen));
+            PA_Variable var = PA_CreateVariable(eVK_Unistring);
+            PA_SetStringVariable(&var, &ustr);
+            PA_SetPointerValue(ptr, var);
+        }
+    }
+    PA_ReturnLong(params, oci_check(status));
+}
+
+// ============================================================
+// LOB commands
+// ============================================================
+
+// OCILobAppend(svchp; errhp; dst_locp; src_locp) : status
+static void cmd_OCILobAppend(PA_PluginParameters params) {
+    PA_long32 svchpId  = PA_GetLongParameter(params, 1);
+    PA_long32 errhpId  = PA_GetLongParameter(params, 2);
+    PA_long32 dstId    = PA_GetLongParameter(params, 3);
+    PA_long32 srcId    = PA_GetLongParameter(params, 4);
+
+    OCISvcCtx*     svchp = handles().getAs<OCISvcCtx>(svchpId);
+    OCIError*      errhp = handles().getAs<OCIError>(errhpId);
+    OCILobLocator* dst   = (OCILobLocator*)handles().get(dstId);
+    OCILobLocator* src   = (OCILobLocator*)handles().get(srcId);
+
+    if (!svchp || !errhp || !dst || !src) {
+        PA_ReturnLong(params, (PA_long32)OCI_ERROR); return;
+    }
+    sword status = OCILobAppend(svchp, errhp, dst, src);
+    PA_ReturnLong(params, oci_check(status));
+}
+
+// OCILobAssign(envhp; errhp; src_locp; dst_locp) : status
+static void cmd_OCILobAssign(PA_PluginParameters params) {
+    PA_long32 envhpId = PA_GetLongParameter(params, 1);
+    PA_long32 errhpId = PA_GetLongParameter(params, 2);
+    PA_long32 srcId   = PA_GetLongParameter(params, 3);
+    PA_long32 dstId   = PA_GetLongParameter(params, 4);
+
+    OCIEnv*        envhp = handles().getAs<OCIEnv>(envhpId);
+    OCIError*      errhp = handles().getAs<OCIError>(errhpId);
+    OCILobLocator* src   = (OCILobLocator*)handles().get(srcId);
+    OCILobLocator* dst   = (OCILobLocator*)handles().get(dstId);
+
+    if (!envhp || !errhp || !src || !dst) {
+        PA_ReturnLong(params, (PA_long32)OCI_ERROR); return;
+    }
+    sword status = OCILobAssign(envhp, errhp, (const OCILobLocator*)src, &dst);
+    PA_ReturnLong(params, oci_check(status));
+}
+
+// OCILobCharSetForm(envhp; errhp; locp; csform_out) : status
+static void cmd_OCILobCharSetForm(PA_PluginParameters params) {
+    PA_long32 envhpId = PA_GetLongParameter(params, 1);
+    PA_long32 errhpId = PA_GetLongParameter(params, 2);
+    PA_long32 locpId  = PA_GetLongParameter(params, 3);
+
+    OCIEnv*        envhp = handles().getAs<OCIEnv>(envhpId);
+    OCIError*      errhp = handles().getAs<OCIError>(errhpId);
+    OCILobLocator* locp  = (OCILobLocator*)handles().get(locpId);
+
+    if (!envhp || !errhp || !locp) {
+        PA_ReturnLong(params, (PA_long32)OCI_ERROR); return;
+    }
+    ub1 csform = 0;
+    sword status = OCILobCharSetForm(envhp, errhp, (const OCILobLocator*)locp, &csform);
+    PA_SetLongParameter(params, 4, (PA_long32)csform);
+    PA_ReturnLong(params, oci_check(status));
+}
+
+// OCILobCharSetId(envhp; errhp; locp; csid_out) : status
+static void cmd_OCILobCharSetId(PA_PluginParameters params) {
+    PA_long32 envhpId = PA_GetLongParameter(params, 1);
+    PA_long32 errhpId = PA_GetLongParameter(params, 2);
+    PA_long32 locpId  = PA_GetLongParameter(params, 3);
+
+    OCIEnv*        envhp = handles().getAs<OCIEnv>(envhpId);
+    OCIError*      errhp = handles().getAs<OCIError>(errhpId);
+    OCILobLocator* locp  = (OCILobLocator*)handles().get(locpId);
+
+    if (!envhp || !errhp || !locp) {
+        PA_ReturnLong(params, (PA_long32)OCI_ERROR); return;
+    }
+    ub2 csid = 0;
+    sword status = OCILobCharSetId(envhp, errhp, (const OCILobLocator*)locp, &csid);
+    PA_SetLongParameter(params, 4, (PA_long32)csid);
+    PA_ReturnLong(params, oci_check(status));
+}
+
+// OCILobCopy(svchp; errhp; dst_locp; src_locp; amount; dst_offset; src_offset) : status
+static void cmd_OCILobCopy(PA_PluginParameters params) {
+    PA_long32 svchpId   = PA_GetLongParameter(params, 1);
+    PA_long32 errhpId   = PA_GetLongParameter(params, 2);
+    PA_long32 dstId     = PA_GetLongParameter(params, 3);
+    PA_long32 srcId     = PA_GetLongParameter(params, 4);
+    PA_long32 amount    = PA_GetLongParameter(params, 5);
+    PA_long32 dstOffset = PA_GetLongParameter(params, 6);
+    PA_long32 srcOffset = PA_GetLongParameter(params, 7);
+
+    OCISvcCtx*     svchp = handles().getAs<OCISvcCtx>(svchpId);
+    OCIError*      errhp = handles().getAs<OCIError>(errhpId);
+    OCILobLocator* dst   = (OCILobLocator*)handles().get(dstId);
+    OCILobLocator* src   = (OCILobLocator*)handles().get(srcId);
+
+    if (!svchp || !errhp || !dst || !src) {
+        PA_ReturnLong(params, (PA_long32)OCI_ERROR); return;
+    }
+    sword status = OCILobCopy(svchp, errhp, dst, src, (ub4)amount, (ub4)dstOffset, (ub4)srcOffset);
+    PA_ReturnLong(params, oci_check(status));
+}
+
+// OCILobCreateTemporary(svchp; errhp; locp; csid; csform; lobtype) : status
+static void cmd_OCILobCreateTemporary(PA_PluginParameters params) {
+    PA_long32 svchpId  = PA_GetLongParameter(params, 1);
+    PA_long32 errhpId  = PA_GetLongParameter(params, 2);
+    PA_long32 locpId   = PA_GetLongParameter(params, 3);
+    PA_long32 csid     = PA_GetLongParameter(params, 4);
+    PA_long32 csform   = PA_GetLongParameter(params, 5);
+    PA_long32 lobtype  = PA_GetLongParameter(params, 6);
+
+    OCISvcCtx*     svchp = handles().getAs<OCISvcCtx>(svchpId);
+    OCIError*      errhp = handles().getAs<OCIError>(errhpId);
+    OCILobLocator* locp  = (OCILobLocator*)handles().get(locpId);
+
+    if (!svchp || !errhp || !locp) {
+        PA_ReturnLong(params, (PA_long32)OCI_ERROR); return;
+    }
+    sword status = OCILobCreateTemporary(svchp, errhp, locp,
+        (ub2)csid, (ub1)csform, (ub1)lobtype, FALSE, OCI_DURATION_SESSION);
+    PA_ReturnLong(params, oci_check(status));
+}
+
+// OCILobDisableBuffering(svchp; errhp; locp) : status
+static void cmd_OCILobDisableBuffering(PA_PluginParameters params) {
+    PA_long32 svchpId = PA_GetLongParameter(params, 1);
+    PA_long32 errhpId = PA_GetLongParameter(params, 2);
+    PA_long32 locpId  = PA_GetLongParameter(params, 3);
+
+    OCISvcCtx*     svchp = handles().getAs<OCISvcCtx>(svchpId);
+    OCIError*      errhp = handles().getAs<OCIError>(errhpId);
+    OCILobLocator* locp  = (OCILobLocator*)handles().get(locpId);
+
+    if (!svchp || !errhp || !locp) {
+        PA_ReturnLong(params, (PA_long32)OCI_ERROR); return;
+    }
+    sword status = OCILobDisableBuffering(svchp, errhp, locp);
+    PA_ReturnLong(params, oci_check(status));
+}
+
+// OCILobEnableBuffering(svchp; errhp; locp) : status
+static void cmd_OCILobEnableBuffering(PA_PluginParameters params) {
+    PA_long32 svchpId = PA_GetLongParameter(params, 1);
+    PA_long32 errhpId = PA_GetLongParameter(params, 2);
+    PA_long32 locpId  = PA_GetLongParameter(params, 3);
+
+    OCISvcCtx*     svchp = handles().getAs<OCISvcCtx>(svchpId);
+    OCIError*      errhp = handles().getAs<OCIError>(errhpId);
+    OCILobLocator* locp  = (OCILobLocator*)handles().get(locpId);
+
+    if (!svchp || !errhp || !locp) {
+        PA_ReturnLong(params, (PA_long32)OCI_ERROR); return;
+    }
+    sword status = OCILobEnableBuffering(svchp, errhp, locp);
+    PA_ReturnLong(params, oci_check(status));
+}
+
+// OCILobErase(svchp; errhp; locp; amount; offset) : status
+static void cmd_OCILobErase(PA_PluginParameters params) {
+    PA_long32 svchpId = PA_GetLongParameter(params, 1);
+    PA_long32 errhpId = PA_GetLongParameter(params, 2);
+    PA_long32 locpId  = PA_GetLongParameter(params, 3);
+    PA_long32 amount  = PA_GetLongParameter(params, 4);
+    PA_long32 offset  = PA_GetLongParameter(params, 5);
+
+    OCISvcCtx*     svchp = handles().getAs<OCISvcCtx>(svchpId);
+    OCIError*      errhp = handles().getAs<OCIError>(errhpId);
+    OCILobLocator* locp  = (OCILobLocator*)handles().get(locpId);
+
+    if (!svchp || !errhp || !locp) {
+        PA_ReturnLong(params, (PA_long32)OCI_ERROR); return;
+    }
+    ub4 amtp = (ub4)amount;
+    sword status = OCILobErase(svchp, errhp, locp, &amtp, (ub4)offset);
+    PA_SetLongParameter(params, 4, (PA_long32)amtp);
+    PA_ReturnLong(params, oci_check(status));
+}
+
+// OCILobFileClose(svchp; errhp; filep) : status
+static void cmd_OCILobFileClose(PA_PluginParameters params) {
+    PA_long32 svchpId = PA_GetLongParameter(params, 1);
+    PA_long32 errhpId = PA_GetLongParameter(params, 2);
+    PA_long32 filepId = PA_GetLongParameter(params, 3);
+
+    OCISvcCtx*     svchp = handles().getAs<OCISvcCtx>(svchpId);
+    OCIError*      errhp = handles().getAs<OCIError>(errhpId);
+    OCILobLocator* filep = (OCILobLocator*)handles().get(filepId);
+
+    if (!svchp || !errhp || !filep) {
+        PA_ReturnLong(params, (PA_long32)OCI_ERROR); return;
+    }
+    sword status = OCILobFileClose(svchp, errhp, filep);
+    PA_ReturnLong(params, oci_check(status));
+}
+
+// OCILobFileCloseAll(svchp; errhp) : status
+static void cmd_OCILobFileCloseAll(PA_PluginParameters params) {
+    PA_long32 svchpId = PA_GetLongParameter(params, 1);
+    PA_long32 errhpId = PA_GetLongParameter(params, 2);
+
+    OCISvcCtx* svchp = handles().getAs<OCISvcCtx>(svchpId);
+    OCIError*  errhp = handles().getAs<OCIError>(errhpId);
+
+    if (!svchp || !errhp) {
+        PA_ReturnLong(params, (PA_long32)OCI_ERROR); return;
+    }
+    sword status = OCILobFileCloseAll(svchp, errhp);
+    PA_ReturnLong(params, oci_check(status));
+}
+
+// OCILobFileExists(svchp; errhp; filep; flag_out) : status
+static void cmd_OCILobFileExists(PA_PluginParameters params) {
+    PA_long32 svchpId = PA_GetLongParameter(params, 1);
+    PA_long32 errhpId = PA_GetLongParameter(params, 2);
+    PA_long32 filepId = PA_GetLongParameter(params, 3);
+
+    OCISvcCtx*     svchp = handles().getAs<OCISvcCtx>(svchpId);
+    OCIError*      errhp = handles().getAs<OCIError>(errhpId);
+    OCILobLocator* filep = (OCILobLocator*)handles().get(filepId);
+
+    if (!svchp || !errhp || !filep) {
+        PA_ReturnLong(params, (PA_long32)OCI_ERROR); return;
+    }
+    boolean flag = FALSE;
+    sword status = OCILobFileExists(svchp, errhp, filep, &flag);
+    PA_SetLongParameter(params, 4, (PA_long32)flag);
+    PA_ReturnLong(params, oci_check(status));
+}
+
+// OCILobFileGetName(envhp; errhp; filep; dir_ptr; fname_ptr) : status
+static void cmd_OCILobFileGetName(PA_PluginParameters params) {
+    PA_long32 envhpId = PA_GetLongParameter(params, 1);
+    PA_long32 errhpId = PA_GetLongParameter(params, 2);
+    PA_long32 filepId = PA_GetLongParameter(params, 3);
+
+    OCIEnv*        envhp = handles().getAs<OCIEnv>(envhpId);
+    OCIError*      errhp = handles().getAs<OCIError>(errhpId);
+    OCILobLocator* filep = (OCILobLocator*)handles().get(filepId);
+
+    if (!envhp || !errhp || !filep) {
+        PA_ReturnLong(params, (PA_long32)OCI_ERROR); return;
+    }
+    OraText dirBuf[256], fnameBuf[256];
+    ub2 dirLen = sizeof(dirBuf), fnameLen = sizeof(fnameBuf);
+    sword status = OCILobFileGetName(envhp, errhp, (const OCILobLocator*)filep,
+        dirBuf, &dirLen, fnameBuf, &fnameLen);
+    if (status == OCI_SUCCESS) {
+        set_pointer_text(params, 4, (const char*)dirBuf, (PA_long32)dirLen);
+        set_pointer_text(params, 5, (const char*)fnameBuf, (PA_long32)fnameLen);
+    }
+    PA_ReturnLong(params, oci_check(status));
+}
+
+// OCILobFileIsOpen(svchp; errhp; filep; flag_out) : status
+static void cmd_OCILobFileIsOpen(PA_PluginParameters params) {
+    PA_long32 svchpId = PA_GetLongParameter(params, 1);
+    PA_long32 errhpId = PA_GetLongParameter(params, 2);
+    PA_long32 filepId = PA_GetLongParameter(params, 3);
+
+    OCISvcCtx*     svchp = handles().getAs<OCISvcCtx>(svchpId);
+    OCIError*      errhp = handles().getAs<OCIError>(errhpId);
+    OCILobLocator* filep = (OCILobLocator*)handles().get(filepId);
+
+    if (!svchp || !errhp || !filep) {
+        PA_ReturnLong(params, (PA_long32)OCI_ERROR); return;
+    }
+    boolean flag = FALSE;
+    sword status = OCILobFileIsOpen(svchp, errhp, filep, &flag);
+    PA_SetLongParameter(params, 4, (PA_long32)flag);
+    PA_ReturnLong(params, oci_check(status));
+}
+
+// OCILobFileOpen(svchp; errhp; filep; mode) : status
+static void cmd_OCILobFileOpen(PA_PluginParameters params) {
+    PA_long32 svchpId = PA_GetLongParameter(params, 1);
+    PA_long32 errhpId = PA_GetLongParameter(params, 2);
+    PA_long32 filepId = PA_GetLongParameter(params, 3);
+    PA_long32 mode    = PA_GetLongParameter(params, 4);
+
+    OCISvcCtx*     svchp = handles().getAs<OCISvcCtx>(svchpId);
+    OCIError*      errhp = handles().getAs<OCIError>(errhpId);
+    OCILobLocator* filep = (OCILobLocator*)handles().get(filepId);
+
+    if (!svchp || !errhp || !filep) {
+        PA_ReturnLong(params, (PA_long32)OCI_ERROR); return;
+    }
+    sword status = OCILobFileOpen(svchp, errhp, filep, (ub1)mode);
+    PA_ReturnLong(params, oci_check(status));
+}
+
+// OCILobFileSetName(envhp; errhp; filep; dir_alias; filename) : status
+static void cmd_OCILobFileSetName(PA_PluginParameters params) {
+    PA_long32 envhpId = PA_GetLongParameter(params, 1);
+    PA_long32 errhpId = PA_GetLongParameter(params, 2);
+    PA_long32 filepId = PA_GetLongParameter(params, 3);
+
+    OCIEnv*        envhp = handles().getAs<OCIEnv>(envhpId);
+    OCIError*      errhp = handles().getAs<OCIError>(errhpId);
+    OCILobLocator* filep = (OCILobLocator*)handles().get(filepId);
+
+    if (!envhp || !errhp || !filep) {
+        PA_ReturnLong(params, (PA_long32)OCI_ERROR); return;
+    }
+    std::string dir   = unistr_to_utf8(PA_GetStringParameter(params, 4));
+    std::string fname = unistr_to_utf8(PA_GetStringParameter(params, 5));
+    sword status = OCILobFileSetName(envhp, errhp, &filep,
+        (OraText*)dir.c_str(), (ub2)dir.size(),
+        (OraText*)fname.c_str(), (ub2)fname.size());
+    PA_ReturnLong(params, oci_check(status));
+}
+
+// OCILobFlushBuffer(svchp; errhp; locp; flag) : status
+static void cmd_OCILobFlushBuffer(PA_PluginParameters params) {
+    PA_long32 svchpId = PA_GetLongParameter(params, 1);
+    PA_long32 errhpId = PA_GetLongParameter(params, 2);
+    PA_long32 locpId  = PA_GetLongParameter(params, 3);
+    PA_long32 flag    = PA_GetLongParameter(params, 4);
+
+    OCISvcCtx*     svchp = handles().getAs<OCISvcCtx>(svchpId);
+    OCIError*      errhp = handles().getAs<OCIError>(errhpId);
+    OCILobLocator* locp  = (OCILobLocator*)handles().get(locpId);
+
+    if (!svchp || !errhp || !locp) {
+        PA_ReturnLong(params, (PA_long32)OCI_ERROR); return;
+    }
+    sword status = OCILobFlushBuffer(svchp, errhp, locp, (ub4)flag);
+    PA_ReturnLong(params, oci_check(status));
+}
+
+// OCILobFreeTemporary(svchp; errhp; locp) : status
+static void cmd_OCILobFreeTemporary(PA_PluginParameters params) {
+    PA_long32 svchpId = PA_GetLongParameter(params, 1);
+    PA_long32 errhpId = PA_GetLongParameter(params, 2);
+    PA_long32 locpId  = PA_GetLongParameter(params, 3);
+
+    OCISvcCtx*     svchp = handles().getAs<OCISvcCtx>(svchpId);
+    OCIError*      errhp = handles().getAs<OCIError>(errhpId);
+    OCILobLocator* locp  = (OCILobLocator*)handles().get(locpId);
+
+    if (!svchp || !errhp || !locp) {
+        PA_ReturnLong(params, (PA_long32)OCI_ERROR); return;
+    }
+    sword status = OCILobFreeTemporary(svchp, errhp, locp);
+    PA_ReturnLong(params, oci_check(status));
+}
+
+// OCILobGetChunkSize(svchp; errhp; locp; chunk_size_out) : status
+static void cmd_OCILobGetChunkSize(PA_PluginParameters params) {
+    PA_long32 svchpId = PA_GetLongParameter(params, 1);
+    PA_long32 errhpId = PA_GetLongParameter(params, 2);
+    PA_long32 locpId  = PA_GetLongParameter(params, 3);
+
+    OCISvcCtx*     svchp = handles().getAs<OCISvcCtx>(svchpId);
+    OCIError*      errhp = handles().getAs<OCIError>(errhpId);
+    OCILobLocator* locp  = (OCILobLocator*)handles().get(locpId);
+
+    if (!svchp || !errhp || !locp) {
+        PA_ReturnLong(params, (PA_long32)OCI_ERROR); return;
+    }
+    ub4 chunkSize = 0;
+    sword status = OCILobGetChunkSize(svchp, errhp, locp, &chunkSize);
+    PA_SetLongParameter(params, 4, (PA_long32)chunkSize);
+    PA_ReturnLong(params, oci_check(status));
+}
+
+// OCILobGetLength(svchp; errhp; locp; length_out) : status
+static void cmd_OCILobGetLength(PA_PluginParameters params) {
+    PA_long32 svchpId = PA_GetLongParameter(params, 1);
+    PA_long32 errhpId = PA_GetLongParameter(params, 2);
+    PA_long32 locpId  = PA_GetLongParameter(params, 3);
+
+    OCISvcCtx*     svchp = handles().getAs<OCISvcCtx>(svchpId);
+    OCIError*      errhp = handles().getAs<OCIError>(errhpId);
+    OCILobLocator* locp  = (OCILobLocator*)handles().get(locpId);
+
+    if (!svchp || !errhp || !locp) {
+        PA_ReturnLong(params, (PA_long32)OCI_ERROR); return;
+    }
+    ub4 lenp = 0;
+    sword status = OCILobGetLength(svchp, errhp, locp, &lenp);
+    PA_SetLongParameter(params, 4, (PA_long32)lenp);
+    PA_ReturnLong(params, oci_check(status));
+}
+
+// OCILobIsEqual(envhp; x; y; is_equal_out) : status
+static void cmd_OCILobIsEqual(PA_PluginParameters params) {
+    PA_long32 envhpId = PA_GetLongParameter(params, 1);
+    PA_long32 xId     = PA_GetLongParameter(params, 2);
+    PA_long32 yId     = PA_GetLongParameter(params, 3);
+
+    OCIEnv*        envhp = handles().getAs<OCIEnv>(envhpId);
+    OCILobLocator* x     = (OCILobLocator*)handles().get(xId);
+    OCILobLocator* y     = (OCILobLocator*)handles().get(yId);
+
+    if (!envhp || !x || !y) {
+        PA_ReturnLong(params, (PA_long32)OCI_ERROR); return;
+    }
+    boolean is_equal = FALSE;
+    OCILobIsEqual(envhp, (const OCILobLocator*)x, (const OCILobLocator*)y, &is_equal);
+    PA_SetLongParameter(params, 4, (PA_long32)is_equal);
+    PA_ReturnLong(params, (PA_long32)OCI_SUCCESS);
+}
+
+// OCILobIsTemporary(envhp; errhp; locp; is_temporary_out) : status
+static void cmd_OCILobIsTemporary(PA_PluginParameters params) {
+    PA_long32 envhpId = PA_GetLongParameter(params, 1);
+    PA_long32 errhpId = PA_GetLongParameter(params, 2);
+    PA_long32 locpId  = PA_GetLongParameter(params, 3);
+
+    OCIEnv*        envhp = handles().getAs<OCIEnv>(envhpId);
+    OCIError*      errhp = handles().getAs<OCIError>(errhpId);
+    OCILobLocator* locp  = (OCILobLocator*)handles().get(locpId);
+
+    if (!envhp || !errhp || !locp) {
+        PA_ReturnLong(params, (PA_long32)OCI_ERROR); return;
+    }
+    boolean is_temp = FALSE;
+    sword status = OCILobIsTemporary(envhp, errhp, locp, &is_temp);
+    PA_SetLongParameter(params, 4, (PA_long32)is_temp);
+    PA_ReturnLong(params, oci_check(status));
+}
+
+// OCILobLoadFromFile(svchp; errhp; dst_locp; src_filep; amount; dst_offset; src_offset) : status
+static void cmd_OCILobLoadFromFile(PA_PluginParameters params) {
+    PA_long32 svchpId   = PA_GetLongParameter(params, 1);
+    PA_long32 errhpId   = PA_GetLongParameter(params, 2);
+    PA_long32 dstId     = PA_GetLongParameter(params, 3);
+    PA_long32 srcId     = PA_GetLongParameter(params, 4);
+    PA_long32 amount    = PA_GetLongParameter(params, 5);
+    PA_long32 dstOffset = PA_GetLongParameter(params, 6);
+    PA_long32 srcOffset = PA_GetLongParameter(params, 7);
+
+    OCISvcCtx*     svchp = handles().getAs<OCISvcCtx>(svchpId);
+    OCIError*      errhp = handles().getAs<OCIError>(errhpId);
+    OCILobLocator* dst   = (OCILobLocator*)handles().get(dstId);
+    OCILobLocator* src   = (OCILobLocator*)handles().get(srcId);
+
+    if (!svchp || !errhp || !dst || !src) {
+        PA_ReturnLong(params, (PA_long32)OCI_ERROR); return;
+    }
+    sword status = OCILobLoadFromFile(svchp, errhp, dst, src,
+        (ub4)amount, (ub4)dstOffset, (ub4)srcOffset);
+    PA_ReturnLong(params, oci_check(status));
+}
+
+// OCILobLocatorIsInit(envhp; errhp; locp; is_initialized_out) : status
+static void cmd_OCILobLocatorIsInit(PA_PluginParameters params) {
+    PA_long32 envhpId = PA_GetLongParameter(params, 1);
+    PA_long32 errhpId = PA_GetLongParameter(params, 2);
+    PA_long32 locpId  = PA_GetLongParameter(params, 3);
+
+    OCIEnv*        envhp = handles().getAs<OCIEnv>(envhpId);
+    OCIError*      errhp = handles().getAs<OCIError>(errhpId);
+    OCILobLocator* locp  = (OCILobLocator*)handles().get(locpId);
+
+    if (!envhp || !errhp || !locp) {
+        PA_ReturnLong(params, (PA_long32)OCI_ERROR); return;
+    }
+    boolean is_init = FALSE;
+    sword status = OCILobLocatorIsInit(envhp, errhp, (const OCILobLocator*)locp, &is_init);
+    PA_SetLongParameter(params, 4, (PA_long32)is_init);
+    PA_ReturnLong(params, oci_check(status));
+}
+
+// OCILobRead(svchp; errhp; locp; offset; blob_out) : status
+static void cmd_OCILobRead(PA_PluginParameters params) {
+    PA_long32 svchpId = PA_GetLongParameter(params, 1);
+    PA_long32 errhpId = PA_GetLongParameter(params, 2);
+    PA_long32 locpId  = PA_GetLongParameter(params, 3);
+    PA_long32 offset  = PA_GetLongParameter(params, 4);
+
+    OCISvcCtx*     svchp = handles().getAs<OCISvcCtx>(svchpId);
+    OCIError*      errhp = handles().getAs<OCIError>(errhpId);
+    OCILobLocator* locp  = (OCILobLocator*)handles().get(locpId);
+
+    if (!svchp || !errhp || !locp) {
+        PA_ReturnLong(params, (PA_long32)OCI_ERROR); return;
+    }
+
+    ub4 lobLen = 0;
+    sword status = OCILobGetLength(svchp, errhp, locp, &lobLen);
+    if (status != OCI_SUCCESS || lobLen == 0) {
+        PA_SetBlobParameter(params, 5, nullptr, 0);
+        PA_ReturnLong(params, oci_check(status));
+        return;
+    }
+
+    std::vector<ub1> buf(lobLen);
+    ub4 amtp = lobLen;
+    status = OCILobRead(svchp, errhp, locp, &amtp, (ub4)offset,
+                        buf.data(), (ub4)buf.size(), nullptr, nullptr, 0, SQLCS_IMPLICIT);
+    if (status == OCI_SUCCESS || status == OCI_NEED_DATA) {
+        PA_SetBlobParameter(params, 5, buf.data(), (PA_long32)amtp);
+    }
+    PA_ReturnLong(params, oci_check(status));
+}
+
+// OCILobTrim(svchp; errhp; locp; newlen) : status
+static void cmd_OCILobTrim(PA_PluginParameters params) {
+    PA_long32 svchpId = PA_GetLongParameter(params, 1);
+    PA_long32 errhpId = PA_GetLongParameter(params, 2);
+    PA_long32 locpId  = PA_GetLongParameter(params, 3);
+    PA_long32 newlen  = PA_GetLongParameter(params, 4);
+
+    OCISvcCtx*     svchp = handles().getAs<OCISvcCtx>(svchpId);
+    OCIError*      errhp = handles().getAs<OCIError>(errhpId);
+    OCILobLocator* locp  = (OCILobLocator*)handles().get(locpId);
+
+    if (!svchp || !errhp || !locp) {
+        PA_ReturnLong(params, (PA_long32)OCI_ERROR); return;
+    }
+    sword status = OCILobTrim(svchp, errhp, locp, (ub4)newlen);
+    PA_ReturnLong(params, oci_check(status));
+}
+
+// OCILobWrite(svchp; errhp; locp; offset; blob_in) : status
+static void cmd_OCILobWrite(PA_PluginParameters params) {
+    PA_long32 svchpId = PA_GetLongParameter(params, 1);
+    PA_long32 errhpId = PA_GetLongParameter(params, 2);
+    PA_long32 locpId  = PA_GetLongParameter(params, 3);
+    PA_long32 offset  = PA_GetLongParameter(params, 4);
+
+    OCISvcCtx*     svchp = handles().getAs<OCISvcCtx>(svchpId);
+    OCIError*      errhp = handles().getAs<OCIError>(errhpId);
+    OCILobLocator* locp  = (OCILobLocator*)handles().get(locpId);
+
+    if (!svchp || !errhp || !locp) {
+        PA_ReturnLong(params, (PA_long32)OCI_ERROR); return;
+    }
+
+    PA_Handle hBlob = PA_GetBlobHandleParameter(params, 5);
+    PA_long32 blobLen = PA_GetHandleSize(hBlob);
+    char* blobPtr = PA_LockHandle(hBlob);
+
+    ub4 amtp = (ub4)blobLen;
+    sword status = OCILobWrite(svchp, errhp, locp, &amtp, (ub4)offset,
+                               blobPtr, (ub4)blobLen, OCI_ONE_PIECE,
+                               nullptr, nullptr, 0, SQLCS_IMPLICIT);
+    PA_UnlockHandle(hBlob);
+    PA_ReturnLong(params, oci_check(status));
+}
+
+// OCILobWriteAppend(svchp; errhp; locp; blob_in) : status
+static void cmd_OCILobWriteAppend(PA_PluginParameters params) {
+    PA_long32 svchpId = PA_GetLongParameter(params, 1);
+    PA_long32 errhpId = PA_GetLongParameter(params, 2);
+    PA_long32 locpId  = PA_GetLongParameter(params, 3);
+
+    OCISvcCtx*     svchp = handles().getAs<OCISvcCtx>(svchpId);
+    OCIError*      errhp = handles().getAs<OCIError>(errhpId);
+    OCILobLocator* locp  = (OCILobLocator*)handles().get(locpId);
+
+    if (!svchp || !errhp || !locp) {
+        PA_ReturnLong(params, (PA_long32)OCI_ERROR); return;
+    }
+
+    PA_Handle hBlob = PA_GetBlobHandleParameter(params, 4);
+    PA_long32 blobLen = PA_GetHandleSize(hBlob);
+    char* blobPtr = PA_LockHandle(hBlob);
+
+    ub4 amtp = (ub4)blobLen;
+    sword status = OCILobWriteAppend(svchp, errhp, locp, &amtp,
+                                     blobPtr, (ub4)blobLen, OCI_ONE_PIECE,
+                                     nullptr, nullptr, 0, SQLCS_IMPLICIT);
+    PA_UnlockHandle(hBlob);
+    PA_ReturnLong(params, oci_check(status));
+}
+
+// OCIDurationBegin(envhp; errhp; svchp; parent_duration) : status
+static void cmd_OCIDurationBegin(PA_PluginParameters params) {
+    PA_long32 envhpId  = PA_GetLongParameter(params, 1);
+    PA_long32 errhpId  = PA_GetLongParameter(params, 2);
+    PA_long32 svchpId  = PA_GetLongParameter(params, 3);
+    PA_long32 parent   = PA_GetLongParameter(params, 4);
+
+    OCIEnv*    envhp = handles().getAs<OCIEnv>(envhpId);
+    OCIError*  errhp = handles().getAs<OCIError>(errhpId);
+    OCISvcCtx* svchp = handles().getAs<OCISvcCtx>(svchpId);
+
+    if (!envhp || !errhp || !svchp) {
+        PA_ReturnLong(params, (PA_long32)OCI_ERROR); return;
+    }
+    OCIDuration dur = 0;
+    sword status = OCIDurationBegin(envhp, errhp, svchp, (OCIDuration)parent, &dur);
+    PA_SetLongParameter(params, 4, (PA_long32)dur);
+    PA_ReturnLong(params, oci_check(status));
+}
+
+// OCIDurationEnd(envhp; errhp; svchp; duration) : status
+static void cmd_OCIDurationEnd(PA_PluginParameters params) {
+    PA_long32 envhpId  = PA_GetLongParameter(params, 1);
+    PA_long32 errhpId  = PA_GetLongParameter(params, 2);
+    PA_long32 svchpId  = PA_GetLongParameter(params, 3);
+    PA_long32 duration = PA_GetLongParameter(params, 4);
+
+    OCIEnv*    envhp = handles().getAs<OCIEnv>(envhpId);
+    OCIError*  errhp = handles().getAs<OCIError>(errhpId);
+    OCISvcCtx* svchp = handles().getAs<OCISvcCtx>(svchpId);
+
+    if (!envhp || !errhp || !svchp) {
+        PA_ReturnLong(params, (PA_long32)OCI_ERROR); return;
+    }
+    sword status = OCIDurationEnd(envhp, errhp, svchp, (OCIDuration)duration);
     PA_ReturnLong(params, oci_check(status));
 }
