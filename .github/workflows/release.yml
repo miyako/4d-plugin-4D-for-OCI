@@ -162,20 +162,9 @@ jobs:
           IDENTITY=$(security find-identity -v -p codesigning "$KEYCHAIN_PATH" \
             | grep "Developer ID Application" | head -1 | sed -E 's/.*"(.*)".*/\1/')
           echo "Signing with: $IDENTITY"
-
-          # Sign inside-out: Oracle dylibs → plugin binary → bundle
-          for dylib in "$BUNDLE_PATH"/Contents/MacOS/lib*.dylib*; do
-            codesign --force --options runtime --timestamp \
-              --sign "$IDENTITY" "$dylib"
-          done
-
-          codesign --force --options runtime --timestamp \
-            --sign "$IDENTITY" "$BUNDLE_PATH/Contents/MacOS/4D-for-OCI"
-
-          codesign --force --options runtime --timestamp \
+          codesign --verbose --deep --timestamp --force --options=runtime \
             --sign "$IDENTITY" "$BUNDLE_PATH"
-
-          codesign -dvv "$BUNDLE_PATH"
+          codesign --verify --deep --strict --verbose=2 "$BUNDLE_PATH"
 
       - name: Package, notarize & staple
         run: |
