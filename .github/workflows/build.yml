@@ -50,3 +50,50 @@ jobs:
         with:
           name: 4D-for-OCI-macos-aarm64
           path: 4D-for-OCI/4D-for-OCI-test/Plugins/4D-for-OCI.bundle
+
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Download Oracle Instant Client
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release download oracle-libs `
+            --pattern 'oracle-instantclient-windows-x64.tar.gz' `
+            --dir $env:TEMP
+          New-Item -ItemType Directory -Force -Path oracle\windows-x64
+          tar xzf "$env:TEMP\oracle-instantclient-windows-x64.tar.gz" `
+            -C oracle\windows-x64
+
+      - name: Set up MSVC
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: x64
+
+      - name: Configure
+        run: |
+          cmake -B 4D-for-OCI/cmake-build `
+            -S 4D-for-OCI `
+            -G Ninja `
+            -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build
+        run: cmake --build 4D-for-OCI/cmake-build --config Release
+
+      - name: Verify output
+        run: |
+          $pluginDir = "4D-for-OCI/cmake-build/Plugins/4D-for-OCI/Contents"
+          Write-Host "--- Plugin contents ---"
+          Get-ChildItem -Recurse "$pluginDir" | Format-Table Name, Length
+          Write-Host "--- Exported symbols ---"
+          dumpbin /exports "$pluginDir/Windows64/4D-for-OCI.4DX" | Select-String FourDPackex
+
+      - name: Upload plugin artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: 4D-for-OCI-windows-x64
+          path: 4D-for-OCI/cmake-build/Plugins/4D-for-OCI
