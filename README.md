@@ -6,14 +6,24 @@ This is a modern clone of the original "4D for OCI" plugin (deprecated 2020), re
 
 ## Status
 
-**Phase 1 complete** — 42 commands, all implemented:
+**145 commands** — 125 implemented, 20 stubbed (Collection/Iterator/Table):
 
-| Theme | Commands | Count |
-|-------|----------|-------|
-| Connection | `OCIEnvCreate`, `OCIHandleAlloc/Free`, `OCILogon/off`, `OCIServerAttach/Detach`, `OCISessionBegin/End`, `OCIBreak`, `OCIReset`, `OCIParamGet/Set`, `OCIPasswordChange` | 14 |
-| Datatype | `OCIStmtPrepare/Execute/Fetch`, `OCIBindByPos/Name`, `OCIDefineByPos`, `OCIStmtGetBindInfo`, `OCIAttrGet/Set`, `OCIErrorGet`, `OCIServerVersion`, `OCIDescriptor*`, `OCIDescribeAny*` | 17 |
-| Transaction | `OCITransStart/Commit/Rollback/Prepare/Detach/Forget` | 6 |
-| Extras | `OCITerminate`, `OCIOnErrCall`, `OCIGetTnsnamesPath`, `OCISetEnv`, `OCIGetEnv` | 5 |
+| Theme | Commands | Count | Status |
+|-------|----------|-------|--------|
+| Connection | `OCIEnvCreate`, `OCIHandleAlloc/Free`, `OCILogon/off`, `OCIServerAttach/Detach`, `OCISessionBegin/End`, `OCIBreak`, `OCIReset`, `OCIParamGet/Set`, `OCIPasswordChange` | 14 | ✅ |
+| Datatype | `OCIStmtPrepare/Execute/Fetch`, `OCIBindByPos/Name`, `OCIDefineByPos`, `OCIStmtGetBindInfo`, `OCIAttrGet/Set`, `OCIErrorGet`, `OCIServerVersion`, `OCIDescriptor*`, `OCIDescribeAny*` | 17 | ✅ |
+| Transaction | `OCITransStart/Commit/Rollback/Prepare/Detach/Forget` | 6 | ✅ |
+| Extras | `OCITerminate`, `OCIOnErrCall`, `OCIGetTnsnamesPath`, `OCISetEnv`, `OCIGetEnv` | 5 | ✅ |
+| Types/Cache | `OCICacheFlush/Free/Refresh/Unmark/Unpin` | 5 | ✅ |
+| Math | `OCINumberAdd/Sub/Mul/Div/Power/Log/Sqrt/Ln/Exp`, trig, `Round/Trunc/IntPower`, `FromText/ToText` | 24 | ✅ |
+| LOB | `OCILobRead/Write/Append/Copy/Trim/Erase`, `File*`, `CreateTemporary`, buffering, `Duration*` | 30 | ✅ |
+| Date | `OCIDateAddDays/Months`, `FromText/ToText`, `SysDate`, `LastDay`, `NextDay`, `ZoneToZone` | 8 | ✅ |
+| Date Bind/Define | `OCIBindDateByPos/Name`, `OCIDefineDateByPos` | 3 | ✅ |
+| Ref | `OCIRefAssign/Clear`, `FromHex/ToHex`, `HexSize`, `IsEqual/IsNull` | 7 | ✅ |
+| Raw | `OCIRawAllocSize`, `AssignBytes/Raw`, `Ptr`, `Resize`, `Size` | 6 | ✅ |
+| Collection | `OCICollAppend/Assign/AssignElem/GetElem/Max/Size/Trim` | 7 | ⬜ stub |
+| Iterator | `OCIIterCreate/Delete/Init/GetCurrent/Next/Prev` | 6 | ⬜ stub |
+| Table | `OCITableDelete/Exists/First/Last/Next/Prev/Size` | 7 | ⬜ stub |
 
 ## Download
 
@@ -51,7 +61,11 @@ The built plugin is placed in `4D-for-OCI-test/Plugins/`.
 
 ## Testing
 
-Test methods are in `4D-for-OCI/4D-for-OCI-test/Project/Sources/Methods/`. Run `test_all` in 4D to execute all 9 test suites (extras, handles, error, connection, attr, stmt, transaction, describe, server).
+Test methods are in `4D-for-OCI/4D-for-OCI-test/Project/Sources/Methods/`. Run `test_all` in 4D to execute all 16 test suites:
+
+- **Phase 1**: extras, handles, error, connection, attr, stmt, transaction, describe, server
+- **Phase 2**: math, cache, lob
+- **Phase 3**: date, ref, raw, stubs
 
 ## CI/CD
 
