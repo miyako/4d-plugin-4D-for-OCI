@@ -2209,9 +2209,26 @@ All plugin projects use the same GitHub Actions repository secrets for macOS cod
 | `NOTARYTOOL_PASSWORD` | App-specific password (generate at appleid.apple.com → Sign-In and Security → App-Specific Passwords) |
 | `NOTARYTOOL_TEAM_ID` | 10-character Apple Developer Team ID |
 
+**Workflow structure:** Two separate workflows:
+- `build.yml` — compile + verify on every push/PR. No signing, no artifacts.
+- `release.yml` — build both platforms + codesign + notarize + GitHub Release. Triggers on `v*.*.*` tags or manual `workflow_dispatch`.
+
+**Certificate import pattern** (proven across all plugin projects):
+```yaml
+echo -n "$CERT_BASE64" | base64 --decode -o "$CERT_PATH"
+security create-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+security import "$CERT_PATH" -P "$CERT_PASSWORD" -A -t cert -f pkcs12 -k "$KEYCHAIN_PATH"
+security list-keychain -d user -s "$KEYCHAIN_PATH" login.keychain
+security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+```
+
+**Identity discovery:** Use `security find-identity -v -p codesigning "$KEYCHAIN_PATH"` to find the signing identity dynamically. Do NOT construct it manually from the team ID.
+
+**Notarytool credentials:** Store in the keychain with `xcrun notarytool store-credentials "notarytool-profile"`, then use `--keychain-profile "notarytool-profile" --keychain "$KEYCHAIN_PATH"` for submissions.
+
 **Signing order (inside-out):** embedded dylibs → plugin binary → bundle. All with `--options runtime --timestamp`.
 
-**Notarization flow:** `ditto -c -k` → `xcrun notarytool submit --wait` → `xcrun stapler staple`.
+**Release artifacts:** Create both `.zip` (cross-platform bundle) and `.dmg` (mac-friendly, can be stapled). Notarize both, staple the dmg. Publish with `softprops/action-gh-release@v2`.
 
 **Oracle dylibs:** must be re-signed with Developer ID (not ad-hoc) before notarization. Ad-hoc signatures (`codesign -fs -`) are only for local development builds.
 
