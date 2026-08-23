@@ -2182,19 +2182,19 @@ PA_SetPointerValue(ptr, var);
 - After `PA_SetPointerValue`, 4D **owns** the variable content (SDK comment: *"do NOT call PA_ClearVariable after this call"*). Calling `PA_DisposeUnistring` after is a use-after-free crash.
 - `PA_GetVariableParameter` is for reading the variable a pointer points to — it does NOT work for `&Z` pointer params. Use `PA_GetPointerParameter` instead.
 
-### 24. Oracle Instant Client dylib linking (macOS Apple Silicon)
+### 24. Bundling third-party dylibs (macOS Apple Silicon)
 
-When bundling Oracle Instant Client dylibs alongside a plugin:
+When bundling third-party dylibs (e.g., Oracle Instant Client, OpenSSL, libcurl) alongside a plugin:
 
-1. **Copy as versioned real files** — `libclntsh.dylib` is a symlink to `libclntsh.dylib.23.1`; CMake `copy_if_different` follows symlinks and loses the versioned name. Copy explicitly with versioned names.
+1. **Copy as versioned real files** — many libraries ship as symlinks (e.g., `libfoo.dylib` → `libfoo.dylib.1.2`). CMake `copy_if_different` follows symlinks and loses the versioned name. Copy explicitly with versioned target names.
 2. **Do NOT use symlinks/aliases** in the plugin bundle — causes crashes in dyld.
-3. **Change `@rpath` → `@loader_path`** using `install_name_tool -id` and `-change` on ALL dylibs.
-4. **Re-sign after `install_name_tool`** — modifying a signed dylib invalidates its code signature. Apple Silicon enforces signatures. Run `codesign -fs -` (ad-hoc) after every `install_name_tool` invocation.
-5. **Full dependency chain**: Plugin → `libclntsh.dylib.23.1` → `libnnz.dylib` + `libclntshcore.dylib.23.1`; `libnnz.dylib` → `libclntshcore.dylib.23.1`. All inter-library references must also be changed to `@loader_path`.
+3. **Change `@rpath` → `@loader_path`** using `install_name_tool -id` and `-change` on ALL dylibs. This makes the library resolve relative to the plugin binary, not the application.
+4. **Re-sign after `install_name_tool`** — modifying a signed dylib invalidates its code signature. Apple Silicon enforces signatures. Run `codesign -fs -` (ad-hoc) after every `install_name_tool` invocation during local development.
+5. **Fix the full dependency chain** — if library A depends on library B, both must have their install names and inter-library references changed to `@loader_path`. Use `otool -L` to inspect the chain.
 
-### 25. OCI handle pointers exceed PA_long32
+### 25. Native pointers exceed PA_long32
 
-OCI handles are `void*` (8 bytes on 64-bit) but `PA_long32` is only 4 bytes. Passing raw pointers as longint parameters silently truncates the upper 32 bits. Use an internal handle table that maps small `PA_long32` IDs (1, 2, 3, ...) to actual `void*` OCI pointers. The table should be thread-safe (`std::mutex`).
+Native library handles and pointers are `void*` (8 bytes on 64-bit) but `PA_long32` is only 4 bytes. Passing raw pointers as longint parameters silently truncates the upper 32 bits. Use an internal handle table that maps small `PA_long32` IDs (1, 2, 3, ...) to actual `void*` pointers. The table should be thread-safe (`std::mutex`).
 
 ### 26. CI/CD: macOS codesigning and notarization
 
@@ -2234,15 +2234,13 @@ security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$KEYCHAIN
 
 **Cross-platform bundles and `--deep`:** 4D plugin bundles often contain both macOS (`Contents/MacOS/`) and Windows (`Contents/Windows64/`) binaries. Do NOT use `codesign --verify --deep --strict` on such bundles — `--deep` traverses into `Contents/Windows64/` and fails on non-Mach-O files (`.4DX`, `.dll`) with "No such process". Use `codesign -dvv` to display signature info instead. Notarytool will validate the signature during submission.
 
-### 27. CI/CD: Oracle Instant Client libraries
+### 27. CI/CD: vendored third-party libraries
 
-Oracle Instant Client binaries cannot be committed to the repo (OTN license, ~250MB per platform). Store them as GitHub Release assets under a dedicated tag (e.g., `oracle-libs`):
+Large third-party binaries (e.g., Oracle Instant Client, database drivers, crypto libraries) often cannot be committed to the repo due to licensing or size. Store them as GitHub Release assets under a dedicated tag (e.g., `vendor-libs`):
 
-- `oracle-instantclient-macos-aarm64.tar.gz` — libclntsh, libclntshcore, libnnz, libociei
-- `oracle-instantclient-windows-x64.tar.gz` — oci.dll, orannz.dll, oraociei.dll, orasql.dll
+- Create platform-specific tarballs (e.g., `libs-macos-aarm64.tar.gz`, `libs-windows-x64.tar.gz`)
+- CI downloads them with `gh release download <tag>`. No extra secrets needed — `GITHUB_TOKEN` has read access to the repo's own releases.
 
-CI downloads them with `gh release download oracle-libs`. No extra secrets needed — `GITHUB_TOKEN` has read access to the repo's own releases.
-
-**Committable artifacts** (not binaries, no license issue):
-- `oracle/include/` — OCI SDK header files (~3.6MB)
-- `oracle/lib/msvc/oci.lib` — Windows import library (~840KB, just symbol stubs)
+**Committable artifacts** (small, no license issue):
+- Header files (`.h`) — type definitions and function declarations
+- Import libraries (`.lib` on Windows) — just symbol stubs, not runtime code
