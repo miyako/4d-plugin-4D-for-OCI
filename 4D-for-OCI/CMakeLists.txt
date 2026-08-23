@@ -79,6 +79,14 @@ if(APPLE)
             "${ORACLE_LIB_DIR}/libnnz.dylib"
             "$<TARGET_FILE_DIR:${PROJECT_NAME}>/"
 
+        # Create versioned symlinks (install names reference versioned filenames)
+        COMMAND ${CMAKE_COMMAND} -E create_symlink
+            "libclntsh.dylib"
+            "$<TARGET_FILE_DIR:${PROJECT_NAME}>/libclntsh.dylib.23.1"
+        COMMAND ${CMAKE_COMMAND} -E create_symlink
+            "libclntshcore.dylib"
+            "$<TARGET_FILE_DIR:${PROJECT_NAME}>/libclntshcore.dylib.23.1"
+
         # Fix plugin binary: @rpath → @loader_path
         COMMAND install_name_tool -change
             "@rpath/libclntsh.dylib.23.1"
@@ -112,7 +120,7 @@ if(APPLE)
             "@loader_path/libclntshcore.dylib.23.1"
             "$<TARGET_FILE_DIR:${PROJECT_NAME}>/libnnz.dylib"
 
-        COMMENT "Copying Oracle libraries and fixing install names"
+        COMMENT "Copying Oracle libraries, creating versioned symlinks, and fixing install names"
     )
 
 elseif(WIN32)
