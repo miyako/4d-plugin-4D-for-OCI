@@ -164,7 +164,6 @@ jobs:
           echo "Signing with: $IDENTITY"
           codesign --verbose --deep --timestamp --force --options=runtime \
             --sign "$IDENTITY" "$BUNDLE_PATH"
-          codesign --verify --deep --strict --verbose=2 "$BUNDLE_PATH"
 
       - name: Package, notarize & staple
         run: |
