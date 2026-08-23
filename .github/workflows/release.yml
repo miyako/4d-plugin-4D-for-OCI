@@ -1,0 +1,152 @@
+name: Release Plugin
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+jobs:
+  release-macos:
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Download Oracle Instant Client
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release download oracle-libs \
+            --pattern 'oracle-instantclient-macos-aarm64.tar.gz' \
+            --dir /tmp
+          mkdir -p oracle/macos-aarm64
+          tar xzf /tmp/oracle-instantclient-macos-aarm64.tar.gz \
+            -C oracle/macos-aarm64
+
+      - name: Configure
+        run: |
+          cmake -B 4D-for-OCI/cmake-build \
+            -S 4D-for-OCI \
+            -G "Unix Makefiles" \
+            -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build
+        run: cmake --build 4D-for-OCI/cmake-build --config Release
+
+      - name: Import signing certificate
+        env:
+          APPLE_DEVELOPER_ID_CERTIFICATE: ${{ secrets.APPLE_DEVELOPER_ID_CERTIFICATE }}
+          APPLE_DEVELOPER_ID_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_DEVELOPER_ID_CERTIFICATE_PASSWORD }}
+          KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
+        run: |
+          echo "$APPLE_DEVELOPER_ID_CERTIFICATE" | base64 --decode > /tmp/certificate.p12
+
+          KEYCHAIN_PATH=$RUNNER_TEMP/app-signing.keychain-db
+          security create-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+          security set-keychain-settings -lut 21600 "$KEYCHAIN_PATH"
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+
+          security import /tmp/certificate.p12 \
+            -P "$APPLE_DEVELOPER_ID_CERTIFICATE_PASSWORD" \
+            -A -t cert -f pkcs12 \
+            -k "$KEYCHAIN_PATH"
+
+          security set-key-partition-list -S apple-tool:,apple:,codesign: \
+            -s -k "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+
+          security list-keychains -d user -s "$KEYCHAIN_PATH" $(security list-keychains -d user | tr -d '"')
+
+          rm /tmp/certificate.p12
+
+      - name: Codesign bundle
+        env:
+          NOTARYTOOL_TEAM_ID: ${{ secrets.NOTARYTOOL_TEAM_ID }}
+        run: |
+          BUNDLE="4D-for-OCI/4D-for-OCI-test/Plugins/4D-for-OCI.bundle"
+          IDENTITY="Developer ID Application: ($NOTARYTOOL_TEAM_ID)"
+
+          # Sign inside-out: dylibs → binary → bundle
+          for dylib in "$BUNDLE"/Contents/MacOS/lib*.dylib*; do
+            codesign --force --options runtime --timestamp \
+              --sign "$IDENTITY" "$dylib"
+          done
+
+          codesign --force --options runtime --timestamp \
+            --sign "$IDENTITY" "$BUNDLE/Contents/MacOS/4D-for-OCI"
+
+          codesign --force --options runtime --timestamp \
+            --sign "$IDENTITY" "$BUNDLE"
+
+          codesign -dvv "$BUNDLE"
+
+      - name: Notarize bundle
+        env:
+          NOTARYTOOL_APPLE_ID: ${{ secrets.NOTARYTOOL_APPLE_ID }}
+          NOTARYTOOL_PASSWORD: ${{ secrets.NOTARYTOOL_PASSWORD }}
+          NOTARYTOOL_TEAM_ID: ${{ secrets.NOTARYTOOL_TEAM_ID }}
+        run: |
+          BUNDLE="4D-for-OCI/4D-for-OCI-test/Plugins/4D-for-OCI.bundle"
+
+          ditto -c -k --keepParent "$BUNDLE" /tmp/4D-for-OCI.zip
+
+          xcrun notarytool submit /tmp/4D-for-OCI.zip \
+            --apple-id "$NOTARYTOOL_APPLE_ID" \
+            --password "$NOTARYTOOL_PASSWORD" \
+            --team-id "$NOTARYTOOL_TEAM_ID" \
+            --wait --timeout 600
+
+          xcrun stapler staple "$BUNDLE"
+
+      - name: Clean up keychain
+        if: always()
+        run: |
+          KEYCHAIN_PATH=$RUNNER_TEMP/app-signing.keychain-db
+          if [ -f "$KEYCHAIN_PATH" ]; then
+            security delete-keychain "$KEYCHAIN_PATH"
+          fi
+
+      - name: Upload plugin artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: 4D-for-OCI-macos-aarm64
+          path: 4D-for-OCI/4D-for-OCI-test/Plugins/4D-for-OCI.bundle
+
+  release-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Download Oracle Instant Client
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release download oracle-libs `
+            --pattern 'oracle-instantclient-windows-x64.tar.gz' `
+            --dir $env:TEMP
+          New-Item -ItemType Directory -Force -Path oracle\windows-x64
+          tar xzf "$env:TEMP\oracle-instantclient-windows-x64.tar.gz" `
+            -C oracle\windows-x64
+
+      - name: Set up MSVC
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: x64
+
+      - name: Configure
+        run: |
+          cmake -B 4D-for-OCI/cmake-build `
+            -S 4D-for-OCI `
+            -G Ninja `
+            -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build
+        run: cmake --build 4D-for-OCI/cmake-build --config Release
+
+      - name: Upload plugin artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: 4D-for-OCI-windows-x64
+          path: 4D-for-OCI/cmake-build/Plugins/4D-for-OCI
