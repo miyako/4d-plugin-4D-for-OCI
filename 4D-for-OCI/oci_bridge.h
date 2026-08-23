@@ -141,16 +141,20 @@ inline PA_Unistring utf8_to_unistring(const std::string& s) {
 // ============================================================
 // For &Z params that point to Text variables, read/write the pointed-to variable
 
-// Write a UTF-8 string to a 4D Text variable referenced by a pointer parameter
+// Write a UTF-8 string to a 4D Text variable referenced by a pointer parameter (&Z)
 inline void set_pointer_text(PA_PluginParameters params, short index,
                               const char* utf8, PA_long32 utf8Len) {
-    // Get the pointer info — this gives us access to the variable
-    PA_Variable var = PA_GetVariableParameter(params, index);
-    if (var.fType == 0) return; // invalid
+    PA_Pointer ptr = PA_GetPointerParameter(params, index);
+    if (!ptr) return;
 
     PA_Unistring ustr = utf8_to_unistring(std::string(utf8, utf8Len));
-    PA_SetStringVariable(&var, &ustr);
-    PA_SetVariableParameter(params, index, var, 0);
+
+    PA_Variable var;
+    std::memset(&var, 0, sizeof(var));
+    var.fType = (char)eVK_Text;
+    var.uValue.fString = ustr;
+
+    PA_SetPointerValue(ptr, var);
     PA_DisposeUnistring(&ustr);
 }
 
