@@ -1,122 +1,44 @@
-name: Release Plugin
+name: Build & Release
 
 on:
   push:
-    tags: ['v*']
+    tags:
+      - 'v*.*.*'
   workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing tag to build (e.g. v1.0.0)
+        required: true
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
 
 jobs:
-  release-macos:
-    runs-on: macos-14
+
+  version:
+    runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.set.outputs.tag }}
+      version: ${{ steps.set.outputs.version }}
     steps:
-      - uses: actions/checkout@v4
-        with:
-          submodules: recursive
-
-      - name: Download Oracle Instant Client
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - id: set
         run: |
-          gh release download oracle-libs \
-            --pattern 'oracle-instantclient-macos-aarm64.tar.gz' \
-            --dir /tmp
-          mkdir -p oracle/macos-aarm64
-          tar xzf /tmp/oracle-instantclient-macos-aarm64.tar.gz \
-            -C oracle/macos-aarm64
+          TAG="${{ inputs.tag || github.ref_name }}"
+          echo "tag=${TAG}" >> "$GITHUB_OUTPUT"
+          echo "version=${TAG#v}" >> "$GITHUB_OUTPUT"
 
-      - name: Configure
-        run: |
-          cmake -B 4D-for-OCI/cmake-build \
-            -S 4D-for-OCI \
-            -G "Unix Makefiles" \
-            -DCMAKE_BUILD_TYPE=Release
-
-      - name: Build
-        run: cmake --build 4D-for-OCI/cmake-build --config Release
-
-      - name: Import signing certificate
-        env:
-          APPLE_DEVELOPER_ID_CERTIFICATE: ${{ secrets.APPLE_DEVELOPER_ID_CERTIFICATE }}
-          APPLE_DEVELOPER_ID_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_DEVELOPER_ID_CERTIFICATE_PASSWORD }}
-          KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
-        run: |
-          echo "$APPLE_DEVELOPER_ID_CERTIFICATE" | base64 --decode > /tmp/certificate.p12
-
-          KEYCHAIN_PATH=$RUNNER_TEMP/app-signing.keychain-db
-          security create-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
-          security set-keychain-settings -lut 21600 "$KEYCHAIN_PATH"
-          security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
-
-          security import /tmp/certificate.p12 \
-            -P "$APPLE_DEVELOPER_ID_CERTIFICATE_PASSWORD" \
-            -A -t cert -f pkcs12 \
-            -k "$KEYCHAIN_PATH"
-
-          security set-key-partition-list -S apple-tool:,apple:,codesign: \
-            -s -k "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
-
-          security list-keychains -d user -s "$KEYCHAIN_PATH" $(security list-keychains -d user | tr -d '"')
-
-          rm /tmp/certificate.p12
-
-      - name: Codesign bundle
-        env:
-          NOTARYTOOL_TEAM_ID: ${{ secrets.NOTARYTOOL_TEAM_ID }}
-        run: |
-          BUNDLE="4D-for-OCI/4D-for-OCI-test/Plugins/4D-for-OCI.bundle"
-          IDENTITY="Developer ID Application: ($NOTARYTOOL_TEAM_ID)"
-
-          # Sign inside-out: dylibs → binary → bundle
-          for dylib in "$BUNDLE"/Contents/MacOS/lib*.dylib*; do
-            codesign --force --options runtime --timestamp \
-              --sign "$IDENTITY" "$dylib"
-          done
-
-          codesign --force --options runtime --timestamp \
-            --sign "$IDENTITY" "$BUNDLE/Contents/MacOS/4D-for-OCI"
-
-          codesign --force --options runtime --timestamp \
-            --sign "$IDENTITY" "$BUNDLE"
-
-          codesign -dvv "$BUNDLE"
-
-      - name: Notarize bundle
-        env:
-          NOTARYTOOL_APPLE_ID: ${{ secrets.NOTARYTOOL_APPLE_ID }}
-          NOTARYTOOL_PASSWORD: ${{ secrets.NOTARYTOOL_PASSWORD }}
-          NOTARYTOOL_TEAM_ID: ${{ secrets.NOTARYTOOL_TEAM_ID }}
-        run: |
-          BUNDLE="4D-for-OCI/4D-for-OCI-test/Plugins/4D-for-OCI.bundle"
-
-          ditto -c -k --keepParent "$BUNDLE" /tmp/4D-for-OCI.zip
-
-          xcrun notarytool submit /tmp/4D-for-OCI.zip \
-            --apple-id "$NOTARYTOOL_APPLE_ID" \
-            --password "$NOTARYTOOL_PASSWORD" \
-            --team-id "$NOTARYTOOL_TEAM_ID" \
-            --wait --timeout 600
-
-          xcrun stapler staple "$BUNDLE"
-
-      - name: Clean up keychain
-        if: always()
-        run: |
-          KEYCHAIN_PATH=$RUNNER_TEMP/app-signing.keychain-db
-          if [ -f "$KEYCHAIN_PATH" ]; then
-            security delete-keychain "$KEYCHAIN_PATH"
-          fi
-
-      - name: Upload plugin artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: 4D-for-OCI-macos-aarm64
-          path: 4D-for-OCI/4D-for-OCI-test/Plugins/4D-for-OCI.bundle
-
-  release-windows:
+  build-windows:
+    name: Build Windows (x64)
+    needs: version
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
         with:
+          ref: ${{ needs.version.outputs.tag }}
           submodules: recursive
 
       - name: Download Oracle Instant Client
@@ -145,8 +67,144 @@ jobs:
       - name: Build
         run: cmake --build 4D-for-OCI/cmake-build --config Release
 
-      - name: Upload plugin artifact
+      - name: Upload Windows binaries
         uses: actions/upload-artifact@v4
         with:
-          name: 4D-for-OCI-windows-x64
-          path: 4D-for-OCI/cmake-build/Plugins/4D-for-OCI
+          name: windows-binaries
+          path: |
+            4D-for-OCI/cmake-build/Plugins/4D-for-OCI/Contents/Windows64/4D-for-OCI.4DX
+            4D-for-OCI/cmake-build/Plugins/4D-for-OCI/Contents/Windows64/*.dll
+            4D-for-OCI/cmake-build/Plugins/4D-for-OCI/Contents/Resources/
+          if-no-files-found: error
+
+  build-macos:
+    name: Build macOS, sign, notarize & release
+    needs: [version, build-windows]
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.version.outputs.tag }}
+          submodules: recursive
+
+      - name: Download Oracle Instant Client
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release download oracle-libs \
+            --pattern 'oracle-instantclient-macos-aarm64.tar.gz' \
+            --dir /tmp
+          mkdir -p oracle/macos-aarm64
+          tar xzf /tmp/oracle-instantclient-macos-aarm64.tar.gz \
+            -C oracle/macos-aarm64
+
+      - name: Download Windows binaries
+        uses: actions/download-artifact@v4
+        with:
+          name: windows-binaries
+          path: winbuild
+
+      - name: Import Developer ID certificate
+        env:
+          CERT_BASE64: ${{ secrets.APPLE_DEVELOPER_ID_CERTIFICATE }}
+          CERT_PASSWORD: ${{ secrets.APPLE_DEVELOPER_ID_CERTIFICATE_PASSWORD }}
+          KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
+        run: |
+          set -euo pipefail
+          KEYCHAIN_PATH="$RUNNER_TEMP/build.keychain-db"
+          CERT_PATH="$RUNNER_TEMP/certificate.p12"
+
+          echo -n "$CERT_BASE64" | base64 --decode -o "$CERT_PATH"
+
+          security create-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+          security set-keychain-settings -lut 21600 "$KEYCHAIN_PATH"
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+          security import "$CERT_PATH" -P "$CERT_PASSWORD" -A -t cert -f pkcs12 -k "$KEYCHAIN_PATH"
+          security list-keychain -d user -s "$KEYCHAIN_PATH" login.keychain
+          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+
+          echo "KEYCHAIN_PATH=$KEYCHAIN_PATH" >> "$GITHUB_ENV"
+
+      - name: Store notarytool credentials
+        env:
+          APPLE_ID: ${{ secrets.NOTARYTOOL_APPLE_ID }}
+          TEAM_ID: ${{ secrets.NOTARYTOOL_TEAM_ID }}
+          APP_PASSWORD: ${{ secrets.NOTARYTOOL_PASSWORD }}
+        run: |
+          xcrun notarytool store-credentials "notarytool-profile" \
+            --apple-id "$APPLE_ID" \
+            --team-id "$TEAM_ID" \
+            --password "$APP_PASSWORD" \
+            --keychain "$KEYCHAIN_PATH"
+
+      - name: Configure
+        run: |
+          cmake -B 4D-for-OCI/cmake-build \
+            -S 4D-for-OCI \
+            -G "Unix Makefiles" \
+            -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build
+        run: cmake --build 4D-for-OCI/cmake-build --config Release
+
+      - name: Merge Windows binaries into bundle
+        run: |
+          set -euo pipefail
+          BUNDLE="4D-for-OCI/4D-for-OCI-test/Plugins/4D-for-OCI.bundle"
+          mkdir -p "$BUNDLE/Contents/Windows64"
+          cp winbuild/*.4DX "$BUNDLE/Contents/Windows64/" || true
+          cp winbuild/*.dll "$BUNDLE/Contents/Windows64/" || true
+          echo "BUNDLE_PATH=$BUNDLE" >> "$GITHUB_ENV"
+
+      - name: Codesign
+        run: |
+          set -euo pipefail
+          IDENTITY=$(security find-identity -v -p codesigning "$KEYCHAIN_PATH" \
+            | grep "Developer ID Application" | head -1 | sed -E 's/.*"(.*)".*/\1/')
+          echo "Signing with: $IDENTITY"
+
+          # Sign inside-out: Oracle dylibs → plugin binary → bundle
+          for dylib in "$BUNDLE_PATH"/Contents/MacOS/lib*.dylib*; do
+            codesign --force --options runtime --timestamp \
+              --sign "$IDENTITY" "$dylib"
+          done
+
+          codesign --force --options runtime --timestamp \
+            --sign "$IDENTITY" "$BUNDLE_PATH/Contents/MacOS/4D-for-OCI"
+
+          codesign --force --options runtime --timestamp \
+            --sign "$IDENTITY" "$BUNDLE_PATH"
+
+          codesign --verify --deep --strict --verbose=2 "$BUNDLE_PATH"
+
+      - name: Package, notarize & staple
+        run: |
+          set -euo pipefail
+          VERSION="${{ needs.version.outputs.version }}"
+          ZIP_PATH="4D-for-OCI-${VERSION}.zip"
+          DMG_PATH="4D-for-OCI-${VERSION}.dmg"
+
+          ditto -c -k --keepParent "$BUNDLE_PATH" "$ZIP_PATH"
+
+          hdiutil create -format UDBZ -volname "4D-for-OCI" \
+            -srcfolder "$BUNDLE_PATH" "$DMG_PATH"
+
+          xcrun notarytool submit "$ZIP_PATH" \
+            --keychain-profile "notarytool-profile" \
+            --keychain "$KEYCHAIN_PATH" --wait
+          xcrun notarytool submit "$DMG_PATH" \
+            --keychain-profile "notarytool-profile" \
+            --keychain "$KEYCHAIN_PATH" --wait
+          xcrun stapler staple "$DMG_PATH"
+
+          echo "ZIP_PATH=$ZIP_PATH" >> "$GITHUB_ENV"
+          echo "DMG_PATH=$DMG_PATH" >> "$GITHUB_ENV"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ needs.version.outputs.tag }}
+          name: ${{ needs.version.outputs.tag }}
+          files: |
+            ${{ env.ZIP_PATH }}
+            ${{ env.DMG_PATH }}
