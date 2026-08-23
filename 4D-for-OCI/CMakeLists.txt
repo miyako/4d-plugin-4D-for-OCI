@@ -78,11 +78,40 @@ if(APPLE)
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
             "${ORACLE_LIB_DIR}/libnnz.dylib"
             "$<TARGET_FILE_DIR:${PROJECT_NAME}>/"
-        # Fix install names
+
+        # Fix plugin binary: @rpath → @loader_path
         COMMAND install_name_tool -change
-            "@rpath/libclntsh.dylib"
-            "@loader_path/libclntsh.dylib"
+            "@rpath/libclntsh.dylib.23.1"
+            "@loader_path/libclntsh.dylib.23.1"
             "$<TARGET_FILE:${PROJECT_NAME}>"
+
+        # Fix libclntsh.dylib: id + dependencies on libnnz and libclntshcore
+        COMMAND install_name_tool -id
+            "@loader_path/libclntsh.dylib.23.1"
+            "$<TARGET_FILE_DIR:${PROJECT_NAME}>/libclntsh.dylib"
+        COMMAND install_name_tool -change
+            "@rpath/libnnz.dylib"
+            "@loader_path/libnnz.dylib"
+            "$<TARGET_FILE_DIR:${PROJECT_NAME}>/libclntsh.dylib"
+        COMMAND install_name_tool -change
+            "@rpath/libclntshcore.dylib.23.1"
+            "@loader_path/libclntshcore.dylib.23.1"
+            "$<TARGET_FILE_DIR:${PROJECT_NAME}>/libclntsh.dylib"
+
+        # Fix libclntshcore.dylib: id
+        COMMAND install_name_tool -id
+            "@loader_path/libclntshcore.dylib.23.1"
+            "$<TARGET_FILE_DIR:${PROJECT_NAME}>/libclntshcore.dylib"
+
+        # Fix libnnz.dylib: id + dependency on libclntshcore
+        COMMAND install_name_tool -id
+            "@loader_path/libnnz.dylib"
+            "$<TARGET_FILE_DIR:${PROJECT_NAME}>/libnnz.dylib"
+        COMMAND install_name_tool -change
+            "@rpath/libclntshcore.dylib.23.1"
+            "@loader_path/libclntshcore.dylib.23.1"
+            "$<TARGET_FILE_DIR:${PROJECT_NAME}>/libnnz.dylib"
+
         COMMENT "Copying Oracle libraries and fixing install names"
     )
 
