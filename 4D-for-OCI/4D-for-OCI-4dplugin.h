@@ -59,6 +59,39 @@
 #define kSel_OCIParamSet        41
 #define kSel_OCIPasswordChange  42
 
+// Types/Cache
+#define kSel_OCICacheFlush       43
+#define kSel_OCICacheFree        44
+#define kSel_OCICacheRefresh     45
+#define kSel_OCICacheUnmark      46
+#define kSel_OCICacheUnpin       47
+
+// Math/OCINumber
+#define kSel_OCINumberAdd        48
+#define kSel_OCINumberSub        49
+#define kSel_OCINumberMul        50
+#define kSel_OCINumberDiv        51
+#define kSel_OCINumberPower      52
+#define kSel_OCINumberLog        53
+#define kSel_OCINumberArcTan2    54
+#define kSel_OCINumberSqrt       55
+#define kSel_OCINumberLn         56
+#define kSel_OCINumberExp        57
+#define kSel_OCINumberSin        58
+#define kSel_OCINumberCos        59
+#define kSel_OCINumberTan        60
+#define kSel_OCINumberArcSin     61
+#define kSel_OCINumberArcCos     62
+#define kSel_OCINumberArcTan     63
+#define kSel_OCINumberHypSin     64
+#define kSel_OCINumberHypCos     65
+#define kSel_OCINumberHypTan     66
+#define kSel_OCINumberTrunc      67
+#define kSel_OCINumberRound      68
+#define kSel_OCINumberIntPower   69
+#define kSel_OCINumberFromText   70
+#define kSel_OCINumberToText     71
+
 #define kSel_MaxCommand         42
 
 // ============================================================
@@ -116,5 +149,38 @@ static void cmd_OCIGetEnv(PA_PluginParameters params);
 static void cmd_OCIParamGet(PA_PluginParameters params);
 static void cmd_OCIParamSet(PA_PluginParameters params);
 static void cmd_OCIPasswordChange(PA_PluginParameters params);
+
+// Types/Cache
+static void cmd_OCICacheFlush(PA_PluginParameters params);
+static void cmd_OCICacheFree(PA_PluginParameters params);
+static void cmd_OCICacheRefresh(PA_PluginParameters params);
+static void cmd_OCICacheUnmark(PA_PluginParameters params);
+static void cmd_OCICacheUnpin(PA_PluginParameters params);
+
+// Math/OCINumber
+static void cmd_OCINumberAdd(PA_PluginParameters params);
+static void cmd_OCINumberSub(PA_PluginParameters params);
+static void cmd_OCINumberMul(PA_PluginParameters params);
+static void cmd_OCINumberDiv(PA_PluginParameters params);
+static void cmd_OCINumberPower(PA_PluginParameters params);
+static void cmd_OCINumberLog(PA_PluginParameters params);
+static void cmd_OCINumberArcTan2(PA_PluginParameters params);
+static void cmd_OCINumberSqrt(PA_PluginParameters params);
+static void cmd_OCINumberLn(PA_PluginParameters params);
+static void cmd_OCINumberExp(PA_PluginParameters params);
+static void cmd_OCINumberSin(PA_PluginParameters params);
+static void cmd_OCINumberCos(PA_PluginParameters params);
+static void cmd_OCINumberTan(PA_PluginParameters params);
+static void cmd_OCINumberArcSin(PA_PluginParameters params);
+static void cmd_OCINumberArcCos(PA_PluginParameters params);
+static void cmd_OCINumberArcTan(PA_PluginParameters params);
+static void cmd_OCINumberHypSin(PA_PluginParameters params);
+static void cmd_OCINumberHypCos(PA_PluginParameters params);
+static void cmd_OCINumberHypTan(PA_PluginParameters params);
+static void cmd_OCINumberTrunc(PA_PluginParameters params);
+static void cmd_OCINumberRound(PA_PluginParameters params);
+static void cmd_OCINumberIntPower(PA_PluginParameters params);
+static void cmd_OCINumberFromText(PA_PluginParameters params);
+static void cmd_OCINumberToText(PA_PluginParameters params);
 
 #endif // PLUGIN_4D_FOR_OCI_H

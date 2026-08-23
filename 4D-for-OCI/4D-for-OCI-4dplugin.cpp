@@ -86,6 +86,39 @@ void PluginMain(PA_long32 selector, PA_PluginParameters params) {
         case kSel_OCIParamGet:        cmd_OCIParamGet(params);        break;
         case kSel_OCIParamSet:        cmd_OCIParamSet(params);        break;
         case kSel_OCIPasswordChange:  cmd_OCIPasswordChange(params);  break;
+
+        // Types/Cache
+        case kSel_OCICacheFlush:      cmd_OCICacheFlush(params);      break;
+        case kSel_OCICacheFree:       cmd_OCICacheFree(params);       break;
+        case kSel_OCICacheRefresh:    cmd_OCICacheRefresh(params);    break;
+        case kSel_OCICacheUnmark:     cmd_OCICacheUnmark(params);     break;
+        case kSel_OCICacheUnpin:      cmd_OCICacheUnpin(params);      break;
+
+        // Math/OCINumber
+        case kSel_OCINumberAdd:       cmd_OCINumberAdd(params);       break;
+        case kSel_OCINumberSub:       cmd_OCINumberSub(params);       break;
+        case kSel_OCINumberMul:       cmd_OCINumberMul(params);       break;
+        case kSel_OCINumberDiv:       cmd_OCINumberDiv(params);       break;
+        case kSel_OCINumberPower:     cmd_OCINumberPower(params);     break;
+        case kSel_OCINumberLog:       cmd_OCINumberLog(params);       break;
+        case kSel_OCINumberArcTan2:   cmd_OCINumberArcTan2(params);   break;
+        case kSel_OCINumberSqrt:      cmd_OCINumberSqrt(params);      break;
+        case kSel_OCINumberLn:        cmd_OCINumberLn(params);        break;
+        case kSel_OCINumberExp:       cmd_OCINumberExp(params);       break;
+        case kSel_OCINumberSin:       cmd_OCINumberSin(params);       break;
+        case kSel_OCINumberCos:       cmd_OCINumberCos(params);       break;
+        case kSel_OCINumberTan:       cmd_OCINumberTan(params);       break;
+        case kSel_OCINumberArcSin:    cmd_OCINumberArcSin(params);    break;
+        case kSel_OCINumberArcCos:    cmd_OCINumberArcCos(params);    break;
+        case kSel_OCINumberArcTan:    cmd_OCINumberArcTan(params);    break;
+        case kSel_OCINumberHypSin:    cmd_OCINumberHypSin(params);    break;
+        case kSel_OCINumberHypCos:    cmd_OCINumberHypCos(params);    break;
+        case kSel_OCINumberHypTan:    cmd_OCINumberHypTan(params);    break;
+        case kSel_OCINumberTrunc:     cmd_OCINumberTrunc(params);     break;
+        case kSel_OCINumberRound:     cmd_OCINumberRound(params);     break;
+        case kSel_OCINumberIntPower:  cmd_OCINumberIntPower(params);  break;
+        case kSel_OCINumberFromText:  cmd_OCINumberFromText(params);  break;
+        case kSel_OCINumberToText:    cmd_OCINumberToText(params);    break;
     }
 }
 
@@ -1264,5 +1297,319 @@ static void cmd_OCIPasswordChange(PA_PluginParameters params) {
                                       (const OraText*)newPw.c_str(), (ub4)newPw.size(),
                                       (ub4)mode);
 
+    PA_ReturnLong(params, oci_check(status));
+}
+
+// ---------------------------------------------------------------------------
+// Helpers: double <-> OCINumber conversion
+// ---------------------------------------------------------------------------
+
+static sword double_to_OCINumber(OCIError* errhp, double val, OCINumber* num) {
+    return OCINumberFromReal(errhp, &val, sizeof(double), num);
+}
+
+static sword OCINumber_to_double(OCIError* errhp, const OCINumber* num, double* val) {
+    return OCINumberToReal(errhp, num, sizeof(double), val);
+}
+
+// ---------------------------------------------------------------------------
+// Types/Cache commands
+// ---------------------------------------------------------------------------
+
+static void cmd_OCICacheFlush(PA_PluginParameters params) {
+    PA_long32 envhpId = PA_GetLongParameter(params, 1);
+    PA_long32 errhpId = PA_GetLongParameter(params, 2);
+    PA_long32 svchpId = PA_GetLongParameter(params, 3);
+    PA_long32 context = PA_GetLongParameter(params, 4);
+
+    OCIEnv*    envhp = handles().getAs<OCIEnv>(envhpId);
+    OCIError*  errhp = handles().getAs<OCIError>(errhpId);
+    OCISvcCtx* svchp = handles().getAs<OCISvcCtx>(svchpId);
+
+    if (!envhp || !errhp || !svchp) {
+        PA_ReturnLong(params, (PA_long32)OCI_ERROR);
+        return;
+    }
+
+    sword status = OCICacheFlush(envhp, errhp, svchp, (void*)(uintptr_t)context, nullptr, nullptr);
+    PA_ReturnLong(params, oci_check(status));
+}
+
+static void cmd_OCICacheFree(PA_PluginParameters params) {
+    PA_long32 envhpId = PA_GetLongParameter(params, 1);
+    PA_long32 errhpId = PA_GetLongParameter(params, 2);
+    PA_long32 svchpId = PA_GetLongParameter(params, 3);
+
+    OCIEnv*    envhp = handles().getAs<OCIEnv>(envhpId);
+    OCIError*  errhp = handles().getAs<OCIError>(errhpId);
+    OCISvcCtx* svchp = handles().getAs<OCISvcCtx>(svchpId);
+
+    if (!envhp || !errhp || !svchp) {
+        PA_ReturnLong(params, (PA_long32)OCI_ERROR);
+        return;
+    }
+
+    sword status = OCICacheFree(envhp, errhp, svchp);
+    PA_ReturnLong(params, oci_check(status));
+}
+
+static void cmd_OCICacheRefresh(PA_PluginParameters params) {
+    PA_long32 envhpId = PA_GetLongParameter(params, 1);
+    PA_long32 errhpId = PA_GetLongParameter(params, 2);
+    PA_long32 svchpId = PA_GetLongParameter(params, 3);
+    PA_long32 option  = PA_GetLongParameter(params, 4);
+    PA_long32 context = PA_GetLongParameter(params, 5);
+
+    OCIEnv*    envhp = handles().getAs<OCIEnv>(envhpId);
+    OCIError*  errhp = handles().getAs<OCIError>(errhpId);
+    OCISvcCtx* svchp = handles().getAs<OCISvcCtx>(svchpId);
+
+    if (!envhp || !errhp || !svchp) {
+        PA_ReturnLong(params, (PA_long32)OCI_ERROR);
+        return;
+    }
+
+    sword status = OCICacheRefresh(envhp, errhp, svchp, (OCIRefreshOpt)option,
+                                   (void*)(uintptr_t)context, nullptr, nullptr);
+    PA_ReturnLong(params, oci_check(status));
+}
+
+static void cmd_OCICacheUnmark(PA_PluginParameters params) {
+    PA_long32 envhpId = PA_GetLongParameter(params, 1);
+    PA_long32 errhpId = PA_GetLongParameter(params, 2);
+    PA_long32 svchpId = PA_GetLongParameter(params, 3);
+
+    OCIEnv*    envhp = handles().getAs<OCIEnv>(envhpId);
+    OCIError*  errhp = handles().getAs<OCIError>(errhpId);
+    OCISvcCtx* svchp = handles().getAs<OCISvcCtx>(svchpId);
+
+    if (!envhp || !errhp || !svchp) {
+        PA_ReturnLong(params, (PA_long32)OCI_ERROR);
+        return;
+    }
+
+    sword status = OCICacheUnmark(envhp, errhp, svchp);
+    PA_ReturnLong(params, oci_check(status));
+}
+
+static void cmd_OCICacheUnpin(PA_PluginParameters params) {
+    PA_long32 envhpId = PA_GetLongParameter(params, 1);
+    PA_long32 errhpId = PA_GetLongParameter(params, 2);
+    PA_long32 svchpId = PA_GetLongParameter(params, 3);
+
+    OCIEnv*    envhp = handles().getAs<OCIEnv>(envhpId);
+    OCIError*  errhp = handles().getAs<OCIError>(errhpId);
+    OCISvcCtx* svchp = handles().getAs<OCISvcCtx>(svchpId);
+
+    if (!envhp || !errhp || !svchp) {
+        PA_ReturnLong(params, (PA_long32)OCI_ERROR);
+        return;
+    }
+
+    sword status = OCICacheUnpin(envhp, errhp, svchp);
+    PA_ReturnLong(params, oci_check(status));
+}
+
+// ---------------------------------------------------------------------------
+// Math/OCINumber: 3-operand (err, a, b, result)
+// ---------------------------------------------------------------------------
+
+#define IMPL_OCINUMBER_3OP(NAME, OCIFN)                                       \
+static void cmd_##NAME(PA_PluginParameters params) {                          \
+    PA_long32 errhpId = PA_GetLongParameter(params, 1);                       \
+    double num1 = PA_GetDoubleParameter(params, 2);                           \
+    double num2 = PA_GetDoubleParameter(params, 3);                           \
+                                                                              \
+    OCIError* errhp = handles().getAs<OCIError>(errhpId);                     \
+    if (!errhp) { PA_ReturnLong(params, (PA_long32)OCI_ERROR); return; }      \
+                                                                              \
+    OCINumber on1, on2, onResult;                                             \
+    sword status = double_to_OCINumber(errhp, num1, &on1);                    \
+    if (status != OCI_SUCCESS) { PA_ReturnLong(params, oci_check(status)); return; } \
+    status = double_to_OCINumber(errhp, num2, &on2);                          \
+    if (status != OCI_SUCCESS) { PA_ReturnLong(params, oci_check(status)); return; } \
+                                                                              \
+    status = OCIFN(errhp, &on1, &on2, &onResult);                            \
+    if (status == OCI_SUCCESS) {                                              \
+        double result;                                                        \
+        OCINumber_to_double(errhp, &onResult, &result);                       \
+        PA_SetDoubleParameter(params, 4, result);                             \
+    }                                                                         \
+    PA_ReturnLong(params, oci_check(status));                                 \
+}
+
+IMPL_OCINUMBER_3OP(OCINumberAdd,     OCINumberAdd)
+IMPL_OCINUMBER_3OP(OCINumberSub,     OCINumberSub)
+IMPL_OCINUMBER_3OP(OCINumberMul,     OCINumberMul)
+IMPL_OCINUMBER_3OP(OCINumberDiv,     OCINumberDiv)
+IMPL_OCINUMBER_3OP(OCINumberPower,   OCINumberPower)
+IMPL_OCINUMBER_3OP(OCINumberLog,     OCINumberLog)
+IMPL_OCINUMBER_3OP(OCINumberArcTan2, OCINumberArcTan2)
+
+// ---------------------------------------------------------------------------
+// Math/OCINumber: 2-operand (err, num, result)
+// ---------------------------------------------------------------------------
+
+#define IMPL_OCINUMBER_2OP(NAME, OCIFN)                                       \
+static void cmd_##NAME(PA_PluginParameters params) {                          \
+    PA_long32 errhpId = PA_GetLongParameter(params, 1);                       \
+    double num = PA_GetDoubleParameter(params, 2);                            \
+                                                                              \
+    OCIError* errhp = handles().getAs<OCIError>(errhpId);                     \
+    if (!errhp) { PA_ReturnLong(params, (PA_long32)OCI_ERROR); return; }      \
+                                                                              \
+    OCINumber on, onResult;                                                   \
+    sword status = double_to_OCINumber(errhp, num, &on);                      \
+    if (status != OCI_SUCCESS) { PA_ReturnLong(params, oci_check(status)); return; } \
+                                                                              \
+    status = OCIFN(errhp, &on, &onResult);                                    \
+    if (status == OCI_SUCCESS) {                                              \
+        double result;                                                        \
+        OCINumber_to_double(errhp, &onResult, &result);                       \
+        PA_SetDoubleParameter(params, 3, result);                             \
+    }                                                                         \
+    PA_ReturnLong(params, oci_check(status));                                 \
+}
+
+IMPL_OCINUMBER_2OP(OCINumberSqrt,    OCINumberSqrt)
+IMPL_OCINUMBER_2OP(OCINumberLn,      OCINumberLn)
+IMPL_OCINUMBER_2OP(OCINumberExp,     OCINumberExp)
+IMPL_OCINUMBER_2OP(OCINumberSin,     OCINumberSin)
+IMPL_OCINUMBER_2OP(OCINumberCos,     OCINumberCos)
+IMPL_OCINUMBER_2OP(OCINumberTan,     OCINumberTan)
+IMPL_OCINUMBER_2OP(OCINumberArcSin,  OCINumberArcSin)
+IMPL_OCINUMBER_2OP(OCINumberArcCos,  OCINumberArcCos)
+IMPL_OCINUMBER_2OP(OCINumberArcTan,  OCINumberArcTan)
+IMPL_OCINUMBER_2OP(OCINumberHypSin,  OCINumberHypSin)
+IMPL_OCINUMBER_2OP(OCINumberHypCos,  OCINumberHypCos)
+IMPL_OCINUMBER_2OP(OCINumberHypTan,  OCINumberHypTan)
+
+// ---------------------------------------------------------------------------
+// Math/OCINumber: special cases
+// ---------------------------------------------------------------------------
+
+static void cmd_OCINumberTrunc(PA_PluginParameters params) {
+    PA_long32 errhpId  = PA_GetLongParameter(params, 1);
+    double num         = PA_GetDoubleParameter(params, 2);
+    PA_long32 decplace = PA_GetLongParameter(params, 3);
+
+    OCIError* errhp = handles().getAs<OCIError>(errhpId);
+    if (!errhp) { PA_ReturnLong(params, (PA_long32)OCI_ERROR); return; }
+
+    OCINumber on, onResult;
+    sword status = double_to_OCINumber(errhp, num, &on);
+    if (status != OCI_SUCCESS) { PA_ReturnLong(params, oci_check(status)); return; }
+
+    status = OCINumberTrunc(errhp, &on, (sword)decplace, &onResult);
+    if (status == OCI_SUCCESS) {
+        double result;
+        OCINumber_to_double(errhp, &onResult, &result);
+        PA_SetDoubleParameter(params, 4, result);
+    }
+    PA_ReturnLong(params, oci_check(status));
+}
+
+static void cmd_OCINumberRound(PA_PluginParameters params) {
+    PA_long32 errhpId  = PA_GetLongParameter(params, 1);
+    double num         = PA_GetDoubleParameter(params, 2);
+    PA_long32 decplace = PA_GetLongParameter(params, 3);
+
+    OCIError* errhp = handles().getAs<OCIError>(errhpId);
+    if (!errhp) { PA_ReturnLong(params, (PA_long32)OCI_ERROR); return; }
+
+    OCINumber on, onResult;
+    sword status = double_to_OCINumber(errhp, num, &on);
+    if (status != OCI_SUCCESS) { PA_ReturnLong(params, oci_check(status)); return; }
+
+    status = OCINumberRound(errhp, &on, (sword)decplace, &onResult);
+    if (status == OCI_SUCCESS) {
+        double result;
+        OCINumber_to_double(errhp, &onResult, &result);
+        PA_SetDoubleParameter(params, 4, result);
+    }
+    PA_ReturnLong(params, oci_check(status));
+}
+
+static void cmd_OCINumberIntPower(PA_PluginParameters params) {
+    PA_long32 errhpId = PA_GetLongParameter(params, 1);
+    double base       = PA_GetDoubleParameter(params, 2);
+    PA_long32 exp_int = PA_GetLongParameter(params, 3);
+
+    OCIError* errhp = handles().getAs<OCIError>(errhpId);
+    if (!errhp) { PA_ReturnLong(params, (PA_long32)OCI_ERROR); return; }
+
+    OCINumber onBase, onResult;
+    sword status = double_to_OCINumber(errhp, base, &onBase);
+    if (status != OCI_SUCCESS) { PA_ReturnLong(params, oci_check(status)); return; }
+
+    status = OCINumberIntPower(errhp, &onBase, (sword)exp_int, &onResult);
+    if (status == OCI_SUCCESS) {
+        double result;
+        OCINumber_to_double(errhp, &onResult, &result);
+        PA_SetDoubleParameter(params, 4, result);
+    }
+    PA_ReturnLong(params, oci_check(status));
+}
+
+static void cmd_OCINumberFromText(PA_PluginParameters params) {
+    PA_long32 errhpId = PA_GetLongParameter(params, 1);
+    PA_Unistring* uStr = PA_GetStringParameter(params, 2);
+    PA_Unistring* uFmt = PA_GetStringParameter(params, 3);
+    PA_Unistring* uNls = PA_GetStringParameter(params, 4);
+
+    OCIError* errhp = handles().getAs<OCIError>(errhpId);
+    if (!errhp) { PA_ReturnLong(params, (PA_long32)OCI_ERROR); return; }
+
+    std::string str = unistr_to_utf8(uStr);
+    std::string fmt = unistr_to_utf8(uFmt);
+    std::string nls = unistr_to_utf8(uNls);
+
+    OCINumber onResult;
+    sword status = OCINumberFromText(errhp,
+                                     (const OraText*)str.c_str(), (ub4)str.size(),
+                                     (const OraText*)fmt.c_str(), (ub4)fmt.size(),
+                                     (const OraText*)(nls.empty() ? nullptr : nls.c_str()),
+                                     (ub4)nls.size(),
+                                     &onResult);
+    if (status == OCI_SUCCESS) {
+        double result;
+        OCINumber_to_double(errhp, &onResult, &result);
+        PA_SetDoubleParameter(params, 5, result);
+    }
+    PA_ReturnLong(params, oci_check(status));
+}
+
+static void cmd_OCINumberToText(PA_PluginParameters params) {
+    PA_long32 errhpId = PA_GetLongParameter(params, 1);
+    double num        = PA_GetDoubleParameter(params, 2);
+    PA_Unistring* uFmt = PA_GetStringParameter(params, 3);
+    PA_Unistring* uNls = PA_GetStringParameter(params, 4);
+
+    OCIError* errhp = handles().getAs<OCIError>(errhpId);
+    if (!errhp) { PA_ReturnLong(params, (PA_long32)OCI_ERROR); return; }
+
+    std::string fmt = unistr_to_utf8(uFmt);
+    std::string nls = unistr_to_utf8(uNls);
+
+    OCINumber on;
+    sword status = double_to_OCINumber(errhp, num, &on);
+    if (status != OCI_SUCCESS) { PA_ReturnLong(params, oci_check(status)); return; }
+
+    OraText buf[256];
+    ub4 bufLen = sizeof(buf);
+    status = OCINumberToText(errhp, &on,
+                             (const OraText*)fmt.c_str(), (ub4)fmt.size(),
+                             (const OraText*)(nls.empty() ? nullptr : nls.c_str()),
+                             (ub4)nls.size(),
+                             &bufLen, buf);
+    if (status == OCI_SUCCESS) {
+        PA_Pointer ptr = PA_GetPointerParameter(params, 5);
+        if (ptr) {
+            PA_Unistring ustr = utf8_to_unistring(std::string((const char*)buf, bufLen));
+            PA_Variable var = PA_CreateVariable(eVK_Unistring);
+            PA_SetStringVariable(&var, &ustr);
+            PA_SetPointerValue(ptr, var);
+        }
+    }
     PA_ReturnLong(params, oci_check(status));
 }
