@@ -2230,7 +2230,9 @@ security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$KEYCHAIN
 
 **Release artifacts:** Create both `.zip` (cross-platform bundle) and `.dmg` (mac-friendly, can be stapled). Notarize both, staple the dmg. Publish with `softprops/action-gh-release@v2`.
 
-**Oracle dylibs:** must be re-signed with Developer ID (not ad-hoc) before notarization. Ad-hoc signatures (`codesign -fs -`) are only for local development builds.
+**Third-party dylibs:** must be re-signed with Developer ID (not ad-hoc) before notarization. Ad-hoc signatures (`codesign -fs -`) are only for local development builds.
+
+**Cross-platform bundles and `--deep`:** 4D plugin bundles often contain both macOS (`Contents/MacOS/`) and Windows (`Contents/Windows64/`) binaries. Do NOT use `codesign --verify --deep --strict` on such bundles — `--deep` traverses into `Contents/Windows64/` and fails on non-Mach-O files (`.4DX`, `.dll`) with "No such process". Use `codesign -dvv` to display signature info instead. Notarytool will validate the signature during submission.
 
 ### 27. CI/CD: Oracle Instant Client libraries
 
