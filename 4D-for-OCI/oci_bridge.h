@@ -149,10 +149,8 @@ inline void set_pointer_text(PA_PluginParameters params, short index,
 
     PA_Unistring ustr = utf8_to_unistring(std::string(utf8, utf8Len));
 
-    PA_Variable var;
-    std::memset(&var, 0, sizeof(var));
-    var.fType = (char)eVK_Text;
-    var.uValue.fString = ustr;
+    PA_Variable var = PA_CreateVariable(eVK_Unistring);
+    PA_SetStringVariable(&var, &ustr);
 
     // After PA_SetPointerValue, 4D owns the variable content — do NOT dispose
     PA_SetPointerValue(ptr, var);
