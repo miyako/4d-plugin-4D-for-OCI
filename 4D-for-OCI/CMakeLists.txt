@@ -112,6 +112,11 @@ if(APPLE)
             "@loader_path/libclntshcore.dylib.23.1"
             "$<TARGET_FILE_DIR:${PROJECT_NAME}>/libnnz.dylib"
 
+        # Re-sign all modified dylibs (install_name_tool invalidates code signatures)
+        COMMAND codesign -fs - "$<TARGET_FILE_DIR:${PROJECT_NAME}>/libclntsh.dylib.23.1"
+        COMMAND codesign -fs - "$<TARGET_FILE_DIR:${PROJECT_NAME}>/libclntshcore.dylib.23.1"
+        COMMAND codesign -fs - "$<TARGET_FILE_DIR:${PROJECT_NAME}>/libnnz.dylib"
+
         COMMENT "Copying Oracle libraries with versioned names and fixing install names"
     )
 
