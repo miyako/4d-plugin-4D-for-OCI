@@ -57,7 +57,7 @@ if(APPLE)
         set_source_files_properties(${res} PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
     endforeach()
 
-    # Link Oracle Instant Client
+    # Link Oracle Instant Client (versioned dylib)
     target_link_libraries(${PROJECT_NAME} PRIVATE
         "${ORACLE_LIB_DIR}/libclntsh.dylib"
     )
@@ -68,24 +68,16 @@ if(APPLE)
 
     # Post-build: fix Oracle dylib install names to use @loader_path
     add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-        # Copy Oracle dylibs next to the plugin binary
+        # Copy Oracle dylibs with their versioned names (no symlinks)
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
             "${ORACLE_LIB_DIR}/libclntsh.dylib"
-            "$<TARGET_FILE_DIR:${PROJECT_NAME}>/"
+            "$<TARGET_FILE_DIR:${PROJECT_NAME}>/libclntsh.dylib.23.1"
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
             "${ORACLE_LIB_DIR}/libclntshcore.dylib"
-            "$<TARGET_FILE_DIR:${PROJECT_NAME}>/"
+            "$<TARGET_FILE_DIR:${PROJECT_NAME}>/libclntshcore.dylib.23.1"
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
             "${ORACLE_LIB_DIR}/libnnz.dylib"
-            "$<TARGET_FILE_DIR:${PROJECT_NAME}>/"
-
-        # Create versioned symlinks (install names reference versioned filenames)
-        COMMAND ${CMAKE_COMMAND} -E create_symlink
-            "libclntsh.dylib"
-            "$<TARGET_FILE_DIR:${PROJECT_NAME}>/libclntsh.dylib.23.1"
-        COMMAND ${CMAKE_COMMAND} -E create_symlink
-            "libclntshcore.dylib"
-            "$<TARGET_FILE_DIR:${PROJECT_NAME}>/libclntshcore.dylib.23.1"
+            "$<TARGET_FILE_DIR:${PROJECT_NAME}>/libnnz.dylib"
 
         # Fix plugin binary: @rpath → @loader_path
         COMMAND install_name_tool -change
@@ -93,23 +85,23 @@ if(APPLE)
             "@loader_path/libclntsh.dylib.23.1"
             "$<TARGET_FILE:${PROJECT_NAME}>"
 
-        # Fix libclntsh.dylib: id + dependencies on libnnz and libclntshcore
+        # Fix libclntsh.dylib.23.1: id + dependencies
         COMMAND install_name_tool -id
             "@loader_path/libclntsh.dylib.23.1"
-            "$<TARGET_FILE_DIR:${PROJECT_NAME}>/libclntsh.dylib"
+            "$<TARGET_FILE_DIR:${PROJECT_NAME}>/libclntsh.dylib.23.1"
         COMMAND install_name_tool -change
             "@rpath/libnnz.dylib"
             "@loader_path/libnnz.dylib"
-            "$<TARGET_FILE_DIR:${PROJECT_NAME}>/libclntsh.dylib"
+            "$<TARGET_FILE_DIR:${PROJECT_NAME}>/libclntsh.dylib.23.1"
         COMMAND install_name_tool -change
             "@rpath/libclntshcore.dylib.23.1"
             "@loader_path/libclntshcore.dylib.23.1"
-            "$<TARGET_FILE_DIR:${PROJECT_NAME}>/libclntsh.dylib"
+            "$<TARGET_FILE_DIR:${PROJECT_NAME}>/libclntsh.dylib.23.1"
 
-        # Fix libclntshcore.dylib: id
+        # Fix libclntshcore.dylib.23.1: id
         COMMAND install_name_tool -id
             "@loader_path/libclntshcore.dylib.23.1"
-            "$<TARGET_FILE_DIR:${PROJECT_NAME}>/libclntshcore.dylib"
+            "$<TARGET_FILE_DIR:${PROJECT_NAME}>/libclntshcore.dylib.23.1"
 
         # Fix libnnz.dylib: id + dependency on libclntshcore
         COMMAND install_name_tool -id
@@ -120,7 +112,7 @@ if(APPLE)
             "@loader_path/libclntshcore.dylib.23.1"
             "$<TARGET_FILE_DIR:${PROJECT_NAME}>/libnnz.dylib"
 
-        COMMENT "Copying Oracle libraries, creating versioned symlinks, and fixing install names"
+        COMMENT "Copying Oracle libraries with versioned names and fixing install names"
     )
 
 elseif(WIN32)
