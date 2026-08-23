@@ -388,4 +388,44 @@ inline sword oci_check(sword status) {
     return status;
 }
 
+// ============================================================
+// OCI Date ↔ 4D Date/Time Helpers
+// ============================================================
+
+// 4D Date param → OCIDate (date part only, time zeroed)
+inline void date_param_to_ocidate(PA_PluginParameters params, int dateIdx, OCIDate* d) {
+    short day, month, year;
+    PA_GetDateParameter(params, dateIdx, &day, &month, &year);
+    OCIDateSetDate(d, (sb2)year, (ub1)month, (ub1)day);
+    OCIDateSetTime(d, 0, 0, 0);
+}
+
+// 4D Date+Time params → OCIDate
+inline void params_to_ocidate(PA_PluginParameters params, int dateIdx, int timeIdx, OCIDate* d) {
+    short day, month, year;
+    PA_GetDateParameter(params, dateIdx, &day, &month, &year);
+    PA_long32 timeMs = PA_GetTimeParameter(params, timeIdx);
+    int totalSecs = (int)(timeMs / 1000);
+    OCIDateSetDate(d, (sb2)year, (ub1)month, (ub1)day);
+    OCIDateSetTime(d, (ub1)(totalSecs / 3600), (ub1)((totalSecs % 3600) / 60), (ub1)(totalSecs % 60));
+}
+
+// OCIDate → 4D Date+Time params
+inline void ocidate_to_params(PA_PluginParameters params, int dateIdx, int timeIdx, const OCIDate* d) {
+    sb2 year; ub1 month, day;
+    ub1 hour, min, sec;
+    OCIDateGetDate(d, &year, &month, &day);
+    OCIDateGetTime(d, &hour, &min, &sec);
+    PA_SetDateParameter(params, dateIdx, (short)day, (short)month, (short)year);
+    PA_long32 timeMs = ((PA_long32)hour * 3600 + (PA_long32)min * 60 + (PA_long32)sec) * 1000;
+    PA_SetTimeParameter(params, timeIdx, timeMs);
+}
+
+// OCIDate → 4D Date param only (no time)
+inline void ocidate_to_date_param(PA_PluginParameters params, int dateIdx, const OCIDate* d) {
+    sb2 year; ub1 month, day;
+    OCIDateGetDate(d, &year, &month, &day);
+    PA_SetDateParameter(params, dateIdx, (short)day, (short)month, (short)year);
+}
+
 #endif // OCI_BRIDGE_H

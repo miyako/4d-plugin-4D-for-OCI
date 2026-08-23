@@ -123,7 +123,65 @@
 #define kSel_OCIDurationBegin       100
 #define kSel_OCIDurationEnd         101
 
-#define kSel_MaxCommand         42
+// Date
+#define kSel_OCIDateAddDays         102
+#define kSel_OCIDateAddMonths       103
+#define kSel_OCIDateFromText        104
+#define kSel_OCIDateToText          105
+#define kSel_OCIDateSysDate         106
+#define kSel_OCIDateLastDay         107
+#define kSel_OCIDateNextDay         108
+#define kSel_OCIDateZoneToZone      109
+
+// Date Bind/Define
+#define kSel_OCIBindDateByPos       110
+#define kSel_OCIBindDateByName      111
+#define kSel_OCIDefineDateByPos     112
+
+// Ref
+#define kSel_OCIRefAssign           113
+#define kSel_OCIRefClear            114
+#define kSel_OCIRefFromHex          115
+#define kSel_OCIRefToHex            116
+#define kSel_OCIRefHexSize          117
+#define kSel_OCIRefIsEqual          118
+#define kSel_OCIRefIsNull           119
+
+// Raw
+#define kSel_OCIRawAllocSize        120
+#define kSel_OCIRawAssignBytes      121
+#define kSel_OCIRawAssignRaw        122
+#define kSel_OCIRawPtr              123
+#define kSel_OCIRawResize           124
+#define kSel_OCIRawSize             125
+
+// Collection (stubs)
+#define kSel_OCICollAppend          126
+#define kSel_OCICollAssign          127
+#define kSel_OCICollAssignElem      128
+#define kSel_OCICollGetElem         129
+#define kSel_OCICollMax             130
+#define kSel_OCICollSize            131
+#define kSel_OCICollTrim            132
+
+// Iterator (stubs)
+#define kSel_OCIIterCreate          133
+#define kSel_OCIIterDelete          134
+#define kSel_OCIIterInit            135
+#define kSel_OCIIterGetCurrent      136
+#define kSel_OCIIterNext            137
+#define kSel_OCIIterPrev            138
+
+// Table (stubs)
+#define kSel_OCITableDelete         139
+#define kSel_OCITableExists         140
+#define kSel_OCITableFirst          141
+#define kSel_OCITableLast           142
+#define kSel_OCITableNext           143
+#define kSel_OCITablePrev           144
+#define kSel_OCITableSize           145
+
+#define kSel_MaxCommand         145
 
 // ============================================================
 // Command function declarations
@@ -245,5 +303,63 @@ static void cmd_OCILobWrite(PA_PluginParameters params);
 static void cmd_OCILobWriteAppend(PA_PluginParameters params);
 static void cmd_OCIDurationBegin(PA_PluginParameters params);
 static void cmd_OCIDurationEnd(PA_PluginParameters params);
+
+// Date
+static void cmd_OCIDateAddDays(PA_PluginParameters params);
+static void cmd_OCIDateAddMonths(PA_PluginParameters params);
+static void cmd_OCIDateFromText(PA_PluginParameters params);
+static void cmd_OCIDateToText(PA_PluginParameters params);
+static void cmd_OCIDateSysDate(PA_PluginParameters params);
+static void cmd_OCIDateLastDay(PA_PluginParameters params);
+static void cmd_OCIDateNextDay(PA_PluginParameters params);
+static void cmd_OCIDateZoneToZone(PA_PluginParameters params);
+
+// Date Bind/Define
+static void cmd_OCIBindDateByPos(PA_PluginParameters params);
+static void cmd_OCIBindDateByName(PA_PluginParameters params);
+static void cmd_OCIDefineDateByPos(PA_PluginParameters params);
+
+// Ref
+static void cmd_OCIRefAssign(PA_PluginParameters params);
+static void cmd_OCIRefClear(PA_PluginParameters params);
+static void cmd_OCIRefFromHex(PA_PluginParameters params);
+static void cmd_OCIRefToHex(PA_PluginParameters params);
+static void cmd_OCIRefHexSize(PA_PluginParameters params);
+static void cmd_OCIRefIsEqual(PA_PluginParameters params);
+static void cmd_OCIRefIsNull(PA_PluginParameters params);
+
+// Raw
+static void cmd_OCIRawAllocSize(PA_PluginParameters params);
+static void cmd_OCIRawAssignBytes(PA_PluginParameters params);
+static void cmd_OCIRawAssignRaw(PA_PluginParameters params);
+static void cmd_OCIRawPtr(PA_PluginParameters params);
+static void cmd_OCIRawResize(PA_PluginParameters params);
+static void cmd_OCIRawSize(PA_PluginParameters params);
+
+// Collection (stubs)
+static void cmd_OCICollAppend(PA_PluginParameters params);
+static void cmd_OCICollAssign(PA_PluginParameters params);
+static void cmd_OCICollAssignElem(PA_PluginParameters params);
+static void cmd_OCICollGetElem(PA_PluginParameters params);
+static void cmd_OCICollMax(PA_PluginParameters params);
+static void cmd_OCICollSize(PA_PluginParameters params);
+static void cmd_OCICollTrim(PA_PluginParameters params);
+
+// Iterator (stubs)
+static void cmd_OCIIterCreate(PA_PluginParameters params);
+static void cmd_OCIIterDelete(PA_PluginParameters params);
+static void cmd_OCIIterInit(PA_PluginParameters params);
+static void cmd_OCIIterGetCurrent(PA_PluginParameters params);
+static void cmd_OCIIterNext(PA_PluginParameters params);
+static void cmd_OCIIterPrev(PA_PluginParameters params);
+
+// Table (stubs)
+static void cmd_OCITableDelete(PA_PluginParameters params);
+static void cmd_OCITableExists(PA_PluginParameters params);
+static void cmd_OCITableFirst(PA_PluginParameters params);
+static void cmd_OCITableLast(PA_PluginParameters params);
+static void cmd_OCITableNext(PA_PluginParameters params);
+static void cmd_OCITablePrev(PA_PluginParameters params);
+static void cmd_OCITableSize(PA_PluginParameters params);
 
 #endif // PLUGIN_4D_FOR_OCI_H

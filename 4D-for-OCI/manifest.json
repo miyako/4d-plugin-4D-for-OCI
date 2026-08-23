@@ -99,5 +99,56 @@
 {"theme":"4D for OCI : LOB","syntax":"OCILobWrite(&L;&L;&L;&L;&O):L","threadSafe":true},
 {"theme":"4D for OCI : LOB","syntax":"OCILobWriteAppend(&L;&L;&L;&O):L","threadSafe":true},
 {"theme":"4D for OCI : LOB","syntax":"OCIDurationBegin(&L;&L;&L;&L):L","threadSafe":true},
-{"theme":"4D for OCI : LOB","syntax":"OCIDurationEnd(&L;&L;&L;&L):L","threadSafe":true}
+{"theme":"4D for OCI : LOB","syntax":"OCIDurationEnd(&L;&L;&L;&L):L","threadSafe":true},
+
+{"theme":"4D for OCI : Relational","syntax":"OCIDateAddDays(&L;&D;&L;&D):L","threadSafe":true},
+{"theme":"4D for OCI : Relational","syntax":"OCIDateAddMonths(&L;&D;&L;&D):L","threadSafe":true},
+{"theme":"4D for OCI : Relational","syntax":"OCIDateFromText(&L;&T;&T;&T;&D;&H):L","threadSafe":true},
+{"theme":"4D for OCI : Relational","syntax":"OCIDateToText(&L;&D;&H;&T;&T;&Z):L","threadSafe":true},
+{"theme":"4D for OCI : Relational","syntax":"OCIDateSysDate(&L;&D;&H):L","threadSafe":true},
+{"theme":"4D for OCI : Relational","syntax":"OCIDateLastDay(&L;&D;&D):L","threadSafe":true},
+{"theme":"4D for OCI : Relational","syntax":"OCIDateNextDay(&L;&D;&T;&D):L","threadSafe":true},
+{"theme":"4D for OCI : Relational","syntax":"OCIDateZoneToZone(&L;&D;&H;&T;&T;&D;&H):L","threadSafe":true},
+
+{"theme":"4D for OCI : Relational","syntax":"OCIBindDateByPos(&L;&L;&L;&L;&Z;&Z;&L;&Z;&Z;&Z;&L;&L):L","threadSafe":true},
+{"theme":"4D for OCI : Relational","syntax":"OCIBindDateByName(&L;&L;&L;&T;&Z;&Z;&L;&Z;&Z;&Z;&L;&L):L","threadSafe":true},
+{"theme":"4D for OCI : Relational","syntax":"OCIDefineDateByPos(&L;&L;&L;&L;&Z;&Z;&L;&Z;&Z;&Z;&L):L","threadSafe":true},
+
+{"theme":"4D for OCI : Relational","syntax":"OCIRefAssign(&L;&L;&L;&L):L","threadSafe":true},
+{"theme":"4D for OCI : Relational","syntax":"OCIRefClear(&L;&L)","threadSafe":true},
+{"theme":"4D for OCI : Relational","syntax":"OCIRefFromHex(&L;&L;&L;&T;&L):L","threadSafe":true},
+{"theme":"4D for OCI : Relational","syntax":"OCIRefToHex(&L;&L;&L;&Z):L","threadSafe":true},
+{"theme":"4D for OCI : Relational","syntax":"OCIRefHexSize(&L;&L):L","threadSafe":true},
+{"theme":"4D for OCI : Relational","syntax":"OCIRefIsEqual(&L;&L;&L):L","threadSafe":true},
+{"theme":"4D for OCI : Relational","syntax":"OCIRefIsNull(&L;&L):L","threadSafe":true},
+
+{"theme":"4D for OCI : Relational","syntax":"OCIRawAllocSize(&L;&L;&L;&L):L","threadSafe":true},
+{"theme":"4D for OCI : Relational","syntax":"OCIRawAssignBytes(&L;&L;&O;&L):L","threadSafe":true},
+{"theme":"4D for OCI : Relational","syntax":"OCIRawAssignRaw(&L;&L;&L;&L):L","threadSafe":true},
+{"theme":"4D for OCI : Relational","syntax":"OCIRawPtr(&L;&L):O","threadSafe":true},
+{"theme":"4D for OCI : Relational","syntax":"OCIRawResize(&L;&L;&L;&L):L","threadSafe":true},
+{"theme":"4D for OCI : Relational","syntax":"OCIRawSize(&L;&L):L","threadSafe":true},
+
+{"theme":"4D for OCI : Relational","syntax":"OCICollAppend(&L;&L;&L;&L;&L):L","threadSafe":true},
+{"theme":"4D for OCI : Relational","syntax":"OCICollAssign(&L;&L;&L;&L):L","threadSafe":true},
+{"theme":"4D for OCI : Relational","syntax":"OCICollAssignElem(&L;&L;&L;&L;&L;&L):L","threadSafe":true},
+{"theme":"4D for OCI : Relational","syntax":"OCICollGetElem(&L;&L;&L;&L;&L;&L;&L):L","threadSafe":true},
+{"theme":"4D for OCI : Relational","syntax":"OCICollMax(&L;&L):L","threadSafe":true},
+{"theme":"4D for OCI : Relational","syntax":"OCICollSize(&L;&L;&L;&L):L","threadSafe":true},
+{"theme":"4D for OCI : Relational","syntax":"OCICollTrim(&L;&L;&L;&L):L","threadSafe":true},
+
+{"theme":"4D for OCI : Relational","syntax":"OCIIterCreate(&L;&L;&L;&L):L","threadSafe":true},
+{"theme":"4D for OCI : Relational","syntax":"OCIIterDelete(&L;&L;&L):L","threadSafe":true},
+{"theme":"4D for OCI : Relational","syntax":"OCIIterInit(&L;&L;&L;&L):L","threadSafe":true},
+{"theme":"4D for OCI : Relational","syntax":"OCIIterGetCurrent(&L;&L;&L;&L;&L):L","threadSafe":true},
+{"theme":"4D for OCI : Relational","syntax":"OCIIterNext(&L;&L;&L;&L;&L;&L):L","threadSafe":true},
+{"theme":"4D for OCI : Relational","syntax":"OCIIterPrev(&L;&L;&L;&L;&L;&L):L","threadSafe":true},
+
+{"theme":"4D for OCI : Relational","syntax":"OCITableDelete(&L;&L;&L;&L):L","threadSafe":true},
+{"theme":"4D for OCI : Relational","syntax":"OCITableExists(&L;&L;&L;&L;&L):L","threadSafe":true},
+{"theme":"4D for OCI : Relational","syntax":"OCITableFirst(&L;&L;&L;&L):L","threadSafe":true},
+{"theme":"4D for OCI : Relational","syntax":"OCITableLast(&L;&L;&L;&L):L","threadSafe":true},
+{"theme":"4D for OCI : Relational","syntax":"OCITableNext(&L;&L;&L;&L;&L;&L):L","threadSafe":true},
+{"theme":"4D for OCI : Relational","syntax":"OCITablePrev(&L;&L;&L;&L;&L;&L):L","threadSafe":true},
+{"theme":"4D for OCI : Relational","syntax":"OCITableSize(&L;&L;&L;&L):L","threadSafe":true}
 ]}
