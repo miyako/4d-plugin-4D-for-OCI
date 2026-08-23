@@ -2156,3 +2156,42 @@ Expected: `isCompliant="true"`, `failedRules="0"`.
 6. **CI workflow pattern:** Windows first → macOS downloads Windows binaries → merge into bundle → sign → notarize → release
 7. **Bump-version + release:** Tags pushed by `GITHUB_TOKEN` don't trigger other workflows; push tags manually or use a PAT
 8. **veraPDF** is the industry-standard open-source PDF/A validator — use it to verify output compliance
+
+### 23. Writing output strings via pointer parameters (`&Z`)
+
+The modern 4D Plugin API has **no `PA_SetStringParameter`**. To write a string back to the caller from a plugin command:
+
+1. **Manifest**: declare the parameter as `&Z` (Pointer), not `&T` (Text)
+2. **4D caller**: passes `->$variable` syntax
+3. **Plugin code**:
+
+```cpp
+PA_Pointer ptr = PA_GetPointerParameter(params, index);
+if (!ptr) return;
+
+PA_Unistring ustr = /* your PA_Unistring */;
+PA_Variable var = PA_CreateVariable(eVK_Unistring);
+PA_SetStringVariable(&var, &ustr);
+PA_SetPointerValue(ptr, var);
+// Do NOT call PA_DisposeUnistring or PA_ClearVariable after this!
+```
+
+**Critical rules:**
+- Use `eVK_Unistring` (33), NOT `eVK_Text` (2). `PA_SetStringVariable` sets `fType = eVK_Unistring`. Using the wrong type causes a crash in 4D's `copycv_plugin`.
+- Use `PA_CreateVariable(eVK_Unistring)` + `PA_SetStringVariable()` — never manually construct `PA_Variable` with `memset`/field assignment.
+- After `PA_SetPointerValue`, 4D **owns** the variable content (SDK comment: *"do NOT call PA_ClearVariable after this call"*). Calling `PA_DisposeUnistring` after is a use-after-free crash.
+- `PA_GetVariableParameter` is for reading the variable a pointer points to — it does NOT work for `&Z` pointer params. Use `PA_GetPointerParameter` instead.
+
+### 24. Oracle Instant Client dylib linking (macOS Apple Silicon)
+
+When bundling Oracle Instant Client dylibs alongside a plugin:
+
+1. **Copy as versioned real files** — `libclntsh.dylib` is a symlink to `libclntsh.dylib.23.1`; CMake `copy_if_different` follows symlinks and loses the versioned name. Copy explicitly with versioned names.
+2. **Do NOT use symlinks/aliases** in the plugin bundle — causes crashes in dyld.
+3. **Change `@rpath` → `@loader_path`** using `install_name_tool -id` and `-change` on ALL dylibs.
+4. **Re-sign after `install_name_tool`** — modifying a signed dylib invalidates its code signature. Apple Silicon enforces signatures. Run `codesign -fs -` (ad-hoc) after every `install_name_tool` invocation.
+5. **Full dependency chain**: Plugin → `libclntsh.dylib.23.1` → `libnnz.dylib` + `libclntshcore.dylib.23.1`; `libnnz.dylib` → `libclntshcore.dylib.23.1`. All inter-library references must also be changed to `@loader_path`.
+
+### 25. OCI handle pointers exceed PA_long32
+
+OCI handles are `void*` (8 bytes on 64-bit) but `PA_long32` is only 4 bytes. Passing raw pointers as longint parameters silently truncates the upper 32 bits. Use an internal handle table that maps small `PA_long32` IDs (1, 2, 3, ...) to actual `void*` OCI pointers. The table should be thread-safe (`std::mutex`).

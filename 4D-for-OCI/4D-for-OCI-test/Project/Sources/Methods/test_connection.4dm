@@ -1,4 +1,6 @@
 //%attributes = {"invisible":true,"preemptive":"capable"}
+var $status : Integer
+
 // Test environment variable functions
 $status:=OCISetEnv:P11900:38("OCI_TEST_VAR"; "hello_4d")
 ASSERT:C1129($status=OCI_SUCCESS:K11903:1; "OCISetEnv failed")
@@ -8,14 +10,11 @@ $status:=OCIGetEnv:P11900:39("OCI_TEST_VAR"; ->$val)
 ASSERT:C1129($status=OCI_SUCCESS:K11903:1; "OCIGetEnv failed")
 ASSERT:C1129($val="hello_4d"; "OCIGetEnv returned wrong value: "+$val)
 
-
-
 // Test basic OCI environment creation and teardown
 // This test does NOT require an Oracle database connection.
 
 var $envhp : Integer
 var $errhp : Integer
-var $status : Integer
 
 // Create environment
 $status:=OCIEnvCreate:P11900:1($envhp; OCI_DEFAULT:K11901:1)
