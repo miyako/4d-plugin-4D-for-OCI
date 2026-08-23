@@ -1211,11 +1211,30 @@ static void cmd_OCIParamGet(PA_PluginParameters params) {
     }
 }
 
-// OCIParamSet(hndlp; htype; errhp; pos) : status
+// OCIParamSet(hndlp; htype; errhp; dscp; pos) : status
+// Manifest: OCIParamSet(&L;&L;&L;&L):L → hndlp, errhp, dscp, pos
+// htype and dsctype are resolved from the handle table
 static void cmd_OCIParamSet(PA_PluginParameters params) {
-    // OCIParamSet is not commonly used — it sets a parameter in a complex descriptor
-    // TODO: Implement if needed
-    PA_ReturnLong(params, (PA_long32)OCI_ERROR);
+    PA_long32 hndlpId = PA_GetLongParameter(params, 1);
+    PA_long32 errhpId = PA_GetLongParameter(params, 2);
+    PA_long32 dscpId  = PA_GetLongParameter(params, 3);
+    PA_long32 pos     = PA_GetLongParameter(params, 4);
+
+    void*     hndlp = handles().get(hndlpId);
+    OCIError* errhp = handles().getAs<OCIError>(errhpId);
+    void*     dscp  = handles().get(dscpId);
+
+    if (!hndlp || !errhp || !dscp) {
+        PA_ReturnLong(params, (PA_long32)OCI_ERROR);
+        return;
+    }
+
+    ub4 htype   = handles().getType(hndlpId);
+    ub4 dsctype = handles().getType(dscpId);
+
+    sword status = OCIParamSet(hndlp, htype, errhp,
+                               (const void*)dscp, dsctype, (ub4)pos);
+    PA_ReturnLong(params, oci_check(status));
 }
 
 // OCIPasswordChange(svchp; errhp; user; old_pw; new_pw; mode) : status
