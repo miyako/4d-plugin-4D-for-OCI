@@ -147,55 +147,63 @@ jobs:
       - name: Build
         run: cmake --build 4D-for-OCI/cmake-build --config Release
 
-      - name: Merge Windows binaries into bundle
-        run: |
-          set -euo pipefail
-          BUNDLE="4D-for-OCI/4D-for-OCI-test/Plugins/4D-for-OCI.bundle"
-          mkdir -p "$BUNDLE/Contents/Windows64"
-          cp winbuild/*.4DX "$BUNDLE/Contents/Windows64/" || true
-          cp winbuild/*.dll "$BUNDLE/Contents/Windows64/" || true
-          echo "BUNDLE_PATH=$BUNDLE" >> "$GITHUB_ENV"
-
       - name: Codesign
         run: |
           set -euo pipefail
+          BUNDLE="4D-for-OCI/4D-for-OCI-test/Plugins/4D-for-OCI.bundle"
+          echo "BUNDLE_PATH=$BUNDLE" >> "$GITHUB_ENV"
+
           IDENTITY=$(security find-identity -v -p codesigning "$KEYCHAIN_PATH" \
             | grep "Developer ID Application" | head -1 | sed -E 's/.*"(.*)".*/\1/')
           echo "Signing with: $IDENTITY"
 
-          # Sign inside-out: Oracle dylibs → plugin binary → bundle
-          for dylib in "$BUNDLE_PATH"/Contents/MacOS/lib*.dylib*; do
+          # Sign inside-out: third-party dylibs → plugin binary → bundle
+          for dylib in "$BUNDLE"/Contents/MacOS/lib*.dylib*; do
             codesign --force --options runtime --timestamp \
               --sign "$IDENTITY" "$dylib"
           done
 
           codesign --force --options runtime --timestamp \
-            --sign "$IDENTITY" "$BUNDLE_PATH/Contents/MacOS/4D-for-OCI"
+            --sign "$IDENTITY" "$BUNDLE/Contents/MacOS/4D-for-OCI"
 
           codesign --force --options runtime --timestamp \
-            --sign "$IDENTITY" "$BUNDLE_PATH"
+            --sign "$IDENTITY" "$BUNDLE"
 
-          codesign -dvv "$BUNDLE_PATH"
+          codesign -dvv "$BUNDLE"
 
       - name: Package, notarize & staple
         run: |
           set -euo pipefail
           VERSION="${{ needs.version.outputs.version }}"
+
+          # Notarize macOS-only bundle first
+          ditto -c -k --keepParent "$BUNDLE_PATH" /tmp/macos-only.zip
+          xcrun notarytool submit /tmp/macos-only.zip \
+            --keychain-profile "notarytool-profile" \
+            --keychain "$KEYCHAIN_PATH" --wait
+          xcrun stapler staple "$BUNDLE_PATH"
+
+          echo "VERSION=$VERSION" >> "$GITHUB_ENV"
+
+      - name: Merge Windows binaries into bundle
+        run: |
+          set -euo pipefail
+          mkdir -p "$BUNDLE_PATH/Contents/Windows64"
+          cp winbuild/*.4DX "$BUNDLE_PATH/Contents/Windows64/" || true
+          cp winbuild/*.dll "$BUNDLE_PATH/Contents/Windows64/" || true
+
+      - name: Package release artifacts
+        run: |
+          set -euo pipefail
           ZIP_PATH="4D-for-OCI-${VERSION}.zip"
           DMG_PATH="4D-for-OCI-${VERSION}.dmg"
 
+          # Cross-platform zip (mac signed + windows binaries)
           ditto -c -k --keepParent "$BUNDLE_PATH" "$ZIP_PATH"
 
+          # DMG for mac users
           hdiutil create -format UDBZ -volname "4D-for-OCI" \
             -srcfolder "$BUNDLE_PATH" "$DMG_PATH"
-
-          xcrun notarytool submit "$ZIP_PATH" \
-            --keychain-profile "notarytool-profile" \
-            --keychain "$KEYCHAIN_PATH" --wait
-          xcrun notarytool submit "$DMG_PATH" \
-            --keychain-profile "notarytool-profile" \
-            --keychain "$KEYCHAIN_PATH" --wait
-          xcrun stapler staple "$DMG_PATH"
 
           echo "ZIP_PATH=$ZIP_PATH" >> "$GITHUB_ENV"
           echo "DMG_PATH=$DMG_PATH" >> "$GITHUB_ENV"
