@@ -69,12 +69,17 @@ jobs:
           tar xzf "$env:TEMP\oracle-instantclient-windows-x64.tar.gz" `
             -C oracle\windows-x64
 
+      - name: Set up MSVC
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: x64
+
       - name: Configure
         run: |
           cmake -B 4D-for-OCI/cmake-build `
             -S 4D-for-OCI `
-            -G "Visual Studio 17 2022" `
-            -A x64
+            -G Ninja `
+            -DCMAKE_BUILD_TYPE=Release
 
       - name: Build
         run: cmake --build 4D-for-OCI/cmake-build --config Release
