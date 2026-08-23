@@ -1,5 +1,4 @@
 # Oracle Instant Client (must be downloaded separately — see README)
-oracle/include/*
 oracle/macos-aarm64/*
 oracle/windows-x64/*
 !oracle/README.md
