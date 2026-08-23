@@ -92,6 +92,37 @@
 #define kSel_OCINumberFromText   70
 #define kSel_OCINumberToText     71
 
+#define kSel_OCILobAppend           72
+#define kSel_OCILobAssign           73
+#define kSel_OCILobCharSetForm      74
+#define kSel_OCILobCharSetId        75
+#define kSel_OCILobCopy             76
+#define kSel_OCILobCreateTemporary  77
+#define kSel_OCILobDisableBuffering 78
+#define kSel_OCILobEnableBuffering  79
+#define kSel_OCILobErase            80
+#define kSel_OCILobFileClose        81
+#define kSel_OCILobFileCloseAll     82
+#define kSel_OCILobFileExists       83
+#define kSel_OCILobFileGetName      84
+#define kSel_OCILobFileIsOpen       85
+#define kSel_OCILobFileOpen         86
+#define kSel_OCILobFileSetName      87
+#define kSel_OCILobFlushBuffer      88
+#define kSel_OCILobFreeTemporary    89
+#define kSel_OCILobGetChunkSize     90
+#define kSel_OCILobGetLength        91
+#define kSel_OCILobIsEqual          92
+#define kSel_OCILobIsTemporary      93
+#define kSel_OCILobLoadFromFile     94
+#define kSel_OCILobLocatorIsInit    95
+#define kSel_OCILobRead             96
+#define kSel_OCILobTrim             97
+#define kSel_OCILobWrite            98
+#define kSel_OCILobWriteAppend      99
+#define kSel_OCIDurationBegin       100
+#define kSel_OCIDurationEnd         101
+
 #define kSel_MaxCommand         42
 
 // ============================================================
@@ -182,5 +213,37 @@ static void cmd_OCINumberRound(PA_PluginParameters params);
 static void cmd_OCINumberIntPower(PA_PluginParameters params);
 static void cmd_OCINumberFromText(PA_PluginParameters params);
 static void cmd_OCINumberToText(PA_PluginParameters params);
+
+// LOB commands
+static void cmd_OCILobAppend(PA_PluginParameters params);
+static void cmd_OCILobAssign(PA_PluginParameters params);
+static void cmd_OCILobCharSetForm(PA_PluginParameters params);
+static void cmd_OCILobCharSetId(PA_PluginParameters params);
+static void cmd_OCILobCopy(PA_PluginParameters params);
+static void cmd_OCILobCreateTemporary(PA_PluginParameters params);
+static void cmd_OCILobDisableBuffering(PA_PluginParameters params);
+static void cmd_OCILobEnableBuffering(PA_PluginParameters params);
+static void cmd_OCILobErase(PA_PluginParameters params);
+static void cmd_OCILobFileClose(PA_PluginParameters params);
+static void cmd_OCILobFileCloseAll(PA_PluginParameters params);
+static void cmd_OCILobFileExists(PA_PluginParameters params);
+static void cmd_OCILobFileGetName(PA_PluginParameters params);
+static void cmd_OCILobFileIsOpen(PA_PluginParameters params);
+static void cmd_OCILobFileOpen(PA_PluginParameters params);
+static void cmd_OCILobFileSetName(PA_PluginParameters params);
+static void cmd_OCILobFlushBuffer(PA_PluginParameters params);
+static void cmd_OCILobFreeTemporary(PA_PluginParameters params);
+static void cmd_OCILobGetChunkSize(PA_PluginParameters params);
+static void cmd_OCILobGetLength(PA_PluginParameters params);
+static void cmd_OCILobIsEqual(PA_PluginParameters params);
+static void cmd_OCILobIsTemporary(PA_PluginParameters params);
+static void cmd_OCILobLoadFromFile(PA_PluginParameters params);
+static void cmd_OCILobLocatorIsInit(PA_PluginParameters params);
+static void cmd_OCILobRead(PA_PluginParameters params);
+static void cmd_OCILobTrim(PA_PluginParameters params);
+static void cmd_OCILobWrite(PA_PluginParameters params);
+static void cmd_OCILobWriteAppend(PA_PluginParameters params);
+static void cmd_OCIDurationBegin(PA_PluginParameters params);
+static void cmd_OCIDurationEnd(PA_PluginParameters params);
 
 #endif // PLUGIN_4D_FOR_OCI_H
