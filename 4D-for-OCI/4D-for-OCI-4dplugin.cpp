@@ -646,10 +646,89 @@ static void cmd_OCIStmtFetch(PA_PluginParameters params) {
     PA_ReturnLong(params, (PA_long32)status);
 }
 
-// OCIStmtGetBindInfo — stub (complex, requires arrays)
+// OCIStmtGetBindInfo — retrieve bind variable info from a prepared statement
+// OCIStmtGetBindInfo(stmtp; errhp; found_out; max_binds; names_ptr; schemas_ptr; ind_names_ptr; dups_ptr) : status
 static void cmd_OCIStmtGetBindInfo(PA_PluginParameters params) {
-    // TODO: Implement with array parameter support
-    PA_ReturnLong(params, (PA_long32)OCI_ERROR);
+    PA_long32 stmtpId   = PA_GetLongParameter(params, 1);
+    PA_long32 errhpId   = PA_GetLongParameter(params, 2);
+    PA_long32 maxBinds  = PA_GetLongParameter(params, 4);
+
+    OCIStmt*  stmtp = handles().getAs<OCIStmt>(stmtpId);
+    OCIError* errhp = handles().getAs<OCIError>(errhpId);
+
+    if (!stmtp || !errhp || maxBinds <= 0) {
+        PA_SetLongParameter(params, 3, 0);
+        PA_ReturnLong(params, (PA_long32)OCI_ERROR);
+        return;
+    }
+
+    // Allocate arrays for OCI to fill
+    std::vector<OraText*> bvnp(maxBinds, nullptr);
+    std::vector<ub1>      bvnl(maxBinds, 0);
+    std::vector<OraText*> invp(maxBinds, nullptr);
+    std::vector<ub1>      inpl(maxBinds, 0);
+    std::vector<ub1>      dupl(maxBinds, 0);
+    std::vector<OCIBind*> hndl(maxBinds, nullptr);
+
+    sb4 found = 0;
+
+    sword status = OCIStmtGetBindInfo(stmtp, errhp,
+                                       (ub4)maxBinds, 1, &found,
+                                       bvnp.data(), bvnl.data(),
+                                       invp.data(), inpl.data(),
+                                       dupl.data(), hndl.data());
+
+    PA_SetLongParameter(params, 3, (PA_long32)found);
+
+    // Write arrays back via PA_Pointers
+    sb4 count = (found > 0) ? found : 0;
+
+    // Bind variable names (param 5)
+    PA_Pointer namesPtr = PA_GetPointerParameter(params, 5);
+    if (namesPtr) {
+        PA_Variable arr = PA_CreateVariable(eVK_ArrayUnicode);
+        PA_ResizeArray(&arr, count);
+        for (sb4 i = 0; i < count; i++) {
+            PA_Unistring ustr = utf8_to_unistring(
+                std::string((const char*)bvnp[i], bvnl[i]));
+            PA_SetStringInArray(arr, i + 1, &ustr);
+        }
+        PA_SetPointerValue(namesPtr, arr);
+    }
+
+    // Indicator variable names (param 6)
+    PA_Pointer indNamesPtr = PA_GetPointerParameter(params, 6);
+    if (indNamesPtr) {
+        PA_Variable arr = PA_CreateVariable(eVK_ArrayUnicode);
+        PA_ResizeArray(&arr, count);
+        for (sb4 i = 0; i < count; i++) {
+            PA_Unistring ustr = utf8_to_unistring(
+                std::string((const char*)invp[i], inpl[i]));
+            PA_SetStringInArray(arr, i + 1, &ustr);
+        }
+        PA_SetPointerValue(indNamesPtr, arr);
+    }
+
+    // Schema names — OCI doesn't return this directly; write empty array (param 7)
+    PA_Pointer schemasPtr = PA_GetPointerParameter(params, 7);
+    if (schemasPtr) {
+        PA_Variable arr = PA_CreateVariable(eVK_ArrayUnicode);
+        PA_ResizeArray(&arr, count);
+        PA_SetPointerValue(schemasPtr, arr);
+    }
+
+    // Duplicate flags as longint array (param 8)
+    PA_Pointer dupsPtr = PA_GetPointerParameter(params, 8);
+    if (dupsPtr) {
+        PA_Variable arr = PA_CreateVariable(eVK_ArrayLongint);
+        PA_ResizeArray(&arr, count);
+        for (sb4 i = 0; i < count; i++) {
+            PA_SetLongintInArray(arr, i + 1, (PA_long32)dupl[i]);
+        }
+        PA_SetPointerValue(dupsPtr, arr);
+    }
+
+    PA_ReturnLong(params, oci_check(status));
 }
 
 // OCIBindByPos — bind input variable by position
