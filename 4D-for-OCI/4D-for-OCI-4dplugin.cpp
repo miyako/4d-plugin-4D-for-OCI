@@ -151,6 +151,64 @@ void PluginMain(PA_long32 selector, PA_PluginParameters params) {
         case kSel_OCILobWriteAppend:      cmd_OCILobWriteAppend(params);      break;
         case kSel_OCIDurationBegin:       cmd_OCIDurationBegin(params);       break;
         case kSel_OCIDurationEnd:         cmd_OCIDurationEnd(params);         break;
+
+        // Date
+        case kSel_OCIDateAddDays:        cmd_OCIDateAddDays(params);        break;
+        case kSel_OCIDateAddMonths:      cmd_OCIDateAddMonths(params);      break;
+        case kSel_OCIDateFromText:       cmd_OCIDateFromText(params);       break;
+        case kSel_OCIDateToText:         cmd_OCIDateToText(params);         break;
+        case kSel_OCIDateSysDate:        cmd_OCIDateSysDate(params);        break;
+        case kSel_OCIDateLastDay:        cmd_OCIDateLastDay(params);        break;
+        case kSel_OCIDateNextDay:        cmd_OCIDateNextDay(params);        break;
+        case kSel_OCIDateZoneToZone:     cmd_OCIDateZoneToZone(params);     break;
+
+        // Date Bind/Define
+        case kSel_OCIBindDateByPos:      cmd_OCIBindDateByPos(params);      break;
+        case kSel_OCIBindDateByName:     cmd_OCIBindDateByName(params);     break;
+        case kSel_OCIDefineDateByPos:    cmd_OCIDefineDateByPos(params);    break;
+
+        // Ref
+        case kSel_OCIRefAssign:          cmd_OCIRefAssign(params);          break;
+        case kSel_OCIRefClear:           cmd_OCIRefClear(params);           break;
+        case kSel_OCIRefFromHex:         cmd_OCIRefFromHex(params);         break;
+        case kSel_OCIRefToHex:           cmd_OCIRefToHex(params);           break;
+        case kSel_OCIRefHexSize:         cmd_OCIRefHexSize(params);         break;
+        case kSel_OCIRefIsEqual:         cmd_OCIRefIsEqual(params);         break;
+        case kSel_OCIRefIsNull:          cmd_OCIRefIsNull(params);          break;
+
+        // Raw
+        case kSel_OCIRawAllocSize:       cmd_OCIRawAllocSize(params);       break;
+        case kSel_OCIRawAssignBytes:     cmd_OCIRawAssignBytes(params);     break;
+        case kSel_OCIRawAssignRaw:       cmd_OCIRawAssignRaw(params);       break;
+        case kSel_OCIRawPtr:             cmd_OCIRawPtr(params);             break;
+        case kSel_OCIRawResize:          cmd_OCIRawResize(params);          break;
+        case kSel_OCIRawSize:            cmd_OCIRawSize(params);            break;
+
+        // Collection (stubs)
+        case kSel_OCICollAppend:         cmd_OCICollAppend(params);         break;
+        case kSel_OCICollAssign:         cmd_OCICollAssign(params);         break;
+        case kSel_OCICollAssignElem:     cmd_OCICollAssignElem(params);     break;
+        case kSel_OCICollGetElem:        cmd_OCICollGetElem(params);        break;
+        case kSel_OCICollMax:            cmd_OCICollMax(params);            break;
+        case kSel_OCICollSize:           cmd_OCICollSize(params);           break;
+        case kSel_OCICollTrim:           cmd_OCICollTrim(params);           break;
+
+        // Iterator (stubs)
+        case kSel_OCIIterCreate:         cmd_OCIIterCreate(params);         break;
+        case kSel_OCIIterDelete:         cmd_OCIIterDelete(params);         break;
+        case kSel_OCIIterInit:           cmd_OCIIterInit(params);           break;
+        case kSel_OCIIterGetCurrent:     cmd_OCIIterGetCurrent(params);     break;
+        case kSel_OCIIterNext:           cmd_OCIIterNext(params);           break;
+        case kSel_OCIIterPrev:           cmd_OCIIterPrev(params);           break;
+
+        // Table (stubs)
+        case kSel_OCITableDelete:        cmd_OCITableDelete(params);        break;
+        case kSel_OCITableExists:        cmd_OCITableExists(params);        break;
+        case kSel_OCITableFirst:         cmd_OCITableFirst(params);         break;
+        case kSel_OCITableLast:          cmd_OCITableLast(params);          break;
+        case kSel_OCITableNext:          cmd_OCITableNext(params);          break;
+        case kSel_OCITablePrev:          cmd_OCITablePrev(params);          break;
+        case kSel_OCITableSize:          cmd_OCITableSize(params);          break;
     }
 }
 
@@ -2250,4 +2308,637 @@ static void cmd_OCIDurationEnd(PA_PluginParameters params) {
     }
     sword status = OCIDurationEnd(envhp, errhp, svchp, (OCIDuration)duration);
     PA_ReturnLong(params, oci_check(status));
+}
+
+// ============================================================
+// DATE commands
+// ============================================================
+
+// OCIDateAddDays(errhp; date_in; num_days; date_out) : status
+static void cmd_OCIDateAddDays(PA_PluginParameters params) {
+    PA_long32 errhpId = PA_GetLongParameter(params, 1);
+    OCIError* errhp = handles().getAs<OCIError>(errhpId);
+    if (!errhp) { PA_ReturnLong(params, (PA_long32)OCI_ERROR); return; }
+
+    OCIDate dateIn;
+    date_param_to_ocidate(params, 2, &dateIn);
+    PA_long32 numDays = PA_GetLongParameter(params, 3);
+
+    OCIDate result;
+    sword status = OCIDateAddDays(errhp, &dateIn, (sb4)numDays, &result);
+    if (status == OCI_SUCCESS) {
+        ocidate_to_date_param(params, 4, &result);
+    }
+    PA_ReturnLong(params, oci_check(status));
+}
+
+// OCIDateAddMonths(errhp; date_in; num_months; date_out) : status
+static void cmd_OCIDateAddMonths(PA_PluginParameters params) {
+    PA_long32 errhpId = PA_GetLongParameter(params, 1);
+    OCIError* errhp = handles().getAs<OCIError>(errhpId);
+    if (!errhp) { PA_ReturnLong(params, (PA_long32)OCI_ERROR); return; }
+
+    OCIDate dateIn;
+    date_param_to_ocidate(params, 2, &dateIn);
+    PA_long32 numMonths = PA_GetLongParameter(params, 3);
+
+    OCIDate result;
+    sword status = OCIDateAddMonths(errhp, &dateIn, (sb4)numMonths, &result);
+    if (status == OCI_SUCCESS) {
+        ocidate_to_date_param(params, 4, &result);
+    }
+    PA_ReturnLong(params, oci_check(status));
+}
+
+// OCIDateFromText(errhp; date_str; fmt; lang; date_out; time_out) : status
+static void cmd_OCIDateFromText(PA_PluginParameters params) {
+    PA_long32 errhpId = PA_GetLongParameter(params, 1);
+    OCIError* errhp = handles().getAs<OCIError>(errhpId);
+    if (!errhp) { PA_ReturnLong(params, (PA_long32)OCI_ERROR); return; }
+
+    PA_Unistring* uStr  = PA_GetStringParameter(params, 2);
+    PA_Unistring* uFmt  = PA_GetStringParameter(params, 3);
+    PA_Unistring* uLang = PA_GetStringParameter(params, 4);
+    std::string str  = unistr_to_utf8(uStr);
+    std::string fmt  = unistr_to_utf8(uFmt);
+    std::string lang = unistr_to_utf8(uLang);
+
+    OCIDate result;
+    sword status = OCIDateFromText(errhp,
+        (const OraText*)str.c_str(), (ub4)str.size(),
+        (const OraText*)(fmt.empty() ? nullptr : fmt.c_str()), (ub1)fmt.size(),
+        (const OraText*)(lang.empty() ? nullptr : lang.c_str()), (ub4)lang.size(),
+        &result);
+    if (status == OCI_SUCCESS) {
+        ocidate_to_params(params, 5, 6, &result);
+    }
+    PA_ReturnLong(params, oci_check(status));
+}
+
+// OCIDateToText(errhp; date_in; time_in; fmt; lang; text_out_ptr) : status
+static void cmd_OCIDateToText(PA_PluginParameters params) {
+    PA_long32 errhpId = PA_GetLongParameter(params, 1);
+    OCIError* errhp = handles().getAs<OCIError>(errhpId);
+    if (!errhp) { PA_ReturnLong(params, (PA_long32)OCI_ERROR); return; }
+
+    OCIDate dateIn;
+    params_to_ocidate(params, 2, 3, &dateIn);
+
+    PA_Unistring* uFmt  = PA_GetStringParameter(params, 4);
+    PA_Unistring* uLang = PA_GetStringParameter(params, 5);
+    std::string fmt  = unistr_to_utf8(uFmt);
+    std::string lang = unistr_to_utf8(uLang);
+
+    OraText buf[256];
+    ub4 bufLen = sizeof(buf);
+    sword status = OCIDateToText(errhp, &dateIn,
+        (const OraText*)(fmt.empty() ? nullptr : fmt.c_str()), (ub1)fmt.size(),
+        (const OraText*)(lang.empty() ? nullptr : lang.c_str()), (ub4)lang.size(),
+        &bufLen, buf);
+    if (status == OCI_SUCCESS) {
+        set_pointer_text(params, 6, (const char*)buf, (PA_long32)bufLen);
+    }
+    PA_ReturnLong(params, oci_check(status));
+}
+
+// OCIDateSysDate(errhp; date_out; time_out) : status
+static void cmd_OCIDateSysDate(PA_PluginParameters params) {
+    PA_long32 errhpId = PA_GetLongParameter(params, 1);
+    OCIError* errhp = handles().getAs<OCIError>(errhpId);
+    if (!errhp) { PA_ReturnLong(params, (PA_long32)OCI_ERROR); return; }
+
+    OCIDate result;
+    sword status = OCIDateSysDate(errhp, &result);
+    if (status == OCI_SUCCESS) {
+        ocidate_to_params(params, 2, 3, &result);
+    }
+    PA_ReturnLong(params, oci_check(status));
+}
+
+// OCIDateLastDay(errhp; date_in; date_out) : status
+static void cmd_OCIDateLastDay(PA_PluginParameters params) {
+    PA_long32 errhpId = PA_GetLongParameter(params, 1);
+    OCIError* errhp = handles().getAs<OCIError>(errhpId);
+    if (!errhp) { PA_ReturnLong(params, (PA_long32)OCI_ERROR); return; }
+
+    OCIDate dateIn;
+    date_param_to_ocidate(params, 2, &dateIn);
+
+    OCIDate result;
+    sword status = OCIDateLastDay(errhp, &dateIn, &result);
+    if (status == OCI_SUCCESS) {
+        ocidate_to_date_param(params, 3, &result);
+    }
+    PA_ReturnLong(params, oci_check(status));
+}
+
+// OCIDateNextDay(errhp; date_in; day_name; date_out) : status
+static void cmd_OCIDateNextDay(PA_PluginParameters params) {
+    PA_long32 errhpId = PA_GetLongParameter(params, 1);
+    OCIError* errhp = handles().getAs<OCIError>(errhpId);
+    if (!errhp) { PA_ReturnLong(params, (PA_long32)OCI_ERROR); return; }
+
+    OCIDate dateIn;
+    date_param_to_ocidate(params, 2, &dateIn);
+
+    PA_Unistring* uDay = PA_GetStringParameter(params, 3);
+    std::string dayName = unistr_to_utf8(uDay);
+
+    OCIDate result;
+    sword status = OCIDateNextDay(errhp, &dateIn,
+        (const OraText*)dayName.c_str(), (ub4)dayName.size(), &result);
+    if (status == OCI_SUCCESS) {
+        ocidate_to_date_param(params, 4, &result);
+    }
+    PA_ReturnLong(params, oci_check(status));
+}
+
+// OCIDateZoneToZone(errhp; date_in; time_in; zone1; zone2; date_out; time_out) : status
+static void cmd_OCIDateZoneToZone(PA_PluginParameters params) {
+    PA_long32 errhpId = PA_GetLongParameter(params, 1);
+    OCIError* errhp = handles().getAs<OCIError>(errhpId);
+    if (!errhp) { PA_ReturnLong(params, (PA_long32)OCI_ERROR); return; }
+
+    OCIDate dateIn;
+    params_to_ocidate(params, 2, 3, &dateIn);
+
+    PA_Unistring* uZone1 = PA_GetStringParameter(params, 4);
+    PA_Unistring* uZone2 = PA_GetStringParameter(params, 5);
+    std::string zone1 = unistr_to_utf8(uZone1);
+    std::string zone2 = unistr_to_utf8(uZone2);
+
+    OCIDate result;
+    sword status = OCIDateZoneToZone(errhp, &dateIn,
+        (const OraText*)zone1.c_str(), (ub4)zone1.size(),
+        (const OraText*)zone2.c_str(), (ub4)zone2.size(),
+        &result);
+    if (status == OCI_SUCCESS) {
+        ocidate_to_params(params, 6, 7, &result);
+    }
+    PA_ReturnLong(params, oci_check(status));
+}
+
+// ============================================================
+// DATE BIND/DEFINE commands
+// ============================================================
+
+// OCIBindDateByPos(stmtp; errhp; bindp_out; position; date_ptr; time_ptr; dty; ind_ptr; rlen_ptr; rcode_ptr; maxarr_len; curelep) : status
+static void cmd_OCIBindDateByPos(PA_PluginParameters params) {
+    PA_long32 stmtpId  = PA_GetLongParameter(params, 1);
+    PA_long32 errhpId  = PA_GetLongParameter(params, 2);
+    PA_long32 position = PA_GetLongParameter(params, 4);
+    PA_long32 dty      = PA_GetLongParameter(params, 7);
+
+    OCIStmt*  stmtp = handles().getAs<OCIStmt>(stmtpId);
+    OCIError* errhp = handles().getAs<OCIError>(errhpId);
+
+    if (!stmtp || !errhp || position < 1) {
+        PA_SetLongParameter(params, 3, 0);
+        PA_ReturnLong(params, (PA_long32)OCI_ERROR);
+        return;
+    }
+
+    OCIBindBuffer& buf = stmtBuffers().addBind(stmtpId, (ub4)position);
+    buf.dty = (ub4)dty;
+    buf.data.resize(sizeof(OCIDate), 0);
+    buf.indicator = 0;
+    buf.returnLen = (ub2)sizeof(OCIDate);
+    buf.valuePtr = PA_GetPointerParameter(params, 5);
+    buf.indPtr   = PA_GetPointerParameter(params, 8);
+    buf.rlenPtr  = PA_GetPointerParameter(params, 9);
+
+    // Read input date/time from pointers into OCIDate buffer
+    if (buf.valuePtr) {
+        PA_Variable val = PA_GetPointerValue(buf.valuePtr);
+        // Expect date value; time from param 6 pointer
+        // For simplicity, init OCIDate to zero
+        OCIDate* od = reinterpret_cast<OCIDate*>(buf.data.data());
+        OCIDateSetDate(od, 0, 0, 0);
+        OCIDateSetTime(od, 0, 0, 0);
+    }
+
+    buf.bindp = nullptr;
+    sword status = OCIBindByPos(stmtp, &buf.bindp, errhp,
+                                 (ub4)position,
+                                 buf.data.data(), (sb4)sizeof(OCIDate),
+                                 SQLT_ODT,
+                                 &buf.indicator, &buf.returnLen,
+                                 nullptr, 0, nullptr, OCI_DEFAULT);
+
+    if (status == OCI_SUCCESS && buf.bindp) {
+        PA_long32 id = handles().add(buf.bindp, 0);
+        PA_SetLongParameter(params, 3, id);
+    } else {
+        PA_SetLongParameter(params, 3, 0);
+    }
+    PA_ReturnLong(params, oci_check(status));
+}
+
+// OCIBindDateByName(stmtp; errhp; bindp_out; placeholder; date_ptr; time_ptr; dty; ind_ptr; rlen_ptr; rcode_ptr; maxarr_len; curelep) : status
+static void cmd_OCIBindDateByName(PA_PluginParameters params) {
+    PA_long32 stmtpId = PA_GetLongParameter(params, 1);
+    PA_long32 errhpId = PA_GetLongParameter(params, 2);
+    PA_long32 dty     = PA_GetLongParameter(params, 7);
+
+    OCIStmt*  stmtp = handles().getAs<OCIStmt>(stmtpId);
+    OCIError* errhp = handles().getAs<OCIError>(errhpId);
+
+    PA_Unistring* uPlaceholder = PA_GetStringParameter(params, 4);
+    std::string placeholder = unistr_to_utf8(uPlaceholder);
+
+    if (!stmtp || !errhp || placeholder.empty()) {
+        PA_SetLongParameter(params, 3, 0);
+        PA_ReturnLong(params, (PA_long32)OCI_ERROR);
+        return;
+    }
+
+    ub4 syntheticPos = 1;
+    for (char c : placeholder) syntheticPos = syntheticPos * 31 + (unsigned char)c;
+    syntheticPos = (syntheticPos % 10000) + 20001;
+
+    OCIBindBuffer& buf = stmtBuffers().addBind(stmtpId, syntheticPos);
+    buf.dty = (ub4)dty;
+    buf.data.resize(sizeof(OCIDate), 0);
+    buf.indicator = 0;
+    buf.returnLen = (ub2)sizeof(OCIDate);
+    buf.valuePtr = PA_GetPointerParameter(params, 5);
+    buf.indPtr   = PA_GetPointerParameter(params, 8);
+    buf.rlenPtr  = PA_GetPointerParameter(params, 9);
+
+    buf.bindp = nullptr;
+    sword status = OCIBindByName(stmtp, &buf.bindp, errhp,
+                                  (const OraText*)placeholder.c_str(),
+                                  (sb4)placeholder.size(),
+                                  buf.data.data(), (sb4)sizeof(OCIDate),
+                                  SQLT_ODT,
+                                  &buf.indicator, &buf.returnLen,
+                                  nullptr, 0, nullptr, OCI_DEFAULT);
+
+    if (status == OCI_SUCCESS && buf.bindp) {
+        PA_long32 id = handles().add(buf.bindp, 0);
+        PA_SetLongParameter(params, 3, id);
+    } else {
+        PA_SetLongParameter(params, 3, 0);
+    }
+    PA_ReturnLong(params, oci_check(status));
+}
+
+// OCIDefineDateByPos(stmtp; errhp; defnp_out; position; date_ptr; time_ptr; dty; ind_ptr; rlen_ptr; rcode_ptr; mode) : status
+static void cmd_OCIDefineDateByPos(PA_PluginParameters params) {
+    PA_long32 stmtpId  = PA_GetLongParameter(params, 1);
+    PA_long32 errhpId  = PA_GetLongParameter(params, 2);
+    PA_long32 position = PA_GetLongParameter(params, 4);
+    PA_long32 dty      = PA_GetLongParameter(params, 7);
+    PA_long32 mode     = PA_GetLongParameter(params, 11);
+
+    OCIStmt*  stmtp = handles().getAs<OCIStmt>(stmtpId);
+    OCIError* errhp = handles().getAs<OCIError>(errhpId);
+
+    if (!stmtp || !errhp || position < 1) {
+        PA_SetLongParameter(params, 3, 0);
+        PA_ReturnLong(params, (PA_long32)OCI_ERROR);
+        return;
+    }
+
+    OCIColumnBuffer& col = stmtBuffers().addDefine(stmtpId, (ub4)position);
+    col.dty = (ub4)dty;
+    col.data.resize(sizeof(OCIDate), 0);
+    col.indicator = 0;
+    col.returnLen = 0;
+    col.valuePtr = PA_GetPointerParameter(params, 5);
+    col.indPtr   = PA_GetPointerParameter(params, 8);
+    col.rlenPtr  = PA_GetPointerParameter(params, 9);
+
+    col.defnp = nullptr;
+    sword status = OCIDefineByPos(stmtp, &col.defnp, errhp,
+                                   (ub4)position,
+                                   col.data.data(), (sb4)sizeof(OCIDate),
+                                   SQLT_ODT,
+                                   &col.indicator, &col.returnLen,
+                                   nullptr, (ub4)mode);
+
+    if (status == OCI_SUCCESS && col.defnp) {
+        PA_long32 id = handles().add(col.defnp, 0);
+        PA_SetLongParameter(params, 3, id);
+    } else {
+        PA_SetLongParameter(params, 3, 0);
+    }
+    PA_ReturnLong(params, oci_check(status));
+}
+
+// ============================================================
+// REF commands
+// ============================================================
+
+// OCIRefAssign(envhp; errhp; source_ref; target_ref) : status
+static void cmd_OCIRefAssign(PA_PluginParameters params) {
+    PA_long32 envId = PA_GetLongParameter(params, 1);
+    PA_long32 errId = PA_GetLongParameter(params, 2);
+    PA_long32 srcId = PA_GetLongParameter(params, 3);
+    PA_long32 tgtId = PA_GetLongParameter(params, 4);
+
+    OCIEnv*   env = handles().getAs<OCIEnv>(envId);
+    OCIError* err = handles().getAs<OCIError>(errId);
+    OCIRef*   src = (OCIRef*)handles().get(srcId);
+    OCIRef*   tgt = (OCIRef*)handles().get(tgtId);
+
+    if (!env || !err || !src) {
+        PA_ReturnLong(params, (PA_long32)OCI_ERROR); return;
+    }
+    sword status = OCIRefAssign(env, err, (const OCIRef*)src, &tgt);
+    PA_ReturnLong(params, oci_check(status));
+}
+
+// OCIRefClear(envhp; ref) — no return value
+static void cmd_OCIRefClear(PA_PluginParameters params) {
+    PA_long32 envId = PA_GetLongParameter(params, 1);
+    PA_long32 refId = PA_GetLongParameter(params, 2);
+    OCIEnv* env = handles().getAs<OCIEnv>(envId);
+    OCIRef* ref = (OCIRef*)handles().get(refId);
+    if (env && ref) OCIRefClear(env, ref);
+}
+
+// OCIRefFromHex(envhp; errhp; svchp; hex_text; ref_handle) : status
+static void cmd_OCIRefFromHex(PA_PluginParameters params) {
+    PA_long32 envId  = PA_GetLongParameter(params, 1);
+    PA_long32 errId  = PA_GetLongParameter(params, 2);
+    PA_long32 svcId  = PA_GetLongParameter(params, 3);
+    PA_long32 refId  = PA_GetLongParameter(params, 5);
+
+    OCIEnv*    env  = handles().getAs<OCIEnv>(envId);
+    OCIError*  err  = handles().getAs<OCIError>(errId);
+    OCISvcCtx* svc  = handles().getAs<OCISvcCtx>(svcId);
+    OCIRef*    ref  = (OCIRef*)handles().get(refId);
+
+    PA_Unistring* uHex = PA_GetStringParameter(params, 4);
+    std::string hex = unistr_to_utf8(uHex);
+
+    if (!env || !err || !svc) {
+        PA_ReturnLong(params, (PA_long32)OCI_ERROR); return;
+    }
+
+    ub4 hexLen = (ub4)hex.size();
+    sword status = OCIRefFromHex(env, err, svc,
+        (const OraText*)hex.c_str(), hexLen, &ref);
+    PA_ReturnLong(params, oci_check(status));
+}
+
+// OCIRefToHex(envhp; errhp; ref_handle; hex_text_ptr) : status
+static void cmd_OCIRefToHex(PA_PluginParameters params) {
+    PA_long32 envId = PA_GetLongParameter(params, 1);
+    PA_long32 errId = PA_GetLongParameter(params, 2);
+    PA_long32 refId = PA_GetLongParameter(params, 3);
+
+    OCIEnv*   env = handles().getAs<OCIEnv>(envId);
+    OCIError* err = handles().getAs<OCIError>(errId);
+    OCIRef*   ref = (OCIRef*)handles().get(refId);
+
+    if (!env || !err || !ref) {
+        PA_ReturnLong(params, (PA_long32)OCI_ERROR); return;
+    }
+
+    OraText buf[1024];
+    ub4 bufLen = sizeof(buf);
+    sword status = OCIRefToHex(env, err, (const OCIRef*)ref, buf, &bufLen);
+    if (status == OCI_SUCCESS) {
+        set_pointer_text(params, 4, (const char*)buf, (PA_long32)bufLen);
+    }
+    PA_ReturnLong(params, oci_check(status));
+}
+
+// OCIRefHexSize(envhp; ref_handle) : size
+static void cmd_OCIRefHexSize(PA_PluginParameters params) {
+    PA_long32 envId = PA_GetLongParameter(params, 1);
+    PA_long32 refId = PA_GetLongParameter(params, 2);
+
+    OCIEnv* env = handles().getAs<OCIEnv>(envId);
+    OCIRef* ref = (OCIRef*)handles().get(refId);
+
+    if (!env || !ref) {
+        PA_ReturnLong(params, 0); return;
+    }
+    ub4 size = OCIRefHexSize(env, (const OCIRef*)ref);
+    PA_ReturnLong(params, (PA_long32)size);
+}
+
+// OCIRefIsEqual(envhp; ref1; ref2) : boolean (1/0)
+static void cmd_OCIRefIsEqual(PA_PluginParameters params) {
+    PA_long32 envId  = PA_GetLongParameter(params, 1);
+    PA_long32 ref1Id = PA_GetLongParameter(params, 2);
+    PA_long32 ref2Id = PA_GetLongParameter(params, 3);
+
+    OCIEnv* env  = handles().getAs<OCIEnv>(envId);
+    OCIRef* ref1 = (OCIRef*)handles().get(ref1Id);
+    OCIRef* ref2 = (OCIRef*)handles().get(ref2Id);
+
+    if (!env || !ref1 || !ref2) {
+        PA_ReturnLong(params, 0); return;
+    }
+    boolean result = OCIRefIsEqual(env, (const OCIRef*)ref1, (const OCIRef*)ref2);
+    PA_ReturnLong(params, (PA_long32)(result ? 1 : 0));
+}
+
+// OCIRefIsNull(envhp; ref) : boolean (1/0)
+static void cmd_OCIRefIsNull(PA_PluginParameters params) {
+    PA_long32 envId = PA_GetLongParameter(params, 1);
+    PA_long32 refId = PA_GetLongParameter(params, 2);
+
+    OCIEnv* env = handles().getAs<OCIEnv>(envId);
+    OCIRef* ref = (OCIRef*)handles().get(refId);
+
+    if (!env) {
+        PA_ReturnLong(params, 1); return;
+    }
+    boolean result = OCIRefIsNull(env, (const OCIRef*)ref);
+    PA_ReturnLong(params, (PA_long32)(result ? 1 : 0));
+}
+
+// ============================================================
+// RAW commands
+// ============================================================
+
+// OCIRawAllocSize(envhp; errhp; raw_handle; alloc_size_out) : status
+static void cmd_OCIRawAllocSize(PA_PluginParameters params) {
+    PA_long32 envId = PA_GetLongParameter(params, 1);
+    PA_long32 errId = PA_GetLongParameter(params, 2);
+    PA_long32 rawId = PA_GetLongParameter(params, 3);
+
+    OCIEnv*   env = handles().getAs<OCIEnv>(envId);
+    OCIError* err = handles().getAs<OCIError>(errId);
+    OCIRaw*   raw = (OCIRaw*)handles().get(rawId);
+
+    if (!env || !err || !raw) {
+        PA_ReturnLong(params, (PA_long32)OCI_ERROR); return;
+    }
+    ub4 allocSize = 0;
+    sword status = OCIRawAllocSize(env, err, (const OCIRaw*)raw, &allocSize);
+    PA_SetLongParameter(params, 4, (PA_long32)allocSize);
+    PA_ReturnLong(params, oci_check(status));
+}
+
+// OCIRawAssignBytes(envhp; errhp; blob_data; raw_handle) : status
+static void cmd_OCIRawAssignBytes(PA_PluginParameters params) {
+    PA_long32 envId = PA_GetLongParameter(params, 1);
+    PA_long32 errId = PA_GetLongParameter(params, 2);
+    PA_long32 rawId = PA_GetLongParameter(params, 4);
+
+    OCIEnv*   env = handles().getAs<OCIEnv>(envId);
+    OCIError* err = handles().getAs<OCIError>(errId);
+    OCIRaw*   raw = (OCIRaw*)handles().get(rawId);
+
+    if (!env || !err) {
+        PA_ReturnLong(params, (PA_long32)OCI_ERROR); return;
+    }
+
+    PA_Handle hBlob = PA_GetBlobHandleParameter(params, 3);
+    PA_long32 blobLen = PA_GetHandleSize(hBlob);
+    char* blobPtr = PA_LockHandle(hBlob);
+
+    sword status = OCIRawAssignBytes(env, err, (const ub1*)blobPtr, (ub4)blobLen, &raw);
+    PA_UnlockHandle(hBlob);
+    PA_ReturnLong(params, oci_check(status));
+}
+
+// OCIRawAssignRaw(envhp; errhp; src_raw; dst_raw) : status
+static void cmd_OCIRawAssignRaw(PA_PluginParameters params) {
+    PA_long32 envId = PA_GetLongParameter(params, 1);
+    PA_long32 errId = PA_GetLongParameter(params, 2);
+    PA_long32 srcId = PA_GetLongParameter(params, 3);
+    PA_long32 dstId = PA_GetLongParameter(params, 4);
+
+    OCIEnv*   env = handles().getAs<OCIEnv>(envId);
+    OCIError* err = handles().getAs<OCIError>(errId);
+    OCIRaw*   src = (OCIRaw*)handles().get(srcId);
+    OCIRaw*   dst = (OCIRaw*)handles().get(dstId);
+
+    if (!env || !err || !src) {
+        PA_ReturnLong(params, (PA_long32)OCI_ERROR); return;
+    }
+    sword status = OCIRawAssignRaw(env, err, (const OCIRaw*)src, &dst);
+    PA_ReturnLong(params, oci_check(status));
+}
+
+// OCIRawPtr(envhp; raw_handle) : blob
+static void cmd_OCIRawPtr(PA_PluginParameters params) {
+    PA_long32 envId = PA_GetLongParameter(params, 1);
+    PA_long32 rawId = PA_GetLongParameter(params, 2);
+
+    OCIEnv* env = handles().getAs<OCIEnv>(envId);
+    OCIRaw* raw = (OCIRaw*)handles().get(rawId);
+
+    if (!env || !raw) {
+        PA_ReturnBlob(params, nullptr, 0);
+        return;
+    }
+    ub1* ptr = OCIRawPtr(env, raw);
+    ub4 size = OCIRawSize(env, (const OCIRaw*)raw);
+    PA_ReturnBlob(params, ptr, (PA_long32)size);
+}
+
+// OCIRawResize(envhp; errhp; new_size; raw_handle) : status
+static void cmd_OCIRawResize(PA_PluginParameters params) {
+    PA_long32 envId   = PA_GetLongParameter(params, 1);
+    PA_long32 errId   = PA_GetLongParameter(params, 2);
+    PA_long32 newSize = PA_GetLongParameter(params, 3);
+    PA_long32 rawId   = PA_GetLongParameter(params, 4);
+
+    OCIEnv*   env = handles().getAs<OCIEnv>(envId);
+    OCIError* err = handles().getAs<OCIError>(errId);
+    OCIRaw*   raw = (OCIRaw*)handles().get(rawId);
+
+    if (!env || !err) {
+        PA_ReturnLong(params, (PA_long32)OCI_ERROR); return;
+    }
+    sword status = OCIRawResize(env, err, (ub2)newSize, &raw);
+    PA_ReturnLong(params, oci_check(status));
+}
+
+// OCIRawSize(envhp; raw_handle) : size
+static void cmd_OCIRawSize(PA_PluginParameters params) {
+    PA_long32 envId = PA_GetLongParameter(params, 1);
+    PA_long32 rawId = PA_GetLongParameter(params, 2);
+
+    OCIEnv* env = handles().getAs<OCIEnv>(envId);
+    OCIRaw* raw = (OCIRaw*)handles().get(rawId);
+
+    if (!env || !raw) {
+        PA_ReturnLong(params, 0); return;
+    }
+    ub4 size = OCIRawSize(env, (const OCIRaw*)raw);
+    PA_ReturnLong(params, (PA_long32)size);
+}
+
+// ============================================================
+// COLLECTION stubs
+// ============================================================
+
+static void cmd_OCICollAppend(PA_PluginParameters params) {
+    PA_ReturnLong(params, (PA_long32)OCI_ERROR);
+}
+static void cmd_OCICollAssign(PA_PluginParameters params) {
+    PA_ReturnLong(params, (PA_long32)OCI_ERROR);
+}
+static void cmd_OCICollAssignElem(PA_PluginParameters params) {
+    PA_ReturnLong(params, (PA_long32)OCI_ERROR);
+}
+static void cmd_OCICollGetElem(PA_PluginParameters params) {
+    PA_ReturnLong(params, (PA_long32)OCI_ERROR);
+}
+static void cmd_OCICollMax(PA_PluginParameters params) {
+    PA_ReturnLong(params, (PA_long32)OCI_ERROR);
+}
+static void cmd_OCICollSize(PA_PluginParameters params) {
+    PA_ReturnLong(params, (PA_long32)OCI_ERROR);
+}
+static void cmd_OCICollTrim(PA_PluginParameters params) {
+    PA_ReturnLong(params, (PA_long32)OCI_ERROR);
+}
+
+// ============================================================
+// ITERATOR stubs
+// ============================================================
+
+static void cmd_OCIIterCreate(PA_PluginParameters params) {
+    PA_ReturnLong(params, (PA_long32)OCI_ERROR);
+}
+static void cmd_OCIIterDelete(PA_PluginParameters params) {
+    PA_ReturnLong(params, (PA_long32)OCI_ERROR);
+}
+static void cmd_OCIIterInit(PA_PluginParameters params) {
+    PA_ReturnLong(params, (PA_long32)OCI_ERROR);
+}
+static void cmd_OCIIterGetCurrent(PA_PluginParameters params) {
+    PA_ReturnLong(params, (PA_long32)OCI_ERROR);
+}
+static void cmd_OCIIterNext(PA_PluginParameters params) {
+    PA_ReturnLong(params, (PA_long32)OCI_ERROR);
+}
+static void cmd_OCIIterPrev(PA_PluginParameters params) {
+    PA_ReturnLong(params, (PA_long32)OCI_ERROR);
+}
+
+// ============================================================
+// TABLE stubs
+// ============================================================
+
+static void cmd_OCITableDelete(PA_PluginParameters params) {
+    PA_ReturnLong(params, (PA_long32)OCI_ERROR);
+}
+static void cmd_OCITableExists(PA_PluginParameters params) {
+    PA_ReturnLong(params, (PA_long32)OCI_ERROR);
+}
+static void cmd_OCITableFirst(PA_PluginParameters params) {
+    PA_ReturnLong(params, (PA_long32)OCI_ERROR);
+}
+static void cmd_OCITableLast(PA_PluginParameters params) {
+    PA_ReturnLong(params, (PA_long32)OCI_ERROR);
+}
+static void cmd_OCITableNext(PA_PluginParameters params) {
+    PA_ReturnLong(params, (PA_long32)OCI_ERROR);
+}
+static void cmd_OCITablePrev(PA_PluginParameters params) {
+    PA_ReturnLong(params, (PA_long32)OCI_ERROR);
+}
+static void cmd_OCITableSize(PA_PluginParameters params) {
+    PA_ReturnLong(params, (PA_long32)OCI_ERROR);
 }
